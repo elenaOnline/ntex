@@ -1,0 +1,6 @@
+grid
+  A --f--> B
+           ||
+  C --k--> D
+end
+A -i-hook-> C

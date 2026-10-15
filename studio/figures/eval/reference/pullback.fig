@@ -1,0 +1,9 @@
+% fibre product
+P -> B
+P -> C
+B -g-> D
+C -f-> D
+P at 0,0
+B at 1,0
+C at 0,1
+D at 1,1

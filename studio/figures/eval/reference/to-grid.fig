@@ -1,0 +1,6 @@
+grid
+  A --f--> B
+  |g       |h
+  v        v
+  C --k--> D
+end

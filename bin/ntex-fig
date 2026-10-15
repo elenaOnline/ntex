@@ -1,0 +1,15 @@
+#!/bin/sh
+# ntex-fig — Ntex Figures' command line: .fig shorthand → TikZ → PDF.
+# Sources: ~/.config/texnvim/studio/figures (FIGURES.md there).
+# Usage: ntex-fig build figures/x.fig     write figures/x.pdf (tectonic, atomically)
+#        ntex-fig check figures/x.fig     print the diagnostics (line N: …)
+#        ntex-fig tikz [--portable] x.fig print the TikZ
+#        ntex-fig fmt x.fig               rewrite in the canonical form
+# In ntex: saving a .fig builds it; Space g opens a figure's window.
+BIN="$HOME/.config/texnvim/studio/target/release/ntex-fig"
+if [ ! -x "$BIN" ]; then
+  echo "ntex-fig isn't built yet. Build it with:" >&2
+  echo "  ~/.config/texnvim/studio/build.sh" >&2
+  exit 1
+fi
+exec "$BIN" "$@"

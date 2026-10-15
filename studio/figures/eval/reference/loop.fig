@@ -1,0 +1,4 @@
+X -f-> Y
+X -e-> X loop
+X at 0,0
+Y at 1,0

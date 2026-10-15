@@ -1,0 +1,7 @@
+% composition
+A -f-> B
+B -g-> D
+A -h-> C
+C -k-> D
+A --> D
+A at 0,0; B at 1,0; C at 0,1; D at 1,1

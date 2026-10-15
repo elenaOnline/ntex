@@ -1,0 +1,135 @@
+% ntex-notes.sty — the author's notes theme. Used by every new .tex from ntex
+% (templates/article.tex → \usepackage{ntex-notes}). ntex's compiler finds it
+% via tectonic -Z search-path=~/.config/texnvim/templates/tex.
+% To share a .tex with someone / Overleaf: put a copy of this file next to it
+% (and of ntex-blocks.sty: your own blocks, made in Ntex Studio, live there).
+% v6 (2026-10-04): v5 with a softer maroon (example). v5: richer tones — vivid bars,
+% clear tinted fills, deep heads.
+% v4: v1's left-rule boxes with the v3 colours (saved as ntex-notes.v4.sty).
+% Earlier versions: ntex-notes.v1.sty (left rule, Modus colours), ntex-notes.v3.sty (title bars).
+% Everything tunable is near the top: palette, fonts, box shape.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{ntex-notes}[2026/10/04 v6 ntex notes theme]
+
+% ---------------------------------------------------------------- packages
+\RequirePackage[margin=1in]{geometry}
+\RequirePackage{amsmath, amssymb, amsthm, mathtools}
+\RequirePackage[dvipsnames]{xcolor}
+\RequirePackage[most]{tcolorbox}   % skins, breakable, theorems …
+\RequirePackage{enumitem}
+\RequirePackage{booktabs}
+\RequirePackage[hidelinks]{hyperref}
+\RequirePackage[capitalise,noabbrev]{cleveref}
+
+% ---------------------------------------------------------------- fonts
+% Palatino (Zapf, humanist) for text + matching maths.
+\RequirePackage{newpxtext, newpxmath}
+\linespread{1.08}
+
+% ---------------------------------------------------------------- palette
+% Each kind of block has one hue in three tones (v5: richer than v4's
+% white-mixed tints, which went grey):
+%   …Rule  vivid mid-tone  — the bar on the left
+%   …Back  clear tint of the same hue — the box fill (not dark-colour + white)
+%   …Head  deep tone       — "Theorem 1.2 (Name)."
+% Body text on every Back is ≥ 13:1; Head on Back ≥ 5:1.
+\definecolor{ntexInk}{HTML}{1E1E28}          % body text
+% theorem — blue
+\definecolor{ntexBlueRule}{HTML}{1E47B8}
+\definecolor{ntexBlueBack}{HTML}{E0E7FB}
+\definecolor{ntexBlueHead}{HTML}{153079}
+% lemma, proposition, corollary — violet
+\definecolor{ntexVioletRule}{HTML}{661EB8}
+\definecolor{ntexVioletBack}{HTML}{ECE0FB}
+\definecolor{ntexVioletHead}{HTML}{441579}
+% definition — teal-blue
+\definecolor{ntexTealRule}{HTML}{1C829C}
+\definecolor{ntexTealBack}{HTML}{E2F4F8}
+\definecolor{ntexTealHead}{HTML}{0F596B}
+% example — maroon
+\definecolor{ntexMaroonRule}{HTML}{A92D4A}
+\definecolor{ntexMaroonBack}{HTML}{F8EAED}
+\definecolor{ntexMaroonHead}{HTML}{79152D}
+% remark — forest green
+\definecolor{ntexGreenRule}{HTML}{238B45}
+\definecolor{ntexGreenBack}{HTML}{E5F5EA}
+\definecolor{ntexGreenHead}{HTML}{145D2C}
+% structure accents (section numbers, bullets, title rule) use the theorem blue
+\colorlet{ntexBlue}{ntexBlueRule}
+\definecolor{ntexSlate}{HTML}{5A6378}        % captions, author/date
+\definecolor{ntexProofRule}{gray}{0.55}      % proof block: neutral, no hue
+\definecolor{ntexProofBack}{gray}{0.955}
+\color{ntexInk}
+
+% ---------------------------------------------------------------- headings
+\RequirePackage{titlesec}
+\titleformat{\section}{\Large\bfseries}{\color{ntexBlue}\thesection}{0.75em}{}
+\titleformat{\subsection}{\large\bfseries}{\color{ntexBlue}\thesubsection}{0.75em}{}
+\titlespacing*{\section}{0pt}{2.2ex plus .5ex}{1.2ex}
+\titlespacing*{\subsection}{0pt}{1.8ex plus .4ex}{0.8ex}
+
+% ---------------------------------------------------------------- theorems
+% amsthm does the numbering (so \label / \cref work); tcolorbox draws the box.
+\colorlet{ntexHead}{ntexInk}
+\newtheoremstyle{ntexplain}{0pt}{0pt}{\itshape}{}{\bfseries\color{ntexHead}}{.}{.6em}{}
+\newtheoremstyle{ntexupright}{0pt}{0pt}{}{}{\bfseries\color{ntexHead}}{.}{.6em}{}
+
+\theoremstyle{ntexplain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{ntexupright}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem*{remark}{Remark}
+
+% one box shape for all kinds: tinted fill, coloured rule on the left.
+% ntexbox=Blue uses ntexBlueRule / ntexBlueBack / ntexBlueHead.
+\tcbset{
+  ntexbox/.style={
+    enhanced, breakable,
+    frame hidden, sharp corners,
+    colback=ntex#1Back,
+    borderline west={3pt}{0pt}{ntex#1Rule},
+    left=11pt, right=10pt, top=7pt, bottom=7pt,
+    before skip=12pt, after skip=12pt,
+    before upper={\colorlet{ntexHead}{ntex#1Head}},
+  },
+}
+\tcolorboxenvironment{theorem}{ntexbox=Blue}
+\tcolorboxenvironment{lemma}{ntexbox=Violet}
+\tcolorboxenvironment{proposition}{ntexbox=Violet}
+\tcolorboxenvironment{corollary}{ntexbox=Violet}
+\tcolorboxenvironment{definition}{ntexbox=Teal}
+\tcolorboxenvironment{example}{ntexbox=Maroon}
+\tcolorboxenvironment{remark}{ntexbox=Green}
+
+% proof: a quiet neutral block — faint grey fill, thin grey rule, no hue
+\renewcommand{\qedsymbol}{\textcolor{ntexProofRule!80!black}{$\square$}}
+\tcolorboxenvironment{proof}{
+  enhanced, breakable, frame hidden, sharp corners,
+  colback=ntexProofBack,
+  borderline west={1pt}{0pt}{ntexProofRule},
+  left=10pt, right=10pt, top=6pt, bottom=6pt,
+  before skip=8pt, after skip=12pt,
+}
+
+% ---------------------------------------------------------------- lists, captions
+\setlist{itemsep=2pt, topsep=4pt}
+\setlist[itemize,1]{label=\textcolor{ntexBlue}{\textbullet}}
+\setlist[enumerate,1]{label=\textcolor{ntexBlue}{\arabic*.}}
+\RequirePackage[font={small,color=ntexSlate}, labelfont=bf]{caption}
+
+% ---------------------------------------------------------------- title
+\RequirePackage{titling}
+\pretitle{\begin{flushleft}\LARGE\bfseries\color{ntexInk}}
+\posttitle{\par\end{flushleft}\vspace{-0.6em}}
+\preauthor{\begin{flushleft}\color{ntexSlate}}
+\postauthor{\par\end{flushleft}}
+\predate{\begin{flushleft}\small\color{ntexSlate}}
+\postdate{\par\end{flushleft}\vspace{0.4em}{\color{ntexBlue}\rule{\linewidth}{1.2pt}}\vspace{0.6em}}
+
+\RequirePackage{ntex-blocks}   % blocks made in Ntex Studio (ntex-blocks.sty)
+
+\endinput

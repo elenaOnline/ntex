@@ -1,0 +1,5 @@
+% A homomorphism, element by element.
+blob G "G" {e, g, g^2, g^3}
+blob H "H" {e', h}
+G -φ-> H
+e |-> e' ; g |-> h ; g^2 |-> e' ; g^3 |-> h

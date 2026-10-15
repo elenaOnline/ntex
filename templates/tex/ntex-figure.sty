@@ -1,0 +1,60 @@
+% ntex-figure.sty — the look of Ntex Figures (studio/figures, `ntex-fig build`).
+% ntex-base (Charter, newtxmath, the palette) + TikZ with tikz-cd's arrows, and
+% one named style per palette colour, so a figure says `ntex blue` and a
+% colour change in ntex-base.sty follows here too.
+% Figures are \documentclass[border=3pt]{standalone} + \usepackage{ntex-figure};
+% `ntex-fig tikz --portable` inlines all of this for someone without the theme.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{ntex-figure}[2026/10/12 v1 ntex figures]
+
+\RequirePackage{ntex-base}   % newtxmath also gives amssymb's symbols (loading amssymb after it clashes)
+\RequirePackage{tikz}
+\usetikzlibrary{cd,arrows.meta,calc,hobby}
+
+% ---------------------------------------------------------------- colours
+% A figure's colour names: blue violet teal maroon green ochre grey ink.
+% Strokes and dots use the vivid Rule tone, shading the clear Back tint.
+\colorlet{ntexFigInk}{ntexInk}
+\colorlet{ntexFigGrey}{ntexSlate}
+\colorlet{ntexFigBlue}{ntexBlueRule}     \colorlet{ntexFigBlueTint}{ntexBlueBack}
+\colorlet{ntexFigViolet}{ntexVioletRule} \colorlet{ntexFigVioletTint}{ntexVioletBack}
+\colorlet{ntexFigTeal}{ntexTealRule}     \colorlet{ntexFigTealTint}{ntexTealBack}
+\colorlet{ntexFigMaroon}{ntexMaroonRule} \colorlet{ntexFigMaroonTint}{ntexMaroonBack}
+\colorlet{ntexFigGreen}{ntexGreenRule}   \colorlet{ntexFigGreenTint}{ntexGreenBack}
+\colorlet{ntexFigOchre}{ntexOchreRule}   \colorlet{ntexFigOchreTint}{ntexOchreBack}
+\colorlet{ntexFigInkTint}{ntexProofBack}
+\colorlet{ntexFigGreyTint}{ntexProofBack}
+
+% ---------------------------------------------------------------- styles
+% `ntex <colour>`: stroke, text and arrow tips in that colour.
+% `ntex <colour> shade`: fill with its tint (a shaded blob / kernel).
+\tikzset{
+  ntex ink/.style={color=ntexFigInk},
+  ntex grey/.style={color=ntexFigGrey},
+  ntex blue/.style={color=ntexFigBlue},
+  ntex violet/.style={color=ntexFigViolet},
+  ntex teal/.style={color=ntexFigTeal},
+  ntex maroon/.style={color=ntexFigMaroon},
+  ntex green/.style={color=ntexFigGreen},
+  ntex ochre/.style={color=ntexFigOchre},
+  ntex ink shade/.style={fill=ntexFigInkTint},
+  ntex grey shade/.style={fill=ntexFigGreyTint},
+  ntex blue shade/.style={fill=ntexFigBlueTint},
+  ntex violet shade/.style={fill=ntexFigVioletTint},
+  ntex teal shade/.style={fill=ntexFigTealTint},
+  ntex maroon shade/.style={fill=ntexFigMaroonTint},
+  ntex green shade/.style={fill=ntexFigGreenTint},
+  ntex ochre shade/.style={fill=ntexFigOchreTint},
+  % the picture: ink, round joins. No global `line cap=round`: it closes
+  % tikz-cd's `equal` (two parallel lines) into a capsule.
+  ntex figure/.style={color=ntexFigInk, line join=round},
+  % a blob outline, an element's dot, an n-gon / Cayley edge, a reflection axis
+  ntex blob/.style={line width=0.6pt},
+  ntex dot/.style={circle, fill, draw=none, inner sep=0pt, minimum size=3.2pt},
+  ntex edge/.style={line width=0.6pt},
+  ntex axis/.style={line width=0.45pt, dash pattern=on 2.4pt off 1.8pt, color=ntexFigGrey},
+  ntex vertex/.style={circle, fill, draw=none, inner sep=0pt, minimum size=2.6pt},
+}
+\AtBeginDocument{\color{ntexInk}}
+
+\endinput

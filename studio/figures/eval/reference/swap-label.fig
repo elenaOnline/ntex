@@ -1,0 +1,5 @@
+% triangle
+A -f-> B
+A -h-> C swap
+B -g-> C
+A at 0,0; B at 1,0; C at 1,1

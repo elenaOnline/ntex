@@ -1,0 +1,4 @@
+spacing 3.5,1.8
+size small
+A -"\text{a long label}"-> B
+B -"\text{another one}"-> C

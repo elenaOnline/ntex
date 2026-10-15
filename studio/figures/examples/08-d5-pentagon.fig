@@ -1,0 +1,2 @@
+% D5: the pentagon with its five axes, and r^2.
+ngon P 5 labels a,b,c,d,e axes rotation=2

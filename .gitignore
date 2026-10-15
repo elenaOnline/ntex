@@ -1,0 +1,8 @@
+.DS_Store
+reference/index.html
+reference/index.html.tmp-*
+reference/examples.json
+reference/build-report.txt
+reference/screenshots/
+templates/workshop/*.pdf
+studio/target/

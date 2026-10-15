@@ -1,0 +1,64 @@
+% ntex-base.sty — the one source of truth for the author's fonts and palette.
+% Loaded by ntex-notes.sty (her notes) and ntex-figure.sty (Ntex Figures), so a
+% change to Charter or to a colour here follows everywhere. Split out of
+% ntex-notes.sty v8 on 2026-10-12 (the lines are unchanged).
+% To share a .tex: put a copy of this file next to it with ntex-notes.sty.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{ntex-base}[2026/10/12 v1 ntex fonts and palette]
+
+% amsmath before newtxmath, and xcolor for \definecolor (both no-ops when
+% ntex-notes has already loaded them).
+\RequirePackage{amsmath}
+\RequirePackage[dvipsnames]{xcolor}
+
+% ---------------------------------------------------------------- fonts
+% Charter (Carter, made to stay legible at small sizes and on screens) for
+% text, with newtxmath's Charter-matched maths; vvarbb = the classic ℤ ℝ ℚ.
+\RequirePackage{XCharter}
+\RequirePackage[charter,vvarbb]{newtxmath}
+% Operator names (gcd, sin, lim, mod) in Charter too: under XeTeX (tectonic)
+% newtxmath looks for an OT1 Charter that only the Type 1 fonts have, and
+% otherwise falls back to Computer Modern.
+\DeclareSymbolFont{operators}{OT1}{XCharter-TLF}{m}{n}
+\SetSymbolFont{operators}{bold}{OT1}{XCharter-TLF}{b}{n}
+\linespread{1.04}
+
+% ---------------------------------------------------------------- palette
+% Each kind of block has one hue in three tones (v5: richer than v4's
+% white-mixed tints, which went grey):
+%   …Rule  vivid mid-tone  — the bar on the left
+%   …Back  clear tint of the same hue — the box fill (not dark-colour + white)
+%   …Head  deep tone       — "Theorem 1.2 (Name)."
+% Body text on every Back is ≥ 13:1; Head on Back ≥ 5:1.
+\definecolor{ntexInk}{HTML}{1E1E28}          % body text
+% theorem — blue
+\definecolor{ntexBlueRule}{HTML}{1E47B8}
+\definecolor{ntexBlueBack}{HTML}{E0E7FB}
+\definecolor{ntexBlueHead}{HTML}{153079}
+% lemma, proposition, corollary — violet
+\definecolor{ntexVioletRule}{HTML}{661EB8}
+\definecolor{ntexVioletBack}{HTML}{ECE0FB}
+\definecolor{ntexVioletHead}{HTML}{441579}
+% definition — teal-blue
+\definecolor{ntexTealRule}{HTML}{1C829C}
+\definecolor{ntexTealBack}{HTML}{E2F4F8}
+\definecolor{ntexTealHead}{HTML}{0F596B}
+% example — maroon
+\definecolor{ntexMaroonRule}{HTML}{A92D4A}
+\definecolor{ntexMaroonBack}{HTML}{F8EAED}
+\definecolor{ntexMaroonHead}{HTML}{79152D}
+% remark — forest green
+\definecolor{ntexGreenRule}{HTML}{238B45}
+\definecolor{ntexGreenBack}{HTML}{E5F5EA}
+\definecolor{ntexGreenHead}{HTML}{145D2C}
+% exercise — ochre: given material, kept apart from the theorem colours
+\definecolor{ntexOchreRule}{HTML}{B07D12}
+\definecolor{ntexOchreBack}{HTML}{FAF3E2}
+\definecolor{ntexOchreHead}{HTML}{5E420A}
+% structure accents (section numbers, bullets, title rule) use the theorem blue
+\colorlet{ntexBlue}{ntexBlueRule}
+\definecolor{ntexSlate}{HTML}{5A6378}        % captions, author/date
+\definecolor{ntexProofRule}{gray}{0.55}      % proof block: neutral, no hue
+\definecolor{ntexProofBack}{gray}{0.955}
+
+\endinput

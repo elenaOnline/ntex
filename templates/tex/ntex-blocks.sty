@@ -1,0 +1,11 @@
+% ntex-blocks.sty — theorem-like blocks made in Ntex Studio (⌘2, New block).
+% ntex-notes.sty loads it (\RequirePackage{ntex-blocks}, just before its
+% \endinput), so each block here works in every .tex that uses the theme.
+% One stanza per block, between its "% ── block: <env> ──" and
+% "% ── end: <env> ──" lines. The studio rewrites only those stanzas: safe to
+% edit by hand. Delete a stanza to delete a block (documents that use it
+% stop compiling). To share a .tex: copy this file next to ntex-notes.sty.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{ntex-blocks}[2026/10/07 v1 blocks made in Ntex Studio]
+
+\endinput

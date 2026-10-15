@@ -1,0 +1,3 @@
+% `angle` turns the drawing (labels and all); `labels=none` hides the labels.
+ngon P 4 angle=45 labels=none
+ngon Q 4 angle=45 axes rotation

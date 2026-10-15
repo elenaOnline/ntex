@@ -1,0 +1,4 @@
+blob G "G" {e, g, g^2, g^3}
+blob H "H" {k, hk}
+blob I "\operatorname{im}\varphi" in H color=teal {e', h}
+G -φ-> H

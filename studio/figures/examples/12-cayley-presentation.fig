@@ -1,0 +1,2 @@
+% From a presentation (coset enumeration): this is S3.
+cayley <a, b | a^3, b^2, abab> legend

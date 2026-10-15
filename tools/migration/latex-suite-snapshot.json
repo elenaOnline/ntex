@@ -1,0 +1,4596 @@
+{
+ "taken": "2026-10-01T00:18:22.188Z",
+ "source": "~/.config/latex-suite/snippets.js (read by ntex until 2026-09-30)",
+ "rows": [
+  {
+   "index": 0,
+   "trigger": "CC",
+   "kind": "string",
+   "replacement": "\\mathcal{C}",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "changed",
+   "diff": "replacement (default: \\mathbb{C})",
+   "group": "Set ops",
+   "line": 4,
+   "job": {
+    "before": "$‸$",
+    "keys": "CC",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 1,
+   "trigger": "Nat",
+   "kind": "string",
+   "replacement": "\\mathbb{N}",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "yours",
+   "diff": null,
+   "group": "Set ops",
+   "line": 5,
+   "job": {
+    "before": "$‸$",
+    "keys": "Nat",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 2,
+   "trigger": "FF",
+   "kind": "string",
+   "replacement": "\\mathbb{F}",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "yours",
+   "diff": null,
+   "group": "Set ops",
+   "line": 6,
+   "job": {
+    "before": "$‸$",
+    "keys": "FF",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 3,
+   "trigger": "phi",
+   "kind": "string",
+   "replacement": "\\varphi",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "yours",
+   "diff": null,
+   "group": "Set ops",
+   "line": 7,
+   "job": {
+    "before": "$‸$",
+    "keys": "phi",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 4,
+   "trigger": "disj",
+   "kind": "string",
+   "replacement": "\\mathcal{D}",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "yours",
+   "diff": null,
+   "group": "Set ops",
+   "line": 8,
+   "job": {
+    "before": "$‸$",
+    "keys": "disj",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 5,
+   "trigger": "pow",
+   "kind": "string",
+   "replacement": "\\mathcal{P}",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "yours",
+   "diff": null,
+   "group": "Set ops",
+   "line": 9,
+   "job": {
+    "before": "$‸$",
+    "keys": "pow",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 6,
+   "trigger": "uu",
+   "kind": "string",
+   "replacement": "\\cup",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "yours",
+   "diff": null,
+   "group": "Set ops",
+   "line": 10,
+   "job": {
+    "before": "$‸$",
+    "keys": "uu",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 7,
+   "trigger": "UU",
+   "kind": "string",
+   "replacement": "\\bigcup_{$1}$2",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "yours",
+   "diff": null,
+   "group": "Set ops",
+   "line": 11,
+   "job": {
+    "before": "$‸$",
+    "keys": "UU",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 8,
+   "trigger": "NN",
+   "kind": "string",
+   "replacement": "\\bigcap_{$1}$2",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "changed",
+   "diff": "replacement (default: \\mathbb{N})",
+   "group": "Set ops",
+   "line": 12,
+   "job": {
+    "before": "$‸$",
+    "keys": "NN",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 9,
+   "trigger": "exx",
+   "kind": "string",
+   "replacement": "\\exists",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "yours",
+   "diff": null,
+   "group": "Set ops",
+   "line": 13,
+   "job": {
+    "before": "$‸$",
+    "keys": "exx",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 10,
+   "trigger": "fall",
+   "kind": "string",
+   "replacement": "\\forall",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "yours",
+   "diff": null,
+   "group": "Set ops",
+   "line": 14,
+   "job": {
+    "before": "$‸$",
+    "keys": "fall",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 11,
+   "trigger": "psub",
+   "kind": "string",
+   "replacement": "\\subset",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "yours",
+   "diff": null,
+   "group": "Set ops",
+   "line": 15,
+   "job": {
+    "before": "$‸$",
+    "keys": "psub",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 12,
+   "trigger": "diff",
+   "kind": "string",
+   "replacement": "\\setminus",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "yours",
+   "diff": null,
+   "group": "Set ops",
+   "line": 16,
+   "job": {
+    "before": "$‸$",
+    "keys": "diff",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 13,
+   "trigger": "imp",
+   "kind": "string",
+   "replacement": "\\implies",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "yours",
+   "diff": null,
+   "group": "Set ops",
+   "line": 17,
+   "job": {
+    "before": "$‸$",
+    "keys": "imp",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 14,
+   "trigger": "qed",
+   "kind": "string",
+   "replacement": "\\ \\blacksquare",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "yours",
+   "diff": null,
+   "group": "Set ops",
+   "line": 18,
+   "job": {
+    "before": "$‸$",
+    "keys": "qed",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 15,
+   "trigger": "nn",
+   "kind": "string",
+   "replacement": "\\cap",
+   "options": "mA",
+   "priority": -1,
+   "description": null,
+   "origin": "yours",
+   "diff": null,
+   "group": "Set ops",
+   "line": 19,
+   "job": {
+    "before": "$‸$",
+    "keys": "nn",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 16,
+   "trigger": "iff",
+   "kind": "string",
+   "replacement": "\\iff",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "yours",
+   "diff": null,
+   "group": "Set ops",
+   "line": 20,
+   "job": {
+    "before": "$‸$",
+    "keys": "iff",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 17,
+   "trigger": "ninn",
+   "kind": "string",
+   "replacement": "\\notin",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "yours",
+   "diff": null,
+   "group": "Set ops",
+   "line": 21,
+   "job": {
+    "before": "$‸$",
+    "keys": "ninn",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 18,
+   "trigger": "st.",
+   "kind": "string",
+   "replacement": "\\text{ s.t. }",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "yours",
+   "diff": null,
+   "group": "Set ops",
+   "line": 22,
+   "job": {
+    "before": "$‸$",
+    "keys": "st.",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 19,
+   "trigger": "odp",
+   "kind": "string",
+   "replacement": "\\langle $1 , $2 \\rangle $3",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "yours",
+   "diff": null,
+   "group": "Set ops",
+   "line": 23,
+   "job": {
+    "before": "$‸$",
+    "keys": "odp",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 20,
+   "trigger": "sub",
+   "kind": "string",
+   "replacement": "\\subseteq",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "yours",
+   "diff": null,
+   "group": "Set ops",
+   "line": 24,
+   "job": {
+    "before": "$‸$",
+    "keys": "sub",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 21,
+   "trigger": "neg",
+   "kind": "string",
+   "replacement": "\\neg",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "yours",
+   "diff": null,
+   "group": "Set ops",
+   "line": 25,
+   "job": {
+    "before": "$‸$",
+    "keys": "neg",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 22,
+   "trigger": "lmd",
+   "kind": "string",
+   "replacement": "\\lambda",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "yours",
+   "diff": null,
+   "group": "Set ops",
+   "line": 26,
+   "job": {
+    "before": "$‸$",
+    "keys": "lmd",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 23,
+   "trigger": "and",
+   "kind": "string",
+   "replacement": "\\land{}$1",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "changed",
+   "diff": "replacement (default: \\cap); options (default: wmA)",
+   "group": "Set ops",
+   "line": 28,
+   "job": {
+    "before": "$‸$",
+    "keys": "and",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 24,
+   "trigger": "orr",
+   "kind": "string",
+   "replacement": "\\lor{}$1",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "changed",
+   "diff": "replacement (default: \\cup)",
+   "group": "Set ops",
+   "line": 29,
+   "job": {
+    "before": "$‸$",
+    "keys": "orr",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 25,
+   "trigger": "inn",
+   "kind": "string",
+   "replacement": "\\in $1",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "changed",
+   "diff": "replacement (default: \\in)",
+   "group": "Set ops",
+   "line": 30,
+   "job": {
+    "before": "$‸$",
+    "keys": "inn",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 26,
+   "trigger": "\\\\\\",
+   "kind": "string",
+   "replacement": "\\setminus{}$1",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "changed",
+   "diff": "replacement (default: \\setminus)",
+   "group": "Set ops",
+   "line": 31,
+   "job": {
+    "before": "$‸$",
+    "keys": "\\\\\\",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 27,
+   "trigger": "sup=",
+   "kind": "string",
+   "replacement": "\\supseteq{}$1",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "changed",
+   "diff": "replacement (default: \\supseteq)",
+   "group": "Set ops",
+   "line": 32,
+   "job": {
+    "before": "$‸$",
+    "keys": "sup=",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 28,
+   "trigger": "eset",
+   "kind": "string",
+   "replacement": "\\varnothing{}$1",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "changed",
+   "diff": "replacement (default: \\emptyset)",
+   "group": "Set ops",
+   "line": 33,
+   "job": {
+    "before": "$‸$",
+    "keys": "eset",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 29,
+   "trigger": "set",
+   "kind": "string",
+   "replacement": "\\{ $0 \\}$1",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "changed",
+   "diff": "options (default: wmA)",
+   "group": "Set ops",
+   "line": 34,
+   "job": {
+    "before": "$‸$",
+    "keys": "set",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 30,
+   "trigger": "cset",
+   "kind": "string",
+   "replacement": "\\{ $0 : $1\\}$2",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "yours",
+   "diff": null,
+   "group": "Set ops",
+   "line": 35,
+   "job": {
+    "before": "$‸$",
+    "keys": "cset",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 31,
+   "trigger": "mk",
+   "kind": "string",
+   "replacement": "$$0$",
+   "options": "tA",
+   "priority": 0,
+   "description": null,
+   "origin": "changed",
+   "diff": "replacement (default: ${}$0{}$)",
+   "group": "Math mode",
+   "line": 40,
+   "job": {
+    "before": "‸",
+    "keys": "mk",
+    "select": null,
+    "ctx": "text",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 32,
+   "trigger": "dm",
+   "kind": "string",
+   "replacement": "$$\n\t$0\n$$",
+   "options": "tAw",
+   "priority": 0,
+   "description": null,
+   "origin": "changed",
+   "diff": "replacement (default: \n$$\n$0\n$$)",
+   "group": "Math mode",
+   "line": 41,
+   "job": {
+    "before": "‸",
+    "keys": "dm",
+    "select": null,
+    "ctx": "text",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 33,
+   "trigger": "/(?<=\\S.*)dm/",
+   "kind": "regex",
+   "replacement": "\n$$\n\t$0\n$$",
+   "options": "tAw",
+   "priority": 1,
+   "description": null,
+   "origin": "yours",
+   "diff": null,
+   "group": "Math mode",
+   "line": 42,
+   "job": {
+    "before": "so we get ‸",
+    "keys": "dm",
+    "select": null,
+    "ctx": "text",
+    "say": "`dm` after some text on the line",
+    "example": "dm"
+   }
+  },
+  {
+   "index": 34,
+   "trigger": "/([^\\\\])beg/",
+   "kind": "regex",
+   "replacement": "[[0]]\\begin{$0}\n\t$1\n\\end{$0}",
+   "options": "MA",
+   "priority": 0,
+   "description": null,
+   "origin": "yours",
+   "diff": null,
+   "group": "Math mode",
+   "line": 44,
+   "job": {
+    "before": "\\[\n‸\n\\]",
+    "keys": "beg",
+    "select": null,
+    "ctx": "display",
+    "say": "`beg`",
+    "example": "beg"
+   }
+  },
+  {
+   "index": 35,
+   "trigger": "/([^\\\\])beg/",
+   "kind": "regex",
+   "replacement": "[[0]]\\begin{$0} $1 \\end{$0}",
+   "options": "nA",
+   "priority": 0,
+   "description": null,
+   "origin": "yours",
+   "diff": null,
+   "group": "Math mode",
+   "line": 45,
+   "job": {
+    "before": "$‸$",
+    "keys": "beg",
+    "select": null,
+    "ctx": "inline",
+    "say": "`beg`",
+    "example": "beg"
+   }
+  },
+  {
+   "index": 36,
+   "trigger": "text",
+   "kind": "string",
+   "replacement": "\\text{$0}$1",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "changed",
+   "diff": "priority (default: -1)",
+   "group": "Text environment",
+   "line": 83,
+   "job": {
+    "before": "$‸$",
+    "keys": "text",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 37,
+   "trigger": "\"",
+   "kind": "string",
+   "replacement": "\\text{ $0 }$1",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "changed",
+   "diff": "replacement (default: \\text{$0}$1); priority (default: -1)",
+   "group": "Text environment",
+   "line": 84,
+   "job": {
+    "before": "$‸$",
+    "keys": "\"",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 38,
+   "trigger": "sr",
+   "kind": "string",
+   "replacement": "^{2}",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Basic operations",
+   "line": 87,
+   "job": {
+    "before": "$‸$",
+    "keys": "sr",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 39,
+   "trigger": "cb",
+   "kind": "string",
+   "replacement": "^{3}",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Basic operations",
+   "line": 88,
+   "job": {
+    "before": "$‸$",
+    "keys": "cb",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 40,
+   "trigger": "rd",
+   "kind": "string",
+   "replacement": "^{$0}$1",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "changed",
+   "diff": "description",
+   "group": "Basic operations",
+   "line": 89,
+   "job": {
+    "before": "$‸$",
+    "keys": "rd",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 41,
+   "trigger": "_",
+   "kind": "string",
+   "replacement": "_{$0}$1",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Basic operations",
+   "line": 90,
+   "job": {
+    "before": "$‸$",
+    "keys": "_",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 42,
+   "trigger": "sts",
+   "kind": "string",
+   "replacement": "_\\text{$0}",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Basic operations",
+   "line": 91,
+   "job": {
+    "before": "$‸$",
+    "keys": "sts",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 43,
+   "trigger": "sq",
+   "kind": "string",
+   "replacement": "\\sqrt{ $0 }$1",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Basic operations",
+   "line": 92,
+   "job": {
+    "before": "$‸$",
+    "keys": "sq",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 44,
+   "trigger": "//",
+   "kind": "string",
+   "replacement": "\\frac{$0}{$1}$2",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Basic operations",
+   "line": 93,
+   "job": {
+    "before": "$‸$",
+    "keys": "//",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 45,
+   "trigger": "ee",
+   "kind": "string",
+   "replacement": "e^{ $0 }$1",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "yours",
+   "diff": null,
+   "group": "Basic operations",
+   "line": 94,
+   "job": {
+    "before": "$‸$",
+    "keys": "ee",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 46,
+   "trigger": "invs",
+   "kind": "string",
+   "replacement": "^{-1}",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Basic operations",
+   "line": 95,
+   "job": {
+    "before": "$‸$",
+    "keys": "invs",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 47,
+   "trigger": "/([^\\\\])(exp|log|ln)/",
+   "kind": "regex",
+   "replacement": "[[0]]\\[[1]]",
+   "options": "rmA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Basic operations",
+   "line": 97,
+   "job": {
+    "before": "$‸$",
+    "keys": "log",
+    "select": null,
+    "ctx": "inline",
+    "say": "`exp`, `log` or `ln`",
+    "example": "log"
+   }
+  },
+  {
+   "index": 48,
+   "trigger": "conj",
+   "kind": "string",
+   "replacement": "^{*}",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Basic operations",
+   "line": 98,
+   "job": {
+    "before": "$‸$",
+    "keys": "conj",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 49,
+   "trigger": "Re",
+   "kind": "string",
+   "replacement": "\\mathrm{Re}",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Basic operations",
+   "line": 99,
+   "job": {
+    "before": "$‸$",
+    "keys": "Re",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 50,
+   "trigger": "Im",
+   "kind": "string",
+   "replacement": "\\mathrm{Im}",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Basic operations",
+   "line": 100,
+   "job": {
+    "before": "$‸$",
+    "keys": "Im",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 51,
+   "trigger": "bf",
+   "kind": "string",
+   "replacement": "\\mathbf{$0}",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Basic operations",
+   "line": 101,
+   "job": {
+    "before": "$‸$",
+    "keys": "bf",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 52,
+   "trigger": "rm",
+   "kind": "string",
+   "replacement": "\\mathrm{$0}$1",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Basic operations",
+   "line": 102,
+   "job": {
+    "before": "$‸$",
+    "keys": "rm",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 53,
+   "trigger": "/([^\\\\])(det)/",
+   "kind": "regex",
+   "replacement": "[[0]]\\[[1]]",
+   "options": "rmA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Linear algebra",
+   "line": 105,
+   "job": {
+    "before": "$‸$",
+    "keys": "det",
+    "select": null,
+    "ctx": "inline",
+    "say": "`det`",
+    "example": "det"
+   }
+  },
+  {
+   "index": 54,
+   "trigger": "trace",
+   "kind": "string",
+   "replacement": "\\mathrm{Tr}",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Linear algebra",
+   "line": 106,
+   "job": {
+    "before": "$‸$",
+    "keys": "trace",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 55,
+   "trigger": "([a-zA-Z])hat",
+   "kind": "regex",
+   "replacement": "\\hat{[[0]]}",
+   "options": "rmA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "More operations",
+   "line": 109,
+   "job": {
+    "before": "$‸$",
+    "keys": "xhat",
+    "select": null,
+    "ctx": "inline",
+    "say": "a letter, then `hat`",
+    "example": "xhat"
+   }
+  },
+  {
+   "index": 56,
+   "trigger": "([a-zA-Z])bar",
+   "kind": "regex",
+   "replacement": "\\bar{[[0]]}",
+   "options": "rmA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "More operations",
+   "line": 110,
+   "job": {
+    "before": "$‸$",
+    "keys": "xbar",
+    "select": null,
+    "ctx": "inline",
+    "say": "a letter, then `bar`",
+    "example": "xbar"
+   }
+  },
+  {
+   "index": 57,
+   "trigger": "([a-zA-Z])dot",
+   "kind": "regex",
+   "replacement": "\\dot{[[0]]}",
+   "options": "rmA",
+   "priority": -1,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "More operations",
+   "line": 111,
+   "job": {
+    "before": "$‸$",
+    "keys": "xdot",
+    "select": null,
+    "ctx": "inline",
+    "say": "a letter, then `dot`",
+    "example": "xdot"
+   }
+  },
+  {
+   "index": 58,
+   "trigger": "([a-zA-Z])ddot",
+   "kind": "regex",
+   "replacement": "\\ddot{[[0]]}",
+   "options": "rmA",
+   "priority": 1,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "More operations",
+   "line": 112,
+   "job": {
+    "before": "$‸$",
+    "keys": "xddot",
+    "select": null,
+    "ctx": "inline",
+    "say": "a letter, then `ddot`",
+    "example": "xddot"
+   }
+  },
+  {
+   "index": 59,
+   "trigger": "([a-zA-Z])tilde",
+   "kind": "regex",
+   "replacement": "\\tilde{[[0]]}",
+   "options": "rmA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "More operations",
+   "line": 113,
+   "job": {
+    "before": "$‸$",
+    "keys": "xtilde",
+    "select": null,
+    "ctx": "inline",
+    "say": "a letter, then `tilde`",
+    "example": "xtilde"
+   }
+  },
+  {
+   "index": 60,
+   "trigger": "([a-zA-Z])und",
+   "kind": "regex",
+   "replacement": "\\underline{[[0]]}",
+   "options": "rmA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "More operations",
+   "line": 114,
+   "job": {
+    "before": "$‸$",
+    "keys": "xund",
+    "select": null,
+    "ctx": "inline",
+    "say": "a letter, then `und`",
+    "example": "xund"
+   }
+  },
+  {
+   "index": 61,
+   "trigger": "([a-zA-Z])vec",
+   "kind": "regex",
+   "replacement": "\\vec{[[0]]}",
+   "options": "rmA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "More operations",
+   "line": 115,
+   "job": {
+    "before": "$‸$",
+    "keys": "xvec",
+    "select": null,
+    "ctx": "inline",
+    "say": "a letter, then `vec`",
+    "example": "xvec"
+   }
+  },
+  {
+   "index": 62,
+   "trigger": "([a-zA-Z]),\\.",
+   "kind": "regex",
+   "replacement": "\\mathbf{[[0]]}",
+   "options": "rmA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "More operations",
+   "line": 116,
+   "job": {
+    "before": "$‸$",
+    "keys": "v,.",
+    "select": null,
+    "ctx": "inline",
+    "say": "a letter, then `,.`",
+    "example": "v,."
+   }
+  },
+  {
+   "index": 63,
+   "trigger": "([a-zA-Z])\\.,",
+   "kind": "regex",
+   "replacement": "\\mathbf{[[0]]}",
+   "options": "rmA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "More operations",
+   "line": 117,
+   "job": {
+    "before": "$‸$",
+    "keys": "v.,",
+    "select": null,
+    "ctx": "inline",
+    "say": "a letter, then `.,`",
+    "example": "v.,"
+   }
+  },
+  {
+   "index": 64,
+   "trigger": "\\\\(${GREEK}),\\.",
+   "kind": "regex",
+   "replacement": "\\boldsymbol{\\[[0]]}",
+   "options": "rmA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "More operations",
+   "line": 118,
+   "job": {
+    "before": "$‸$",
+    "keys": "\\mu,.",
+    "select": null,
+    "ctx": "inline",
+    "say": "`\\greek`, then `,.`",
+    "example": "\\mu,."
+   }
+  },
+  {
+   "index": 65,
+   "trigger": "\\\\(${GREEK})\\.,",
+   "kind": "regex",
+   "replacement": "\\boldsymbol{\\[[0]]}",
+   "options": "rmA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "More operations",
+   "line": 119,
+   "job": {
+    "before": "$‸$",
+    "keys": "\\mu.,",
+    "select": null,
+    "ctx": "inline",
+    "say": "`\\greek`, then `.,`",
+    "example": "\\mu.,"
+   }
+  },
+  {
+   "index": 66,
+   "trigger": "hat",
+   "kind": "string",
+   "replacement": "\\hat{$0}$1",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "More operations",
+   "line": 121,
+   "job": {
+    "before": "$‸$",
+    "keys": "hat",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 67,
+   "trigger": "bar",
+   "kind": "string",
+   "replacement": "\\bar{$0}$1",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "More operations",
+   "line": 122,
+   "job": {
+    "before": "$‸$",
+    "keys": "bar",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 68,
+   "trigger": "dot",
+   "kind": "string",
+   "replacement": "\\dot{$0}$1",
+   "options": "mA",
+   "priority": -1,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "More operations",
+   "line": 123,
+   "job": {
+    "before": "$‸$",
+    "keys": "dot",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 69,
+   "trigger": "ddot",
+   "kind": "string",
+   "replacement": "\\ddot{$0}$1",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "More operations",
+   "line": 124,
+   "job": {
+    "before": "$‸$",
+    "keys": "ddot",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 70,
+   "trigger": "cdot",
+   "kind": "string",
+   "replacement": "\\cdot",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "More operations",
+   "line": 125,
+   "job": {
+    "before": "$‸$",
+    "keys": "cdot",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 71,
+   "trigger": "tilde",
+   "kind": "string",
+   "replacement": "\\tilde{$0}$1",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "More operations",
+   "line": 126,
+   "job": {
+    "before": "$‸$",
+    "keys": "tilde",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 72,
+   "trigger": "und",
+   "kind": "string",
+   "replacement": "\\underline{$0}$1",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "More operations",
+   "line": 127,
+   "job": {
+    "before": "$‸$",
+    "keys": "und",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 73,
+   "trigger": "vec",
+   "kind": "string",
+   "replacement": "\\vec{$0}$1",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "More operations",
+   "line": 128,
+   "job": {
+    "before": "$‸$",
+    "keys": "vec",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 74,
+   "trigger": "pmod",
+   "kind": "string",
+   "replacement": "\\pmod{${0:n}}$1",
+   "options": "mA",
+   "priority": 0,
+   "description": "Parenthesized modulo (\\pmod{n})",
+   "origin": "default",
+   "diff": null,
+   "group": "More operations",
+   "line": 129,
+   "job": {
+    "before": "$‸$",
+    "keys": "pmod",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 75,
+   "trigger": "(\\\\${GREEK}|[A-Za-z])(\\d)",
+   "kind": "regex",
+   "replacement": "[[0]]_{[[1]]}",
+   "options": "rmA",
+   "priority": -1,
+   "description": null,
+   "origin": "yours",
+   "diff": null,
+   "group": "Auto letter subscript",
+   "line": 139,
+   "job": {
+    "before": "$‸$",
+    "keys": "x2",
+    "select": null,
+    "ctx": "inline",
+    "say": "a letter (or `\\alpha`…), then a digit",
+    "example": "x2"
+   }
+  },
+  {
+   "index": 76,
+   "trigger": "(\\\\${GREEK}|[A-Za-z])_{(\\d+)}(\\d)",
+   "kind": "regex",
+   "replacement": "[[0]]_{[[1]][[2]]}",
+   "options": "rmA",
+   "priority": -1,
+   "description": null,
+   "origin": "changed",
+   "diff": "description",
+   "group": "Auto letter subscript",
+   "line": 146,
+   "job": {
+    "before": "$‸$",
+    "keys": "x24",
+    "select": null,
+    "ctx": "inline",
+    "say": "another digit after `x_{2}`",
+    "example": "x24"
+   }
+  },
+  {
+   "index": 77,
+   "trigger": "\\\\(${ACCENT})\\{(\\\\${GREEK}|[A-Za-z])\\}(\\d)",
+   "kind": "regex",
+   "replacement": "\\[[0]]{[[1]]}_{[[2]]}",
+   "options": "rmA",
+   "priority": -1,
+   "description": null,
+   "origin": "yours",
+   "diff": null,
+   "group": "Auto letter subscript",
+   "line": 154,
+   "job": {
+    "before": "$‸$",
+    "keys": "xdot3",
+    "select": null,
+    "ctx": "inline",
+    "say": "a digit after an accent, e.g. `\\dot{x}`",
+    "example": "xdot3"
+   }
+  },
+  {
+   "index": 78,
+   "trigger": "\\\\(${ACCENT})\\{(\\\\${GREEK}|[A-Za-z])\\}_\\{(\\d+)\\}(\\d)",
+   "kind": "regex",
+   "replacement": "\\[[0]]{[[1]]}_{[[2]][[3]]}",
+   "options": "rmA",
+   "priority": -1,
+   "description": null,
+   "origin": "yours",
+   "diff": null,
+   "group": "Auto letter subscript",
+   "line": 162,
+   "job": {
+    "before": "$‸$",
+    "keys": "xdot34",
+    "select": null,
+    "ctx": "inline",
+    "say": "another digit after `\\dot{x}_{3}`",
+    "example": "xdot34"
+   }
+  },
+  {
+   "index": 79,
+   "trigger": "\\\\(${ACCENT})\\{\\\\(${ACCENT})\\{(\\\\${GREEK}|[A-Za-z])\\}\\}(\\d)",
+   "kind": "regex",
+   "replacement": "\\[[0]]{\\[[1]]{[[2]]}}_{[[3]]}",
+   "options": "rmA",
+   "priority": -1,
+   "description": null,
+   "origin": "yours",
+   "diff": null,
+   "group": "Auto letter subscript",
+   "line": 169,
+   "job": {
+    "before": "$\\dot{\\vec{a}}‸$",
+    "keys": "3",
+    "select": null,
+    "ctx": "inline",
+    "say": "a digit after a double accent, e.g. `\\dot{\\vec{a}}`",
+    "example": "3"
+   }
+  },
+  {
+   "index": 80,
+   "trigger": "\\\\(${ACCENT})\\{\\\\(${ACCENT})\\{(\\\\${GREEK}|[A-Za-z])\\}\\}_\\{(\\d+)\\}(\\d)",
+   "kind": "regex",
+   "replacement": "\\[[0]]{\\[[1]]{[[2]]}}_{[[3]][[4]]}",
+   "options": "rmA",
+   "priority": -1,
+   "description": null,
+   "origin": "yours",
+   "diff": null,
+   "group": "Auto letter subscript",
+   "line": 176,
+   "job": {
+    "before": "$\\dot{\\vec{a}}_{3}‸$",
+    "keys": "4",
+    "select": null,
+    "ctx": "inline",
+    "say": "another digit after `\\dot{\\vec{a}}_{3}`",
+    "example": "4"
+   }
+  },
+  {
+   "index": 81,
+   "trigger": "xjj",
+   "kind": "string",
+   "replacement": "x_{j}",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Auto letter subscript",
+   "line": 185,
+   "job": {
+    "before": "$‸$",
+    "keys": "xjj",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 82,
+   "trigger": "xp1",
+   "kind": "string",
+   "replacement": "x_{n+1}",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Auto letter subscript",
+   "line": 186,
+   "job": {
+    "before": "$‸$",
+    "keys": "xp1",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 83,
+   "trigger": "ynn",
+   "kind": "string",
+   "replacement": "y_{n}",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Auto letter subscript",
+   "line": 187,
+   "job": {
+    "before": "$‸$",
+    "keys": "ynn",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 84,
+   "trigger": "yii",
+   "kind": "string",
+   "replacement": "y_{i}",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Auto letter subscript",
+   "line": 188,
+   "job": {
+    "before": "$‸$",
+    "keys": "yii",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 85,
+   "trigger": "yjj",
+   "kind": "string",
+   "replacement": "y_{j}",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Auto letter subscript",
+   "line": 189,
+   "job": {
+    "before": "$‸$",
+    "keys": "yjj",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 86,
+   "trigger": "ooo",
+   "kind": "string",
+   "replacement": "\\infty",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Symbols",
+   "line": 192,
+   "job": {
+    "before": "$‸$",
+    "keys": "ooo",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 87,
+   "trigger": "sum",
+   "kind": "string",
+   "replacement": "\\sum",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Symbols",
+   "line": 193,
+   "job": {
+    "before": "$‸$",
+    "keys": "sum",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 88,
+   "trigger": "prod",
+   "kind": "string",
+   "replacement": "\\prod",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Symbols",
+   "line": 194,
+   "job": {
+    "before": "$‸$",
+    "keys": "prod",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 89,
+   "trigger": "\\sum",
+   "kind": "string",
+   "replacement": "\\sum_{${0:i}=${1:1}}^{${2:N}} $3",
+   "options": "m",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Symbols",
+   "line": 195,
+   "job": {
+    "before": "$‸$",
+    "keys": "sum<Tab>",
+    "select": null,
+    "ctx": "inline",
+    "say": "`sum`, then Tab (`sum` already became `\\sum`)",
+    "example": null
+   }
+  },
+  {
+   "index": 90,
+   "trigger": "\\prod",
+   "kind": "string",
+   "replacement": "\\prod_{${0:i}=${1:1}}^{${2:N}} $3",
+   "options": "m",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Symbols",
+   "line": 196,
+   "job": {
+    "before": "$‸$",
+    "keys": "prod<Tab>",
+    "select": null,
+    "ctx": "inline",
+    "say": "`prod`, then Tab",
+    "example": null
+   }
+  },
+  {
+   "index": 91,
+   "trigger": "lim",
+   "kind": "string",
+   "replacement": "\\lim_{ ${0:n} \\to ${1:\\infty} } $2",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Symbols",
+   "line": 197,
+   "job": {
+    "before": "$‸$",
+    "keys": "lim",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 92,
+   "trigger": "+-",
+   "kind": "string",
+   "replacement": "\\pm",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Symbols",
+   "line": 198,
+   "job": {
+    "before": "$‸$",
+    "keys": "+-",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 93,
+   "trigger": "-+",
+   "kind": "string",
+   "replacement": "\\mp",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Symbols",
+   "line": 199,
+   "job": {
+    "before": "$‸$",
+    "keys": "-+",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 94,
+   "trigger": "...",
+   "kind": "string",
+   "replacement": "\\dots",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Symbols",
+   "line": 200,
+   "job": {
+    "before": "$‸$",
+    "keys": "...",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 95,
+   "trigger": "nabl",
+   "kind": "string",
+   "replacement": "\\nabla",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Symbols",
+   "line": 201,
+   "job": {
+    "before": "$‸$",
+    "keys": "nabl",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 96,
+   "trigger": "xx",
+   "kind": "string",
+   "replacement": "\\times",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Symbols",
+   "line": 204,
+   "job": {
+    "before": "$‸$",
+    "keys": "xx",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 97,
+   "trigger": "**",
+   "kind": "string",
+   "replacement": "\\cdot",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Symbols",
+   "line": 205,
+   "job": {
+    "before": "$‸$",
+    "keys": "**",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 98,
+   "trigger": "para",
+   "kind": "string",
+   "replacement": "\\parallel",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Symbols",
+   "line": 206,
+   "job": {
+    "before": "$‸$",
+    "keys": "para",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 99,
+   "trigger": "===",
+   "kind": "string",
+   "replacement": "\\equiv",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Symbols",
+   "line": 208,
+   "job": {
+    "before": "$‸$",
+    "keys": "===",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 100,
+   "trigger": "!=",
+   "kind": "string",
+   "replacement": "\\neq",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Symbols",
+   "line": 209,
+   "job": {
+    "before": "$‸$",
+    "keys": "!=",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 101,
+   "trigger": ">=",
+   "kind": "string",
+   "replacement": "\\geq",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Symbols",
+   "line": 210,
+   "job": {
+    "before": "$‸$",
+    "keys": ">=",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 102,
+   "trigger": "<=",
+   "kind": "string",
+   "replacement": "\\leq",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Symbols",
+   "line": 211,
+   "job": {
+    "before": "$‸$",
+    "keys": "<lt>=",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 103,
+   "trigger": ">>",
+   "kind": "string",
+   "replacement": "\\gg",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Symbols",
+   "line": 212,
+   "job": {
+    "before": "$‸$",
+    "keys": ">>",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 104,
+   "trigger": "<<",
+   "kind": "string",
+   "replacement": "\\ll",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Symbols",
+   "line": 213,
+   "job": {
+    "before": "$‸$",
+    "keys": "<lt><lt>",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 105,
+   "trigger": "simm",
+   "kind": "string",
+   "replacement": "\\sim",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Symbols",
+   "line": 214,
+   "job": {
+    "before": "$‸$",
+    "keys": "simm",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 106,
+   "trigger": "sim=",
+   "kind": "string",
+   "replacement": "\\simeq",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Symbols",
+   "line": 215,
+   "job": {
+    "before": "$‸$",
+    "keys": "sim=",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 107,
+   "trigger": "prop",
+   "kind": "string",
+   "replacement": "\\propto",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Symbols",
+   "line": 216,
+   "job": {
+    "before": "$‸$",
+    "keys": "prop",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 108,
+   "trigger": "<->",
+   "kind": "string",
+   "replacement": "\\leftrightarrow ",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Symbols",
+   "line": 219,
+   "job": {
+    "before": "$‸$",
+    "keys": "<lt>->",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 109,
+   "trigger": "->",
+   "kind": "string",
+   "replacement": "\\to",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Symbols",
+   "line": 220,
+   "job": {
+    "before": "$‸$",
+    "keys": "->",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 110,
+   "trigger": "!>",
+   "kind": "string",
+   "replacement": "\\mapsto",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Symbols",
+   "line": 221,
+   "job": {
+    "before": "$‸$",
+    "keys": "!>",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 111,
+   "trigger": "=>",
+   "kind": "string",
+   "replacement": "\\implies",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Symbols",
+   "line": 222,
+   "job": {
+    "before": "$‸$",
+    "keys": "=>",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 112,
+   "trigger": "=<",
+   "kind": "string",
+   "replacement": "\\impliedby",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Symbols",
+   "line": 223,
+   "job": {
+    "before": "$‸$",
+    "keys": "=<lt>",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 113,
+   "trigger": "LL",
+   "kind": "string",
+   "replacement": "\\mathcal{L}",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Symbols",
+   "line": 228,
+   "job": {
+    "before": "$‸$",
+    "keys": "LL",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 114,
+   "trigger": "HH",
+   "kind": "string",
+   "replacement": "\\mathcal{H}",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Symbols",
+   "line": 229,
+   "job": {
+    "before": "$‸$",
+    "keys": "HH",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 115,
+   "trigger": "CC",
+   "kind": "string",
+   "replacement": "\\mathbb{C}",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Symbols",
+   "line": 230,
+   "job": {
+    "before": "$‸$",
+    "keys": "CC",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 116,
+   "trigger": "RR",
+   "kind": "string",
+   "replacement": "\\mathbb{R}",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Symbols",
+   "line": 231,
+   "job": {
+    "before": "$‸$",
+    "keys": "RR",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 117,
+   "trigger": "ZZ",
+   "kind": "string",
+   "replacement": "\\mathbb{Z}",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Symbols",
+   "line": 232,
+   "job": {
+    "before": "$‸$",
+    "keys": "ZZ",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 118,
+   "trigger": "NN",
+   "kind": "string",
+   "replacement": "\\mathbb{N}",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Symbols",
+   "line": 233,
+   "job": {
+    "before": "$‸$",
+    "keys": "NN",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 119,
+   "trigger": "par",
+   "kind": "string",
+   "replacement": "\\frac{ \\partial ${0:y} }{ \\partial ${1:x} } $2",
+   "options": "m",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Derivatives and integrals",
+   "line": 258,
+   "job": {
+    "before": "$‸$",
+    "keys": "par<Tab>",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 120,
+   "trigger": "/pa([A-Za-z])([A-Za-z])/",
+   "kind": "regex",
+   "replacement": "\\frac{ \\partial [[0]] }{ \\partial [[1]] } ",
+   "options": "rm",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Derivatives and integrals",
+   "line": 259,
+   "job": {
+    "before": "$‸$",
+    "keys": "payx<Tab>",
+    "select": null,
+    "ctx": "inline",
+    "say": "`pa`, then two letters",
+    "example": "payx"
+   }
+  },
+  {
+   "index": 121,
+   "trigger": "ddt",
+   "kind": "string",
+   "replacement": "\\frac{d}{dt} ",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Derivatives and integrals",
+   "line": 260,
+   "job": {
+    "before": "$‸$",
+    "keys": "ddt",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 122,
+   "trigger": "/([^\\\\])int/",
+   "kind": "regex",
+   "replacement": "[[0]]\\int",
+   "options": "mA",
+   "priority": -1,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Derivatives and integrals",
+   "line": 262,
+   "job": {
+    "before": "$‸$",
+    "keys": "int",
+    "select": null,
+    "ctx": "inline",
+    "say": "`int`",
+    "example": "int"
+   }
+  },
+  {
+   "index": 123,
+   "trigger": "\\int",
+   "kind": "string",
+   "replacement": "\\int $0 \\, d${1:x} $2",
+   "options": "m",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Derivatives and integrals",
+   "line": 263,
+   "job": {
+    "before": "$‸$",
+    "keys": "int<Tab>",
+    "select": null,
+    "ctx": "inline",
+    "say": "`int`, then Tab",
+    "example": null
+   }
+  },
+  {
+   "index": 124,
+   "trigger": "dint",
+   "kind": "string",
+   "replacement": "\\int_{${0:0}}^{${1:1}} $2 \\, d${3:x} $4",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "changed",
+   "diff": "description",
+   "group": "Derivatives and integrals",
+   "line": 264,
+   "job": {
+    "before": "$‸$",
+    "keys": "dint",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 125,
+   "trigger": "oint",
+   "kind": "string",
+   "replacement": "\\oint",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Derivatives and integrals",
+   "line": 265,
+   "job": {
+    "before": "$‸$",
+    "keys": "oint",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 126,
+   "trigger": "iint",
+   "kind": "string",
+   "replacement": "\\iint",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Derivatives and integrals",
+   "line": 266,
+   "job": {
+    "before": "$‸$",
+    "keys": "iint",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 127,
+   "trigger": "iiint",
+   "kind": "string",
+   "replacement": "\\iiint",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Derivatives and integrals",
+   "line": 267,
+   "job": {
+    "before": "$‸$",
+    "keys": "iiint",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 128,
+   "trigger": "oinf",
+   "kind": "string",
+   "replacement": "\\int_{0}^{\\infty} $0 \\, d${1:x} $2",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Derivatives and integrals",
+   "line": 268,
+   "job": {
+    "before": "$‸$",
+    "keys": "oinf",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 129,
+   "trigger": "infi",
+   "kind": "string",
+   "replacement": "\\int_{-\\infty}^{\\infty} $0 \\, d${1:x} $2",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Derivatives and integrals",
+   "line": 269,
+   "job": {
+    "before": "$‸$",
+    "keys": "infi",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 130,
+   "trigger": "/([^\\\\])(arcsin|sin|arccos|cos|arctan|tan|csc|sec|cot)/",
+   "kind": "regex",
+   "replacement": "[[0]]\\[[1]]",
+   "options": "rmA",
+   "priority": 0,
+   "description": "Add backslash before trig funcs",
+   "origin": "default",
+   "diff": null,
+   "group": "Trigonometry",
+   "line": 273,
+   "job": {
+    "before": "$‸$",
+    "keys": "sin",
+    "select": null,
+    "ctx": "inline",
+    "say": "`sin`, `cos`, `tan`, `arcsin`, `csc`, `sec`, `cot`, …",
+    "example": "sin"
+   }
+  },
+  {
+   "index": 131,
+   "trigger": "/\\\\(arcsin|sin|arccos|cos|arctan|tan|csc|sec|cot)([A-Za-gi-z])/",
+   "kind": "regex",
+   "replacement": "\\[[0]] [[1]]",
+   "options": "rmA",
+   "priority": 0,
+   "description": "Add space after trig funcs. Skips letter h to allow sinh, cosh, etc.",
+   "origin": "yours",
+   "diff": null,
+   "group": "Trigonometry",
+   "line": 275,
+   "job": {
+    "before": "$‸$",
+    "keys": "sinx",
+    "select": null,
+    "ctx": "inline",
+    "say": "a letter (not `h`) right after `\\sin`, `\\cos`, …",
+    "example": "sinx"
+   }
+  },
+  {
+   "index": 132,
+   "trigger": "/\\\\(sinh|cosh|tanh|coth)([A-Za-z])/",
+   "kind": "regex",
+   "replacement": "\\[[0]] [[1]]",
+   "options": "rmA",
+   "priority": 0,
+   "description": "Add space after hyperbolic trig funcs",
+   "origin": "yours",
+   "diff": null,
+   "group": "Trigonometry",
+   "line": 279,
+   "job": {
+    "before": "$‸$",
+    "keys": "sinhx",
+    "select": null,
+    "ctx": "inline",
+    "say": "a letter right after `\\sinh`, `\\cosh`, `\\tanh`, `\\coth`",
+    "example": "sinhx"
+   }
+  },
+  {
+   "index": 133,
+   "trigger": "/(arccsc|arcsec|arccot)/",
+   "kind": "regex",
+   "replacement": "\\operatorname{[[0]]}$0",
+   "options": "mA",
+   "priority": 1,
+   "description": "Inverse trig functions, Are not built-in MathJax functions",
+   "origin": "default",
+   "diff": null,
+   "group": "Trigonometry",
+   "line": 283,
+   "job": {
+    "before": "$‸$",
+    "keys": "arcsec",
+    "select": null,
+    "ctx": "inline",
+    "say": "`arcsec`, `arccsc` or `arccot`",
+    "example": "arcsec"
+   }
+  },
+  {
+   "index": 134,
+   "trigger": "U",
+   "kind": "visual",
+   "replacement": "\\underbrace{ ${VISUAL} }_{ $0 }",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "changed",
+   "diff": "options (default: mv)",
+   "group": "Visual operations",
+   "line": 292,
+   "job": {
+    "before": "$‸a+b$",
+    "keys": "U",
+    "select": 3,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 135,
+   "trigger": "O",
+   "kind": "visual",
+   "replacement": "\\overbrace{ ${VISUAL} }^{ $0 }",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "changed",
+   "diff": "options (default: mv)",
+   "group": "Visual operations",
+   "line": 293,
+   "job": {
+    "before": "$‸a+b$",
+    "keys": "O",
+    "select": 3,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 136,
+   "trigger": "B",
+   "kind": "visual",
+   "replacement": "\\underset{ $0 }{ ${VISUAL} }",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "changed",
+   "diff": "options (default: mv)",
+   "group": "Visual operations",
+   "line": 294,
+   "job": {
+    "before": "$‸a+b$",
+    "keys": "B",
+    "select": 3,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 137,
+   "trigger": "C",
+   "kind": "visual",
+   "replacement": "\\cancel{ ${VISUAL} }",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "changed",
+   "diff": "options (default: mv)",
+   "group": "Visual operations",
+   "line": 295,
+   "job": {
+    "before": "$‸a+b$",
+    "keys": "C",
+    "select": 3,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 138,
+   "trigger": "K",
+   "kind": "visual",
+   "replacement": "\\cancelto{ $0 }{ ${VISUAL} }",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "changed",
+   "diff": "options (default: mv)",
+   "group": "Visual operations",
+   "line": 296,
+   "job": {
+    "before": "$‸a+b$",
+    "keys": "K",
+    "select": 3,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 139,
+   "trigger": "S",
+   "kind": "visual",
+   "replacement": "\\sqrt{ ${VISUAL} }",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "changed",
+   "diff": "options (default: mv)",
+   "group": "Visual operations",
+   "line": 297,
+   "job": {
+    "before": "$‸a+b$",
+    "keys": "S",
+    "select": 3,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 140,
+   "trigger": "kbt",
+   "kind": "string",
+   "replacement": "k_{B}T",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Physics",
+   "line": 301,
+   "job": {
+    "before": "$‸$",
+    "keys": "kbt",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 141,
+   "trigger": "msun",
+   "kind": "string",
+   "replacement": "M_{\\odot}",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Physics",
+   "line": 302,
+   "job": {
+    "before": "$‸$",
+    "keys": "msun",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 142,
+   "trigger": "dag",
+   "kind": "string",
+   "replacement": "^{\\dagger}",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Quantum mechanics",
+   "line": 305,
+   "job": {
+    "before": "$‸$",
+    "keys": "dag",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 143,
+   "trigger": "o+",
+   "kind": "string",
+   "replacement": "\\oplus ",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Quantum mechanics",
+   "line": 306,
+   "job": {
+    "before": "$‸$",
+    "keys": "o+",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 144,
+   "trigger": "ox",
+   "kind": "string",
+   "replacement": "\\otimes ",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "changed",
+   "diff": "options (default: wmA)",
+   "group": "Quantum mechanics",
+   "line": 307,
+   "job": {
+    "before": "$‸$",
+    "keys": "ox",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 145,
+   "trigger": "bra",
+   "kind": "string",
+   "replacement": "\\bra{$0} $1",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Quantum mechanics",
+   "line": 308,
+   "job": {
+    "before": "$‸$",
+    "keys": "bra",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 146,
+   "trigger": "ket",
+   "kind": "string",
+   "replacement": "\\ket{$0} $1",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Quantum mechanics",
+   "line": 309,
+   "job": {
+    "before": "$‸$",
+    "keys": "ket",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 147,
+   "trigger": "brk",
+   "kind": "string",
+   "replacement": "\\braket{ $0 | $1 } $2",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Quantum mechanics",
+   "line": 310,
+   "job": {
+    "before": "$‸$",
+    "keys": "brk",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 148,
+   "trigger": "outer",
+   "kind": "string",
+   "replacement": "\\ket{${0:\\psi}} \\bra{${0:\\psi}} $1",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Quantum mechanics",
+   "line": 311,
+   "job": {
+    "before": "$‸$",
+    "keys": "outer",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 149,
+   "trigger": "pu",
+   "kind": "string",
+   "replacement": "\\pu{ $0 }",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Chemistry",
+   "line": 314,
+   "job": {
+    "before": "$‸$",
+    "keys": "pu",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 150,
+   "trigger": "cee",
+   "kind": "string",
+   "replacement": "\\ce{ $0 }",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Chemistry",
+   "line": 315,
+   "job": {
+    "before": "$‸$",
+    "keys": "cee",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 151,
+   "trigger": "he4",
+   "kind": "string",
+   "replacement": "{}^{4}_{2}He ",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Chemistry",
+   "line": 316,
+   "job": {
+    "before": "$‸$",
+    "keys": "he4",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 152,
+   "trigger": "he3",
+   "kind": "string",
+   "replacement": "{}^{3}_{2}He ",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Chemistry",
+   "line": 317,
+   "job": {
+    "before": "$‸$",
+    "keys": "he3",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 153,
+   "trigger": "iso",
+   "kind": "string",
+   "replacement": "{}^{${0:4}}_{${1:2}}${2:He}",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Chemistry",
+   "line": 318,
+   "job": {
+    "before": "$‸$",
+    "keys": "iso",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 154,
+   "trigger": "/([pbBvV]mat)/",
+   "kind": "regex",
+   "replacement": "\\begin{[[0]]rix}\n$0\n\\end{[[0]]rix}",
+   "options": "rMA",
+   "priority": 0,
+   "description": "Matrix environments with new lines",
+   "origin": "default",
+   "diff": null,
+   "group": "Environments",
+   "line": 323,
+   "job": {
+    "before": "\\[\n‸\n\\]",
+    "keys": "pmat",
+    "select": null,
+    "ctx": "display",
+    "say": "`pmat`, `bmat`, `Bmat`, `vmat` or `Vmat`",
+    "example": "pmat"
+   }
+  },
+  {
+   "index": 155,
+   "trigger": "/(matrix|cases|align|array)/",
+   "kind": "regex",
+   "replacement": "\\begin{[[0]]}\n$0\n\\end{[[0]]}",
+   "options": "rMA",
+   "priority": 0,
+   "description": "Miscellaneous environments with new lines",
+   "origin": "default",
+   "diff": null,
+   "group": "Environments",
+   "line": 329,
+   "job": {
+    "before": "\\[\n‸\n\\]",
+    "keys": "cases",
+    "select": null,
+    "ctx": "display",
+    "say": "`matrix`, `cases`, `align` or `array`",
+    "example": "cases"
+   }
+  },
+  {
+   "index": 156,
+   "trigger": "/([pbBvV]mat)/",
+   "kind": "regex",
+   "replacement": "\\begin{[[0]]rix}$0\\end{[[0]]rix}",
+   "options": "rnA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Environments",
+   "line": 335,
+   "job": {
+    "before": "$‸$",
+    "keys": "pmat",
+    "select": null,
+    "ctx": "inline",
+    "say": "`pmat`, `bmat`, `Bmat`, `vmat` or `Vmat`",
+    "example": "pmat"
+   }
+  },
+  {
+   "index": 157,
+   "trigger": "/(matrix|cases|align|array)/",
+   "kind": "regex",
+   "replacement": "\\begin{[[0]]}$0\\end{[[0]]}",
+   "options": "rnA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Environments",
+   "line": 340,
+   "job": {
+    "before": "$‸$",
+    "keys": "cases",
+    "select": null,
+    "ctx": "inline",
+    "say": "`matrix`, `cases`, `align` or `array`",
+    "example": "cases"
+   }
+  },
+  {
+   "index": 158,
+   "trigger": "avg",
+   "kind": "string",
+   "replacement": "\\langle $0 \\rangle $1",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Brackets",
+   "line": 347,
+   "job": {
+    "before": "$‸$",
+    "keys": "avg",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 159,
+   "trigger": "norm",
+   "kind": "string",
+   "replacement": "\\lvert $0 \\rvert $1",
+   "options": "mA",
+   "priority": 1,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Brackets",
+   "line": 348,
+   "job": {
+    "before": "$‸$",
+    "keys": "norm",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 160,
+   "trigger": "Norm",
+   "kind": "string",
+   "replacement": "\\lVert $0 \\rVert $1",
+   "options": "mA",
+   "priority": 1,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Brackets",
+   "line": 349,
+   "job": {
+    "before": "$‸$",
+    "keys": "Norm",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 161,
+   "trigger": "ceil",
+   "kind": "string",
+   "replacement": "\\lceil $0 \\rceil $1",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Brackets",
+   "line": 350,
+   "job": {
+    "before": "$‸$",
+    "keys": "ceil",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 162,
+   "trigger": "floor",
+   "kind": "string",
+   "replacement": "\\lfloor $0 \\rfloor $1",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Brackets",
+   "line": 351,
+   "job": {
+    "before": "$‸$",
+    "keys": "floor",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 163,
+   "trigger": "mod",
+   "kind": "string",
+   "replacement": "/",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "changed",
+   "diff": "replacement (default: |$0|$1)",
+   "group": "Brackets",
+   "line": 353,
+   "job": {
+    "before": "$‸$",
+    "keys": "mod",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 164,
+   "trigger": "(",
+   "kind": "visual",
+   "replacement": "(${VISUAL})",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "changed",
+   "diff": "replacement (default: ($0)$1)",
+   "group": "Brackets",
+   "line": 354,
+   "job": {
+    "before": "$‸a+b$",
+    "keys": "(",
+    "select": 3,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 165,
+   "trigger": "[",
+   "kind": "visual",
+   "replacement": "[${VISUAL}]",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "changed",
+   "diff": "replacement (default: [$0]$1)",
+   "group": "Brackets",
+   "line": 355,
+   "job": {
+    "before": "$‸a+b$",
+    "keys": "[",
+    "select": 3,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 166,
+   "trigger": "{",
+   "kind": "visual",
+   "replacement": "{${VISUAL}}",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "changed",
+   "diff": "replacement (default: {$0}$1)",
+   "group": "Brackets",
+   "line": 356,
+   "job": {
+    "before": "$‸a+b$",
+    "keys": "{",
+    "select": 3,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 167,
+   "trigger": "(",
+   "kind": "string",
+   "replacement": "($0)$1",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Brackets",
+   "line": 357,
+   "job": {
+    "before": "$‸$",
+    "keys": "(",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 168,
+   "trigger": "{",
+   "kind": "string",
+   "replacement": "{$0}$1",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Brackets",
+   "line": 358,
+   "job": {
+    "before": "$‸$",
+    "keys": "{",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 169,
+   "trigger": "[",
+   "kind": "string",
+   "replacement": "[$0]$1",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Brackets",
+   "line": 359,
+   "job": {
+    "before": "$‸$",
+    "keys": "[",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 170,
+   "trigger": "lr(",
+   "kind": "string",
+   "replacement": "\\left( $0 \\right) $1",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Brackets",
+   "line": 360,
+   "job": {
+    "before": "$‸$",
+    "keys": "lr(",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 171,
+   "trigger": "lr{",
+   "kind": "string",
+   "replacement": "\\left\\{ $0 \\right\\} $1",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Brackets",
+   "line": 361,
+   "job": {
+    "before": "$‸$",
+    "keys": "lr{",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 172,
+   "trigger": "lr[",
+   "kind": "string",
+   "replacement": "\\left[ $0 \\right] $1",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Brackets",
+   "line": 362,
+   "job": {
+    "before": "$‸$",
+    "keys": "lr[",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 173,
+   "trigger": "lr|",
+   "kind": "string",
+   "replacement": "\\left| $0 \\right| $1",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Brackets",
+   "line": 363,
+   "job": {
+    "before": "$‸$",
+    "keys": "lr|",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 174,
+   "trigger": "lra",
+   "kind": "string",
+   "replacement": "\\left< $0 \\right> $1",
+   "options": "mA",
+   "priority": 0,
+   "description": null,
+   "origin": "default",
+   "diff": null,
+   "group": "Brackets",
+   "line": 364,
+   "job": {
+    "before": "$‸$",
+    "keys": "lra",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 175,
+   "trigger": "tayl",
+   "kind": "string",
+   "replacement": "${0:f}(${1:x} + ${2:h}) = ${0:f}(${1:x}) + ${0:f}'(${1:x})${2:h} + ${0:f}''(${1:x}) \\frac{${2:h}^{2}}{2!} + \\dots$3",
+   "options": "mA",
+   "priority": 0,
+   "description": "Taylor expansion",
+   "origin": "default",
+   "diff": null,
+   "group": "Misc",
+   "line": 382,
+   "job": {
+    "before": "$‸$",
+    "keys": "tayl",
+    "select": null,
+    "ctx": "inline",
+    "say": null,
+    "example": null
+   }
+  },
+  {
+   "index": 176,
+   "trigger": "/iden(\\d)/",
+   "kind": "regex",
+   "replacement": "(JavaScript function)",
+   "options": "mA",
+   "priority": 0,
+   "description": "N x N identity matrix",
+   "origin": "default",
+   "diff": null,
+   "group": "Misc",
+   "line": 386,
+   "job": {
+    "before": "\\[\n‸\n\\]",
+    "keys": "iden3",
+    "select": null,
+    "ctx": "display",
+    "say": "`iden`, then a digit",
+    "example": "iden3"
+   }
+  },
+  {
+   "index": 177,
+   "trigger": "/(?<=(?:\\n|^)[ \\t]*>*)(?<marker>\\d+[.)]|[-*+])(?<whitespace>[ \\t]+)(?<text>.*)dm/",
+   "kind": "regex",
+   "replacement": "(JavaScript function)",
+   "options": "rtA",
+   "priority": 2,
+   "description": "Display math when in a list",
+   "origin": "changed",
+   "diff": "trigger (default: /(?<positive_lookbehind>(?:\\n|^)[ \\t]*>*)(?<marker>\\d+[.)]|[-*+])(?<whitespace>[ \\t]+)(?<text>.*)dm/)",
+   "group": "Misc",
+   "line": 401,
+   "job": {
+    "before": "- item ‸",
+    "keys": "dm",
+    "select": null,
+    "ctx": "text",
+    "say": "`dm` at the end of a list item (`- …`, `1. …`)",
+    "example": "dm"
+   }
+  }
+ ],
+ "turned": [
+  {
+   "trigger": "/([^\\\\\\w])beg/",
+   "replacement": "[[0]]\\begin{$0}\n$1\n\\end{$0}",
+   "options": "MA",
+   "description": null,
+   "how": "not in your file",
+   "group": null,
+   "line": null
+  },
+  {
+   "trigger": "@a",
+   "replacement": "\\alpha",
+   "options": "mA",
+   "description": null,
+   "how": "commented out",
+   "group": "Greek letters",
+   "line": 57
+  },
+  {
+   "trigger": "@b",
+   "replacement": "\\beta",
+   "options": "mA",
+   "description": null,
+   "how": "commented out",
+   "group": "Greek letters",
+   "line": 58
+  },
+  {
+   "trigger": "@g",
+   "replacement": "\\gamma",
+   "options": "mA",
+   "description": null,
+   "how": "commented out",
+   "group": "Greek letters",
+   "line": 59
+  },
+  {
+   "trigger": "@G",
+   "replacement": "\\Gamma",
+   "options": "mA",
+   "description": null,
+   "how": "commented out",
+   "group": "Greek letters",
+   "line": 60
+  },
+  {
+   "trigger": "@d",
+   "replacement": "\\delta",
+   "options": "mA",
+   "description": null,
+   "how": "commented out",
+   "group": "Greek letters",
+   "line": 61
+  },
+  {
+   "trigger": "@D",
+   "replacement": "\\Delta",
+   "options": "mA",
+   "description": null,
+   "how": "commented out",
+   "group": "Greek letters",
+   "line": 62
+  },
+  {
+   "trigger": "@e",
+   "replacement": "\\epsilon",
+   "options": "mA",
+   "description": null,
+   "how": "commented out",
+   "group": "Greek letters",
+   "line": 63
+  },
+  {
+   "trigger": ":e",
+   "replacement": "\\varepsilon",
+   "options": "mA",
+   "description": null,
+   "how": "commented out",
+   "group": "Greek letters",
+   "line": 64
+  },
+  {
+   "trigger": "@z",
+   "replacement": "\\zeta",
+   "options": "mA",
+   "description": null,
+   "how": "commented out",
+   "group": "Greek letters",
+   "line": 65
+  },
+  {
+   "trigger": "@t",
+   "replacement": "\\theta",
+   "options": "mA",
+   "description": null,
+   "how": "commented out",
+   "group": "Greek letters",
+   "line": 66
+  },
+  {
+   "trigger": "@T",
+   "replacement": "\\Theta",
+   "options": "mA",
+   "description": null,
+   "how": "commented out",
+   "group": "Greek letters",
+   "line": 67
+  },
+  {
+   "trigger": ":t",
+   "replacement": "\\vartheta",
+   "options": "mA",
+   "description": null,
+   "how": "commented out",
+   "group": "Greek letters",
+   "line": 68
+  },
+  {
+   "trigger": "@i",
+   "replacement": "\\iota",
+   "options": "mA",
+   "description": null,
+   "how": "commented out",
+   "group": "Greek letters",
+   "line": 69
+  },
+  {
+   "trigger": "@k",
+   "replacement": "\\kappa",
+   "options": "mA",
+   "description": null,
+   "how": "commented out",
+   "group": "Greek letters",
+   "line": 70
+  },
+  {
+   "trigger": "@l",
+   "replacement": "\\lambda",
+   "options": "mA",
+   "description": null,
+   "how": "commented out",
+   "group": "Greek letters",
+   "line": 71
+  },
+  {
+   "trigger": "@L",
+   "replacement": "\\Lambda",
+   "options": "mA",
+   "description": null,
+   "how": "commented out",
+   "group": "Greek letters",
+   "line": 72
+  },
+  {
+   "trigger": "@s",
+   "replacement": "\\sigma",
+   "options": "mA",
+   "description": null,
+   "how": "commented out",
+   "group": "Greek letters",
+   "line": 73
+  },
+  {
+   "trigger": "@S",
+   "replacement": "\\Sigma",
+   "options": "mA",
+   "description": null,
+   "how": "commented out",
+   "group": "Greek letters",
+   "line": 74
+  },
+  {
+   "trigger": "@u",
+   "replacement": "\\upsilon",
+   "options": "mA",
+   "description": null,
+   "how": "commented out",
+   "group": "Greek letters",
+   "line": 75
+  },
+  {
+   "trigger": "@U",
+   "replacement": "\\Upsilon",
+   "options": "mA",
+   "description": null,
+   "how": "commented out",
+   "group": "Greek letters",
+   "line": 76
+  },
+  {
+   "trigger": "@o",
+   "replacement": "\\omega",
+   "options": "mA",
+   "description": null,
+   "how": "commented out",
+   "group": "Greek letters",
+   "line": 77
+  },
+  {
+   "trigger": "@O",
+   "replacement": "\\Omega",
+   "options": "mA",
+   "description": null,
+   "how": "commented out",
+   "group": "Greek letters",
+   "line": 78
+  },
+  {
+   "trigger": "ome",
+   "replacement": "\\omega",
+   "options": "mA",
+   "description": null,
+   "how": "commented out",
+   "group": "Greek letters",
+   "line": 79
+  },
+  {
+   "trigger": "Ome",
+   "replacement": "\\Omega",
+   "options": "mA",
+   "description": null,
+   "how": "commented out",
+   "group": "Greek letters",
+   "line": 80
+  },
+  {
+   "trigger": "/\\n\\s*\\\"/",
+   "replacement": "\n\\text{$0 } $1",
+   "options": "mrA",
+   "description": null,
+   "how": "not in your file",
+   "group": null,
+   "line": null
+  },
+  {
+   "trigger": "/(\\d)rt/",
+   "replacement": "\\sqrt[[[0]]]{ $0 }$1",
+   "options": "mA",
+   "description": "Nth RooT",
+   "how": "not in your file",
+   "group": null,
+   "line": null
+  },
+  {
+   "trigger": "/\\bee/",
+   "replacement": "e^{ $0 }$1",
+   "options": "mA",
+   "description": null,
+   "how": "not in your file",
+   "group": null,
+   "line": null
+  },
+  {
+   "trigger": "/(\\\\?)([A-Za-z]+)(\\d)/",
+   "replacement": "(JavaScript function)",
+   "options": "rmA",
+   "description": "Auto letter subscript for variables and greek letters, add space after other macros",
+   "how": "not in your file",
+   "group": null,
+   "line": null
+  },
+  {
+   "trigger": "\\\\(${ACCENT})\\{(\\\\${GREEK}|[A-Za-z])\\}(?:_\\{(\\d+)\\})?(\\d)",
+   "replacement": "\\[[0]]{[[1]]}_{[[2]][[3]]}",
+   "options": "rmA",
+   "description": null,
+   "how": "not in your file",
+   "group": null,
+   "line": null
+  },
+  {
+   "trigger": "\\\\(${ACCENT})\\{\\\\(${ACCENT})\\{(\\\\${GREEK}|[A-Za-z])\\}\\}(?:_\\{(\\d+)\\})?(\\d)",
+   "replacement": "\\[[0]]{\\[[1]]{[[2]]}}_{[[3]][[4]]}",
+   "options": "rmA",
+   "description": null,
+   "how": "not in your file",
+   "group": null,
+   "line": null
+  },
+  {
+   "trigger": "xnn",
+   "replacement": "x_{n}",
+   "options": "mA",
+   "description": null,
+   "how": "commented out",
+   "group": "Auto letter subscript",
+   "line": 183
+  },
+  {
+   "trigger": "\\xii",
+   "replacement": "x_{i}",
+   "options": "mA",
+   "description": null,
+   "how": "commented out",
+   "group": "Auto letter subscript",
+   "line": 184
+  },
+  {
+   "trigger": "deg",
+   "replacement": "\\degree",
+   "options": "mA",
+   "description": null,
+   "how": "not in your file",
+   "group": null,
+   "line": null
+  },
+  {
+   "trigger": "notin",
+   "replacement": "\\not\\in",
+   "options": "mA",
+   "description": null,
+   "how": "not in your file",
+   "group": null,
+   "line": null
+  },
+  {
+   "trigger": "sub=",
+   "replacement": "\\subseteq",
+   "options": "mA",
+   "description": null,
+   "how": "not in your file",
+   "group": null,
+   "line": null
+  },
+  {
+   "trigger": "/(n?)e\\\\xi sts/",
+   "replacement": "\\[[0]]exists",
+   "options": "mA",
+   "description": null,
+   "how": "not in your file",
+   "group": null,
+   "line": null
+  },
+  {
+   "trigger": "QQ",
+   "replacement": "\\mathbb{Q}",
+   "options": "mA",
+   "description": null,
+   "how": "not in your file",
+   "group": null,
+   "line": null
+  },
+  {
+   "trigger": "([^\\\\])(${GREEK})",
+   "replacement": "[[0]]\\[[1]]",
+   "options": "rmA",
+   "description": "Add backslash before Greek letters",
+   "how": "commented out",
+   "group": "Handle spaces and backslashes",
+   "line": 241
+  },
+  {
+   "trigger": "([^\\\\])(${SYMBOL})",
+   "replacement": "[[0]]\\[[1]]",
+   "options": "rmA",
+   "description": "Add backslash before symbols",
+   "how": "commented out",
+   "group": "Handle spaces and backslashes",
+   "line": 242
+  },
+  {
+   "trigger": "\\\\(${GREEK}|${SYMBOL}) sr",
+   "replacement": "\\[[0]]^{2}",
+   "options": "rmA",
+   "description": null,
+   "how": "commented out",
+   "group": "Handle spaces and backslashes",
+   "line": 246
+  },
+  {
+   "trigger": "\\\\(${GREEK}|${SYMBOL}) cb",
+   "replacement": "\\[[0]]^{3}",
+   "options": "rmA",
+   "description": null,
+   "how": "commented out",
+   "group": "Handle spaces and backslashes",
+   "line": 247
+  },
+  {
+   "trigger": "\\\\(${GREEK}|${SYMBOL}) rd",
+   "replacement": "\\[[0]]^{$0}$1",
+   "options": "rmA",
+   "description": null,
+   "how": "commented out",
+   "group": "Handle spaces and backslashes",
+   "line": 248
+  },
+  {
+   "trigger": "\\\\(${GREEK}) hat",
+   "replacement": "\\hat{\\[[0]]}",
+   "options": "rmA",
+   "description": null,
+   "how": "commented out",
+   "group": "Handle spaces and backslashes",
+   "line": 249
+  },
+  {
+   "trigger": "\\\\(${GREEK}) dot",
+   "replacement": "\\dot{\\[[0]]}",
+   "options": "rmA",
+   "description": null,
+   "how": "commented out",
+   "group": "Handle spaces and backslashes",
+   "line": 250
+  },
+  {
+   "trigger": "\\\\(${GREEK}) bar",
+   "replacement": "\\bar{\\[[0]]}",
+   "options": "rmA",
+   "description": null,
+   "how": "commented out",
+   "group": "Handle spaces and backslashes",
+   "line": 251
+  },
+  {
+   "trigger": "\\\\(${GREEK}) vec",
+   "replacement": "\\vec{\\[[0]]}",
+   "options": "rmA",
+   "description": null,
+   "how": "commented out",
+   "group": "Handle spaces and backslashes",
+   "line": 252
+  },
+  {
+   "trigger": "\\\\(${GREEK}) tilde",
+   "replacement": "\\tilde{\\[[0]]}",
+   "options": "rmA",
+   "description": null,
+   "how": "commented out",
+   "group": "Handle spaces and backslashes",
+   "line": 253
+  },
+  {
+   "trigger": "\\\\(${GREEK}) und",
+   "replacement": "\\underline{\\[[0]]}",
+   "options": "rmA",
+   "description": null,
+   "how": "commented out",
+   "group": "Handle spaces and backslashes",
+   "line": 254
+  },
+  {
+   "trigger": "/par([0-9])/",
+   "replacement": "\\frac{ \\partial^{[[0]]} ${0:y} }{ \\partial ${1:x}^{[[0]]} } $2",
+   "options": "mA",
+   "description": null,
+   "how": "not in your file",
+   "group": null,
+   "line": null
+  },
+  {
+   "trigger": "/parn/",
+   "replacement": "\\frac{ \\partial^{${0:n}} ${1:y} }{ \\partial ${2:x}^{${0:n}} } $2",
+   "options": "mA",
+   "description": null,
+   "how": "not in your file",
+   "group": null,
+   "line": null
+  },
+  {
+   "trigger": "/\\\\[A-Za-z]{2,}/",
+   "replacement": "(JavaScript function)",
+   "options": "mAU",
+   "description": "Disable snippets while typing macros",
+   "how": "not in your file",
+   "group": null,
+   "line": null
+  },
+  {
+   "trigger": "/(?<positive_lookbehind>(?:\\n|^)[ \\t]*>*)(?<marker>\\d+[.)]|[-*+])(?<whitespace>[ \\t]+)(?<text>.*)dm/",
+   "replacement": "(JavaScript function)",
+   "options": "rtA",
+   "description": "Display math when in a list",
+   "how": "not in your file",
+   "group": null,
+   "line": null
+  },
+  {
+   "trigger": "/(\\n|^)[ \\t]*(?:> ?)*[ \\t]*dm/",
+   "replacement": "[[0]]$$\n$0\n$$",
+   "options": "tAw",
+   "description": "Display Math on empty line",
+   "how": "not in your file",
+   "group": null,
+   "line": null
+  },
+  {
+   "trigger": "--",
+   "replacement": "–",
+   "options": "tA",
+   "description": null,
+   "how": "commented out (your own)",
+   "group": "Dashes",
+   "line": 52
+  },
+  {
+   "trigger": "–-",
+   "replacement": "—",
+   "options": "tA",
+   "description": null,
+   "how": "commented out (your own)",
+   "group": "Dashes",
+   "line": 53
+  },
+  {
+   "trigger": "—-",
+   "replacement": "---",
+   "options": "tA",
+   "description": null,
+   "how": "commented out (your own)",
+   "group": "Dashes",
+   "line": 54
+  },
+  {
+   "trigger": "del",
+   "replacement": "\\nabla",
+   "options": "mA",
+   "description": null,
+   "how": "commented out (your own)",
+   "group": "Symbols",
+   "line": 203
+  },
+  {
+   "trigger": "e\\xi sts",
+   "replacement": "\\exists",
+   "options": "mA",
+   "description": null,
+   "how": "commented out (your own)",
+   "group": "Symbols",
+   "line": 226
+  },
+  {
+   "trigger": "\\\\(${GREEK}|${SYMBOL}|${MORE_SYMBOLS})([A-Za-z])",
+   "replacement": "\\[[0]] [[1]]",
+   "options": "rmA",
+   "description": null,
+   "how": "commented out (your own)",
+   "group": "Handle spaces and backslashes",
+   "line": 245
+  },
+  {
+   "trigger": "/([^'])\\b([B-HJ-Zb-z])\\b([\\n\\s.,?!:'])/",
+   "replacement": "[[0]]$[[1]]$[[2]]",
+   "options": "tA",
+   "description": null,
+   "how": "commented out (your own)",
+   "group": "Misc",
+   "line": 371
+  },
+  {
+   "trigger": "(${GREEK})([\\n\\s.,?!:'])",
+   "replacement": "$\\[[0]]$[[1]]",
+   "options": "rtAw",
+   "description": null,
+   "how": "commented out (your own)",
+   "group": "Misc",
+   "line": 374
+  },
+  {
+   "trigger": "/([A-Za-z]=\\d+)([\\n\\s.,?!:'])/",
+   "replacement": "$[[0]]$[[1]]",
+   "options": "rtAw",
+   "description": null,
+   "how": "commented out (your own)",
+   "group": "Misc",
+   "line": 377
+  },
+  {
+   "trigger": "/([A-Za-z]=[A-Za-z][+-]\\d+)([\\n\\s.,?!:'])/",
+   "replacement": "$[[0]]$[[1]]",
+   "options": "tAw",
+   "description": null,
+   "how": "commented out (your own)",
+   "group": "Misc",
+   "line": 378
+  }
+ ],
+ "symbol_culprits": {
+  "\\phi": {
+   "index": 3,
+   "at": "\\phi"
+  },
+  "\\varphi": {
+   "index": 3,
+   "at": "\\varphi"
+  },
+  "\\approx": {
+   "index": 144,
+   "at": "\\approx"
+  },
+  "\\propto": {
+   "index": 107,
+   "at": "\\prop"
+  },
+  "\\parallel": {
+   "index": 98,
+   "at": "\\para"
+  },
+  "\\models": {
+   "index": 163,
+   "at": "\\mod"
+  },
+  "\\subset": {
+   "index": 20,
+   "at": "\\sub"
+  },
+  "\\subseteq": {
+   "index": 20,
+   "at": "\\sub"
+  },
+  "\\subsetneq": {
+   "index": 20,
+   "at": "\\sub"
+  },
+  "\\supset": {
+   "index": 29,
+   "at": "\\supset"
+  },
+  "\\supseteq": {
+   "index": 29,
+   "at": "\\supset"
+  },
+  "\\setminus": {
+   "index": 29,
+   "at": "\\set"
+  },
+  "\\emptyset": {
+   "index": 29,
+   "at": "\\emptyset"
+  },
+  "\\aleph_0": {
+   "index": 41,
+   "at": "\\aleph_"
+  },
+  "\\exists": {
+   "index": 42,
+   "at": "\\exists"
+  },
+  "\\nexists": {
+   "index": 42,
+   "at": "\\nexists"
+  },
+  "\\neg": {
+   "index": 21,
+   "at": "\\neg"
+  },
+  "\\land": {
+   "index": 23,
+   "at": "\\land"
+  },
+  "\\implies": {
+   "index": 13,
+   "at": "\\imp"
+  },
+  "\\impliedby": {
+   "index": 13,
+   "at": "\\imp"
+  },
+  "\\iff": {
+   "index": 16,
+   "at": "\\iff"
+  },
+  "\\blacksquare": {
+   "index": 43,
+   "at": "\\blacksq"
+  },
+  "\\square": {
+   "index": 43,
+   "at": "\\sq"
+  },
+  "\\cdot": {
+   "index": 70,
+   "at": "\\cdot"
+  },
+  "\\odot": {
+   "index": 57,
+   "at": "\\odot"
+  },
+  "\\vee": {
+   "index": 45,
+   "at": "\\vee"
+  },
+  "\\dagger": {
+   "index": 142,
+   "at": "\\dag"
+  },
+  "\\nabla": {
+   "index": 95,
+   "at": "\\nabl"
+  },
+  "\\sum": {
+   "index": 87,
+   "at": "\\sum"
+  },
+  "\\prod": {
+   "index": 88,
+   "at": "\\prod"
+  },
+  "\\coprod": {
+   "index": 88,
+   "at": "\\coprod"
+  },
+  "\\iint": {
+   "index": 126,
+   "at": "\\iint"
+  },
+  "\\iiint": {
+   "index": 127,
+   "at": "\\iiint"
+  },
+  "\\oint": {
+   "index": 125,
+   "at": "\\oint"
+  },
+  "\\lim": {
+   "index": 91,
+   "at": "\\lim"
+  },
+  "\\limsup": {
+   "index": 91,
+   "at": "\\lim"
+  },
+  "\\liminf": {
+   "index": 91,
+   "at": "\\lim"
+  },
+  "\\lfloor \\rfloor": {
+   "index": 162,
+   "at": "\\lfloor"
+  },
+  "\\lceil \\rceil": {
+   "index": 161,
+   "at": "\\lceil"
+  },
+  "\\hat{x}": {
+   "index": 66,
+   "at": "\\hat"
+  },
+  "\\widehat{xy}": {
+   "index": 55,
+   "at": "\\widehat"
+  },
+  "\\bar{x}": {
+   "index": 67,
+   "at": "\\bar"
+  },
+  "\\underline{x}": {
+   "index": 72,
+   "at": "\\und"
+  },
+  "\\dot{x}": {
+   "index": 68,
+   "at": "\\dot"
+  },
+  "\\ddot{x}": {
+   "index": 69,
+   "at": "\\ddot"
+  },
+  "\\tilde{x}": {
+   "index": 71,
+   "at": "\\tilde"
+  },
+  "\\widetilde{xy}": {
+   "index": 53,
+   "at": "\\widet"
+  },
+  "\\vec{v}": {
+   "index": 73,
+   "at": "\\vec"
+  },
+  "\\mathbf{v}": {
+   "index": 51,
+   "at": "\\mathbf"
+  },
+  "\\overbrace{a+b}^{n}": {
+   "index": 145,
+   "at": "\\overbra"
+  },
+  "\\underbrace{a+b}_{n}": {
+   "index": 72,
+   "at": "\\und"
+  },
+  "\\sqrt{x}": {
+   "index": 43,
+   "at": "\\sq"
+  },
+  "\\sqrt[n]{x}": {
+   "index": 43,
+   "at": "\\sq"
+  },
+  "x_{i}": {
+   "index": 41,
+   "at": "x_"
+  },
+  "\\overset{!}{=}": {
+   "index": 29,
+   "at": "\\overset"
+  },
+  "\\underset{x}{\\arg\\max}": {
+   "index": 72,
+   "at": "\\und"
+  },
+  "\\pmod{n}": {
+   "index": 74,
+   "at": "\\pmod"
+  },
+  "\\bmod": {
+   "index": 163,
+   "at": "\\bmod"
+  },
+  "\\arcsin": {
+   "index": 130,
+   "at": "\\arcsin"
+  },
+  "\\dots": {
+   "index": 68,
+   "at": "\\dot"
+  },
+  "\\ldots": {
+   "index": 57,
+   "at": "\\ldot"
+  },
+  "\\cdots": {
+   "index": 70,
+   "at": "\\cdot"
+  },
+  "\\vdots": {
+   "index": 57,
+   "at": "\\vdot"
+  },
+  "\\ddots": {
+   "index": 69,
+   "at": "\\ddot"
+  },
+  "\\hbar": {
+   "index": 56,
+   "at": "\\hbar"
+  },
+  "\\Re": {
+   "index": 49,
+   "at": "\\Re"
+  },
+  "\\Im": {
+   "index": 50,
+   "at": "\\Im"
+  },
+  "\\mathrm{d}": {
+   "index": 52,
+   "at": "\\mathrm"
+  }
+ }
+}

@@ -1,0 +1,13 @@
+% A pullback: the universal property, with the unique map dashed.
+W at 0,0
+P "X \times_Z Y" at 1,1
+X at 2,1
+Y at 1,2
+Z at 2,2
+P -p_1-> X
+P -p_2-> Y swap
+X -f-> Z
+Y -g-> Z swap
+W --"\exists!"--> P
+W -a-> X bend-left
+W -b-> Y bend-right swap

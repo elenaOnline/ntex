@@ -1,0 +1,15 @@
+#!/bin/sh
+# ntex-studio — Ntex Studio, the snippet / block maker for ntex.
+# Sources: ~/.config/texnvim/studio (ARCHITECTURE.md, UX.md there).
+# Usage: ntex-studio [--page snippet|block|inbox] [--output-file PATH]
+#                    [--context math|text] [--ft tex|markdown]
+# In ntex: Space n (a new snippet; in visual mode, from the selection),
+# Space N (the inbox), :SnippetStudio [page]. A second ntex-studio hands its
+# request to the running one and exits.
+BIN="$HOME/.config/texnvim/studio/target/release/ntex-studio"
+if [ ! -x "$BIN" ]; then
+  echo "Ntex Studio isn't built yet. Build it with:" >&2
+  echo "  ~/.config/texnvim/studio/build.sh" >&2
+  exit 1
+fi
+exec "$BIN" "$@"

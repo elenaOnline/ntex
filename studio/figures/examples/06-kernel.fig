@@ -1,0 +1,6 @@
+% The kernel, shaded, inside G; everything in it goes to the identity.
+blob G "G" {g, gk}
+blob K "\ker\varphi" in G shaded {e, k}
+blob H "H" {e', h}
+G -φ-> H
+e |-> e' ; k |-> e' ; g |-> h ; gk |-> h

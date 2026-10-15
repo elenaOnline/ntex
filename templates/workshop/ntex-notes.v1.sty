@@ -1,0 +1,97 @@
+% ntex-notes.sty — the notes theme we're workshopping (v1, 2026-10-01).
+% Everything tunable is near the top: palette, fonts, box shape.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{ntex-notes}[2026/10/01 v1 ntex notes theme]
+
+% ---------------------------------------------------------------- packages
+\RequirePackage[margin=1in]{geometry}
+\RequirePackage{amsmath, amssymb, amsthm, mathtools}
+\RequirePackage[dvipsnames]{xcolor}
+\RequirePackage[most]{tcolorbox}   % skins, breakable, theorems …
+\RequirePackage{enumitem}
+\RequirePackage{booktabs}
+\RequirePackage[hidelinks]{hyperref}
+\RequirePackage[capitalise,noabbrev]{cleveref}
+
+% ---------------------------------------------------------------- fonts
+% Palatino (Zapf, humanist) for text + matching maths.
+\RequirePackage{newpxtext, newpxmath}
+\linespread{1.08}
+
+% ---------------------------------------------------------------- palette
+% Modus-aligned: each kind of block gets one hue; tints are mixed with white.
+\definecolor{ntexInk}{HTML}{1E1E28}      % body text
+\definecolor{ntexBlue}{HTML}{0031A9}     % theorem, lemma, proposition, corollary
+\definecolor{ntexGreen}{HTML}{006800}    % definition
+\definecolor{ntexViolet}{HTML}{531AB6}   % example
+\definecolor{ntexOchre}{HTML}{8A5300}    % remark
+\definecolor{ntexSlate}{HTML}{5A6378}    % proof rule, captions, rules
+\color{ntexInk}
+
+% ---------------------------------------------------------------- headings
+\RequirePackage{titlesec}
+\titleformat{\section}{\Large\bfseries}{\color{ntexBlue}\thesection}{0.75em}{}
+\titleformat{\subsection}{\large\bfseries}{\color{ntexBlue}\thesubsection}{0.75em}{}
+\titlespacing*{\section}{0pt}{2.2ex plus .5ex}{1.2ex}
+\titlespacing*{\subsection}{0pt}{1.8ex plus .4ex}{0.8ex}
+
+% ---------------------------------------------------------------- theorems
+% amsthm does the numbering (so \label / \cref work); tcolorbox draws the box.
+\colorlet{ntexHead}{ntexInk}
+\newtheoremstyle{ntexplain}{0pt}{0pt}{\itshape}{}{\bfseries\color{ntexHead}}{.}{.6em}{}
+\newtheoremstyle{ntexupright}{0pt}{0pt}{}{}{\bfseries\color{ntexHead}}{.}{.6em}{}
+
+\theoremstyle{ntexplain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{ntexupright}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem*{remark}{Remark}
+
+% one box shape for all kinds: tinted fill, coloured rule on the left
+\tcbset{
+  ntexbox/.style={
+    enhanced, breakable,
+    frame hidden, sharp corners,
+    colback=#1!5!white,
+    borderline west={2.2pt}{0pt}{#1},
+    left=10pt, right=10pt, top=7pt, bottom=7pt,
+    before skip=12pt, after skip=12pt,
+    before upper={\colorlet{ntexHead}{#1}},
+  },
+}
+\tcolorboxenvironment{theorem}{ntexbox=ntexBlue}
+\tcolorboxenvironment{lemma}{ntexbox=ntexBlue}
+\tcolorboxenvironment{proposition}{ntexbox=ntexBlue}
+\tcolorboxenvironment{corollary}{ntexbox=ntexBlue}
+\tcolorboxenvironment{definition}{ntexbox=ntexGreen}
+\tcolorboxenvironment{example}{ntexbox=ntexViolet}
+\tcolorboxenvironment{remark}{ntexbox=ntexOchre}
+
+% proof: no fill, thin slate rule, coloured QED box
+\renewcommand{\qedsymbol}{\textcolor{ntexSlate}{$\square$}}
+\tcolorboxenvironment{proof}{
+  enhanced, breakable, frame hidden, sharp corners, colback=white,
+  borderline west={0.8pt}{0pt}{ntexSlate!60!white},
+  left=10pt, right=0pt, top=2pt, bottom=2pt, before skip=8pt, after skip=12pt,
+}
+
+% ---------------------------------------------------------------- lists, captions
+\setlist{itemsep=2pt, topsep=4pt}
+\setlist[itemize,1]{label=\textcolor{ntexBlue}{\textbullet}}
+\setlist[enumerate,1]{label=\textcolor{ntexBlue}{\arabic*.}}
+\RequirePackage[font={small,color=ntexSlate}, labelfont=bf]{caption}
+
+% ---------------------------------------------------------------- title
+\RequirePackage{titling}
+\pretitle{\begin{flushleft}\LARGE\bfseries\color{ntexInk}}
+\posttitle{\par\end{flushleft}\vspace{-0.6em}}
+\preauthor{\begin{flushleft}\color{ntexSlate}}
+\postauthor{\par\end{flushleft}}
+\predate{\begin{flushleft}\small\color{ntexSlate}}
+\postdate{\par\end{flushleft}\vspace{0.4em}{\color{ntexBlue}\rule{\linewidth}{1.2pt}}\vspace{0.6em}}
+
+\endinput

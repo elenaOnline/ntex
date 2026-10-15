@@ -1,0 +1,2 @@
+ngon T 3 labels a,b,c
+ngon T2 3 labels a,b,c turn=1

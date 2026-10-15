@@ -1,0 +1,18 @@
+[package]
+name = "ntex-studio-io"
+description = "Ntex Studio's processes: headless ntex bridge, tectonic renders, the claude sorter, single instance. Owner: BRIDGE."
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+ntex-studio-core = { path = "../core" }
+ntex-figures = { path = "../figures" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+# process groups (kill a child and everything it started), signals
+libc = "0.2"
+# PDF → PNG in-process: CGPDFDocument drawn into a CGBitmapContext, PNG-encoded
+objc2-core-graphics = { version = "0.3", default-features = false, features = ["std", "CGPDFDocument", "CGPDFPage", "CGContext", "CGBitmapContext", "CGColorSpace", "CGImage", "CGDataProvider"] }
+objc2-core-foundation = { version = "0.3", default-features = false, features = ["std", "CFCGTypes"] }
+png = "0.18"

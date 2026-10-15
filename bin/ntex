@@ -1,0 +1,14 @@
+#!/bin/sh
+# ntex — Neovim set up like Obsidian's Latex Suite.
+# Config: ~/.config/texnvim (see README.md there). Usage: ntex file.tex | ntex notes.md
+#
+# snacks.nvim shows rendered math with the kitty graphics protocol. It asks the
+# terminal who it is (XTVERSION) and only trusts the reply; cmux is built on
+# libghostty and sets TERM_PROGRAM=ghostty / TERM=xterm-ghostty, so tell snacks
+# directly that this is a Ghostty-class terminal (kitty graphics + unicode
+# placeholders). Not inside tmux: cmux does not pass kitty graphics through it.
+if [ -z "$TMUX" ] && { [ "$TERM_PROGRAM" = "ghostty" ] || [ "$TERM" = "xterm-ghostty" ] || [ -n "$CMUX_WORKSPACE_ID" ]; }; then
+  SNACKS_GHOSTTY="${SNACKS_GHOSTTY:-true}"
+  export SNACKS_GHOSTTY
+fi
+exec env NVIM_APPNAME=texnvim nvim "$@"

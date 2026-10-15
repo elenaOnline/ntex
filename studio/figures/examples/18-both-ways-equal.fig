@@ -1,0 +1,5 @@
+% Arrows both ways sit side by side; `=` is tikz-cd's equals sign.
+A at 0,0 ; B at 1,0 ; C at 1,1
+A -f-> B
+B -g->> A
+B = C

@@ -1,0 +1,3 @@
+blob X "X" shape=tall {x_1, x_2, x_3}
+blob Y "Y" shape=wide label=below {y_1, y_2}
+X -p->> Y

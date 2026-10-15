@@ -1,0 +1,7 @@
+target/
+assets/fonts/*.otf
+verification/out/
+evidence/
+figures/verification/out/
+figures/verification/tools/raster
+figures/evidence/*.tikz.tex

@@ -1,0 +1,4 @@
+% A sequence: the square, after r, after the flip across the axis through 1.
+ngon P 4 axis 2
+ngon Q 4 turn=1
+ngon R 4 flip=2 axis 2

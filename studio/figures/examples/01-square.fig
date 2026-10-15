@@ -1,0 +1,5 @@
+% A commutative square, auto-placed: A top left, B right, C below.
+A -f-> B
+A -g-> C
+B -h-> D
+C -k-> D

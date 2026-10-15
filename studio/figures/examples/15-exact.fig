@@ -1,0 +1,3 @@
+% A short exact sequence (the right-hand 0 is a second node, labelled 0).
+0' "0"
+0 -> A ; A >-ι-> B ; B -π->> C ; C -> 0'

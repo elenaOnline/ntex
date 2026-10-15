@@ -1,0 +1,23 @@
+{
+  "_about": "The author's answers to the 'Needs your call' items in DECISIONS.md. Hand-editable. The reference page and DECISIONS.md show these as decided; tools/migration/decisions.mjs never overwrites this file.",
+  "call-after-letter": {
+    "date": "2026-09-30",
+    "answer": "Keep it off: letter triggers don't fire right after a letter (fire_after_letters = false)."
+  },
+  "call-mk-tex": {
+    "date": "2026-09-30",
+    "answer": "$…$ in .tex too."
+  },
+  "call-subscript-commands": {
+    "date": "2026-09-30",
+    "answer": "Single letter or Greek letter only; log2 stays log2 (type log_2)."
+  },
+  "call-castel-additions": {
+    "date": "2026-09-30",
+    "answer": "Keep all 20."
+  },
+  "call-castel-text-envs": {
+    "date": "2026-10-01",
+    "answer": "Yes, as Tab-only at the start of a line in .tex: beg, enum, item, ali (text.lua)."
+  }
+}

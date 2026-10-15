@@ -1,0 +1,3 @@
+A -f-> B
+B -g-> C
+A -"g \circ f"-> C

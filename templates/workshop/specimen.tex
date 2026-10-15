@@ -1,0 +1,95 @@
+\documentclass[11pt]{article}
+\usepackage{ntex-notes}
+
+\title{Specimen — Linear Algebra, Lecture 7}
+\author{Your Name}
+\date{1 October 2026}
+
+\begin{document}
+\maketitle
+
+\section{Spectral bits}
+
+Let $A \in \mathbb{R}^{n \times n}$ be symmetric with eigenvalues
+$\lambda_1 \le \dots \le \lambda_n$ and orthonormal eigenvectors $v_1, \dots, v_n$.
+Body text is set in Charter; the notes theme only colours structure.\footnote{A footnote, to check its size and colour.}
+
+\begin{definition}[Rayleigh quotient]
+\label{def:rayleigh}
+For $x \neq 0$, the \emph{Rayleigh quotient} of $A$ is
+\[
+  R_A(x) = \frac{x^{T} A x}{x^{T} x}.
+\]
+\end{definition}
+
+\begin{theorem}[Courant--Fischer, easy half]
+\label{thm:cf}
+For every $x \ne 0$, $\lambda_1 \le R_A(x) \le \lambda_n$, with equality at
+$v_1$ and $v_n$ respectively.
+\end{theorem}
+
+\begin{lemma}
+\label{lem:expand}
+If $x = \sum_{i=1}^{n} c_i v_i$, then $\lVert x \rVert^{2} = \sum_{i} c_i^{2}$ and
+$x^{T} A x = \sum_{i} \lambda_i c_i^{2}$.
+\end{lemma}
+
+\begin{proof}
+By orthonormality $\langle v_i, v_j \rangle = \delta_{ij}$, so
+\begin{align}
+  x^{T} A x &= \sum_{i,j} c_i c_j \, v_i^{T} A v_j
+             = \sum_{i,j} c_i c_j \lambda_j \delta_{ij} \label{eq:expand} \\
+            &= \sum_{i=1}^{n} \lambda_i c_i^{2}. \qedhere
+\end{align}
+\end{proof}
+
+\begin{proposition}
+The maximum of $R_A$ over the unit sphere is $\lambda_n$; see \cref{thm:cf}, \cref{lem:expand} and \eqref{eq:expand}, with $R_A$ from \cref{def:rayleigh}.
+\end{proposition}
+
+\begin{corollary}
+If $A \succeq 0$ then every eigenvalue is non-negative.
+\end{corollary}
+
+\begin{example}
+For
+\[
+  A = \begin{pmatrix} 2 & -1 \\ -1 & 2 \end{pmatrix}, \qquad
+  \det(A - \lambda I) = (2-\lambda)^{2} - 1 = 0 \implies \lambda \in \{1, 3\}.
+\]
+\end{example}
+
+\begin{remark}
+Nothing here needs $A$ to be real: the same holds for Hermitian matrices with
+$x^{*}$ in place of $x^{T}$.
+\end{remark}
+
+\subsection{Lists and a table}
+
+What to check when tuning:
+\begin{itemize}
+  \item colour of bullets and numbers;
+  \item spacing around boxes;
+  \item how a box looks when it breaks across a page.
+\end{itemize}
+
+\begin{enumerate}
+  \item Compute the characteristic polynomial.
+  \item Find the roots.
+  \item Normalise the eigenvectors.
+\end{enumerate}
+
+\begin{table}[h]
+  \centering
+  \caption{Eigenvalues of small test matrices.}
+  \begin{tabular}{lcc}
+    \toprule
+    Matrix & $\lambda_{\min}$ & $\lambda_{\max}$ \\
+    \midrule
+    $\begin{psmallmatrix} 2 & -1 \\ -1 & 2 \end{psmallmatrix}$ & 1 & 3 \\
+    $I_2$ & 1 & 1 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\end{document}

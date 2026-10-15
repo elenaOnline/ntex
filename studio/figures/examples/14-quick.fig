@@ -1,0 +1,2 @@
+% Quick shorthand while working: no positions at all.
+N hook-> G ; G ->> G/N ; G -φ-> H

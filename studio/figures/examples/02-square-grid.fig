@@ -1,0 +1,7 @@
+% The same square as ASCII art.
+grid
+  A --f--> B
+  |g       |h
+  v        v
+  C --k--> D
+end

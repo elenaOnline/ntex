@@ -1,0 +1,139 @@
+% ntex-notes.sty — the author's notes theme. Used by every new .tex from ntex
+% (templates/article.tex → \usepackage{ntex-notes}). ntex's compiler finds it
+% via tectonic -Z search-path=~/.config/texnvim/templates/tex.
+% To share a .tex with someone / Overleaf: put a copy of this file next to it
+% (and of ntex-blocks.sty: your own blocks, made in Ntex Studio, live there).
+% v9 (2026-10-12): fonts and palette moved to ntex-base.sty (same look).
+% v8 (2026-10-11): exercise + solution, a homework look.
+% v7 (2026-10-10): Charter for text and maths (was Palatino; v6 is saved as
+% workshop/ntex-notes.v6.sty).
+% v6 (2026-10-04): v5 with a softer maroon (example). v5: richer tones — vivid bars,
+% clear tinted fills, deep heads.
+% v4: v1's left-rule boxes with the v3 colours (saved as ntex-notes.v4.sty).
+% Earlier versions: ntex-notes.v1.sty (left rule, Modus colours), ntex-notes.v3.sty (title bars).
+% Everything tunable is near the top: palette, fonts, box shape.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{ntex-notes}[2026/10/12 v9 ntex notes theme]
+
+% ---------------------------------------------------------------- packages
+\RequirePackage[margin=1in]{geometry}
+\RequirePackage{amsmath, amssymb, amsthm, mathtools}
+\RequirePackage[dvipsnames]{xcolor}
+\RequirePackage[most]{tcolorbox}   % skins, breakable, theorems …
+\RequirePackage{enumitem}
+\RequirePackage{booktabs}
+\RequirePackage[hidelinks]{hyperref}
+\RequirePackage[capitalise,noabbrev]{cleveref}
+
+% ---------------------------------------------------------------- fonts, palette
+% Charter + newtxmath (with the operators fix) and every \definecolor of the
+% palette (ntexInk, ntex{Blue,Violet,Teal,Maroon,Green,Ochre}{Rule,Back,Head},
+% ntexBlue, ntexSlate, ntexProof…) live in ntex-base.sty, shared with Ntex
+% Figures (ntex-figure.sty), so a font or colour change follows everywhere.
+\RequirePackage{ntex-base}
+\color{ntexInk}
+
+% ---------------------------------------------------------------- headings
+\RequirePackage{titlesec}
+\titleformat{\section}{\Large\bfseries}{\color{ntexBlue}\thesection}{0.75em}{}
+\titleformat{\subsection}{\large\bfseries}{\color{ntexBlue}\thesubsection}{0.75em}{}
+\titlespacing*{\section}{0pt}{2.2ex plus .5ex}{1.2ex}
+\titlespacing*{\subsection}{0pt}{1.8ex plus .4ex}{0.8ex}
+
+% ---------------------------------------------------------------- theorems
+% amsthm does the numbering (so \label / \cref work); tcolorbox draws the box.
+\colorlet{ntexHead}{ntexInk}
+\newtheoremstyle{ntexplain}{0pt}{0pt}{\itshape}{}{\bfseries\color{ntexHead}}{.}{.6em}{}
+\newtheoremstyle{ntexupright}{0pt}{0pt}{}{}{\bfseries\color{ntexHead}}{.}{.6em}{}
+
+\theoremstyle{ntexplain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{ntexupright}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem*{remark}{Remark}
+
+% one box shape for all kinds: tinted fill, coloured rule on the left.
+% ntexbox=Blue uses ntexBlueRule / ntexBlueBack / ntexBlueHead.
+\tcbset{
+  ntexbox/.style={
+    enhanced, breakable,
+    frame hidden, sharp corners,
+    colback=ntex#1Back,
+    borderline west={3pt}{0pt}{ntex#1Rule},
+    left=11pt, right=10pt, top=7pt, bottom=7pt,
+    before skip=12pt, after skip=12pt,
+    before upper={\colorlet{ntexHead}{ntex#1Head}},
+  },
+}
+\tcolorboxenvironment{theorem}{ntexbox=Blue}
+\tcolorboxenvironment{lemma}{ntexbox=Violet}
+\tcolorboxenvironment{proposition}{ntexbox=Violet}
+\tcolorboxenvironment{corollary}{ntexbox=Violet}
+\tcolorboxenvironment{definition}{ntexbox=Teal}
+\tcolorboxenvironment{example}{ntexbox=Maroon}
+\tcolorboxenvironment{remark}{ntexbox=Green}
+
+% proof: a quiet neutral block — faint grey fill, thin grey rule, no hue
+\renewcommand{\qedsymbol}{\textcolor{ntexProofRule!80!black}{$\square$}}
+\tcolorboxenvironment{proof}{
+  enhanced, breakable, frame hidden, sharp corners,
+  colback=ntexProofBack,
+  borderline west={1pt}{0pt}{ntexProofRule},
+  left=10pt, right=10pt, top=6pt, bottom=6pt,
+  before skip=8pt, after skip=12pt,
+}
+
+% ---------------------------------------------------------------- lists, captions
+\setlist{itemsep=2pt, topsep=4pt}
+\setlist[itemize,1]{label=\textcolor{ntexBlue}{\textbullet}}
+\setlist[enumerate,1]{label=\textcolor{ntexBlue}{\arabic*.}}
+\RequirePackage[font={small,color=ntexSlate}, labelfont=bf]{caption}
+
+% ---------------------------------------------------------------- title
+\RequirePackage{titling}
+\pretitle{\begin{flushleft}\LARGE\bfseries\color{ntexInk}}
+\posttitle{\par\end{flushleft}\vspace{-0.6em}}
+\preauthor{\begin{flushleft}\color{ntexSlate}}
+\postauthor{\par\end{flushleft}}
+\predate{\begin{flushleft}\small\color{ntexSlate}}
+\postdate{\par\end{flushleft}\vspace{0.4em}{\color{ntexBlue}\rule{\linewidth}{1.2pt}}\vspace{0.6em}}
+
+% ---------------------------------------------------------------- exercises
+% The homework look (a course-hw.sty), for notes:
+%   \begin{exercise}{2.13.d}[441 only] … \end{exercise}   the question, boxed
+%   \begin{exercise}{} … \end{exercise}                   just "Exercise"
+%   \begin{solution} … \end{solution}                      where you work
+% Ochre = given material, kept apart from the theorem colours. A question
+% stays whole (the box doesn't break across pages). The solution is unboxed,
+% so a proof inside it gets the proof block without box-in-box.
+% course-hw.sty loads this file and defines its own problem / \exercise{file} /
+% solution, so these are only defined when it isn't loaded.
+% (the ntexOchre… colours are defined in ntex-base.sty)
+\AtBeginDocument{%
+  \@ifpackageloaded{course-hw}{}{%
+    \NewDocumentEnvironment{exercise}{m o}{%
+      \begin{tcolorbox}[enhanced, frame hidden, sharp corners,
+          colback=ntexOchreBack, borderline west={3pt}{0pt}{ntexOchreRule},
+          left=11pt, right=10pt, top=7pt, bottom=7pt,
+          before skip=18pt, after skip=8pt]%
+      {\bfseries\color{ntexOchreHead}Exercise\if\relax\detokenize{#1}\relax\else\ #1\fi}%
+      \IfValueT{#2}{\hfill{\small\color{ntexOchreHead}\textsc{#2}}}%
+      \par\smallskip
+    }{%
+      \end{tcolorbox}%
+    }%
+    \NewDocumentEnvironment{solution}{}{%
+      \par\noindent{\color{ntexSlate}\textsc{Solution.}}\par\smallskip
+    }{%
+      \par\bigskip
+    }%
+  }%
+}
+
+\RequirePackage{ntex-blocks}   % blocks made in Ntex Studio (ntex-blocks.sty)
+
+\endinput

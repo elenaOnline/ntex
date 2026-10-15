@@ -1,0 +1,7274 @@
+{
+ "version": 1,
+ "generated_by": "verification/gen_expected.py (ADVERSARY)",
+ "palette": [
+  "blue",
+  "violet",
+  "teal",
+  "maroon",
+  "green",
+  "ochre",
+  "grey",
+  "ink"
+ ],
+ "generator_colours": [
+  "blue",
+  "maroon",
+  "teal",
+  "green"
+ ],
+ "cases": [
+  {
+   "id": "A01",
+   "title": "plain arrow",
+   "src": "A -> B\n",
+   "tier": "spec",
+   "why": "FIGURES.md arrow table",
+   "expect": {
+    "arrows": [
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ],
+    "node_count": 2,
+    "nodes": [
+     {
+      "name": "A",
+      "label": "A"
+     },
+     {
+      "name": "B",
+      "label": "B"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "A02",
+   "title": "labelled",
+   "src": "A -f-> B\n",
+   "tier": "spec",
+   "why": "FIGURES.md arrow table",
+   "expect": {
+    "arrows": [
+     {
+      "label": "f",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "A03",
+   "title": "quoted label with spaces",
+   "src": "A -\"g \\circ f\"-> B\n",
+   "tier": "spec",
+   "why": "FIGURES.md arrow table",
+   "expect": {
+    "arrows": [
+     {
+      "label": "g \\circ f",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "A04",
+   "title": "surjection",
+   "src": "A ->> B\n",
+   "tier": "spec",
+   "why": "FIGURES.md arrow table",
+   "expect": {
+    "arrows": [
+     {
+      "label": null,
+      "head": "TwoHeads",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "A05",
+   "title": "labelled surjection, Unicode label",
+   "src": "A -π->> B\n",
+   "tier": "spec",
+   "why": "FIGURES.md arrow table + Unicode table (π → \\pi)",
+   "expect": {
+    "arrows": [
+     {
+      "label": "\\pi",
+      "head": "TwoHeads",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "A06",
+   "title": "injection (tail)",
+   "src": "A >-> B\n",
+   "tier": "spec",
+   "why": "FIGURES.md arrow table",
+   "expect": {
+    "arrows": [
+     {
+      "label": null,
+      "head": "Tail",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "A07",
+   "title": "labelled injection",
+   "src": "A >-ι-> B\n",
+   "tier": "spec",
+   "why": "FIGURES.md arrow table",
+   "expect": {
+    "arrows": [
+     {
+      "label": "\\iota",
+      "head": "Tail",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "A08",
+   "title": "inclusion (hook)",
+   "src": "A hook-> B\n",
+   "tier": "spec",
+   "why": "FIGURES.md arrow table",
+   "expect": {
+    "arrows": [
+     {
+      "label": null,
+      "head": "Hook",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "A09",
+   "title": "labelled hook",
+   "src": "A -ι-hook-> B\n",
+   "tier": "spec",
+   "why": "FIGURES.md arrow table",
+   "expect": {
+    "arrows": [
+     {
+      "label": "\\iota",
+      "head": "Hook",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "A10",
+   "title": "double",
+   "src": "A => B\n",
+   "tier": "spec",
+   "why": "FIGURES.md arrow table",
+   "expect": {
+    "arrows": [
+     {
+      "label": null,
+      "head": "Double",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "A11",
+   "title": "labelled double",
+   "src": "A =f=> B\n",
+   "tier": "spec",
+   "why": "FIGURES.md arrow table",
+   "expect": {
+    "arrows": [
+     {
+      "label": "f",
+      "head": "Double",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "A12",
+   "title": "dashed",
+   "src": "A --> B\n",
+   "tier": "spec",
+   "why": "FIGURES.md arrow table",
+   "expect": {
+    "arrows": [
+     {
+      "label": null,
+      "head": "To",
+      "line": "Dashed",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "A13",
+   "title": "labelled dashed",
+   "src": "A --f--> B\n",
+   "tier": "spec",
+   "why": "FIGURES.md arrow table",
+   "expect": {
+    "arrows": [
+     {
+      "label": "f",
+      "head": "To",
+      "line": "Dashed",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "A14",
+   "title": "dotted",
+   "src": "A ..> B\n",
+   "tier": "spec",
+   "why": "FIGURES.md arrow table",
+   "expect": {
+    "arrows": [
+     {
+      "label": null,
+      "head": "To",
+      "line": "Dotted",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "A15",
+   "title": "labelled dotted",
+   "src": "A .f.> B\n",
+   "tier": "spec",
+   "why": "FIGURES.md arrow table",
+   "expect": {
+    "arrows": [
+     {
+      "label": "f",
+      "head": "To",
+      "line": "Dotted",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "A16",
+   "title": "reversed",
+   "src": "B <-f- A\n",
+   "tier": "spec",
+   "why": "FIGURES.md arrow table: `B <-f- A` is the same as `A -f-> B`",
+   "expect": {
+    "arrows": [
+     {
+      "label": "f",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "A17",
+   "title": "both ways",
+   "src": "A <-> B\n",
+   "tier": "spec",
+   "why": "FIGURES.md arrow table",
+   "expect": {
+    "arrows": [
+     {
+      "label": null,
+      "head": "Both",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "A18",
+   "title": "labelled both ways",
+   "src": "A <-f-> B\n",
+   "tier": "spec",
+   "why": "FIGURES.md arrow table",
+   "expect": {
+    "arrows": [
+     {
+      "label": "f",
+      "head": "Both",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "A19",
+   "title": "equals",
+   "src": "A = B\n",
+   "tier": "spec",
+   "why": "FIGURES.md arrow table",
+   "expect": {
+    "arrows": [
+     {
+      "label": null,
+      "head": "Equal",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "A20",
+   "title": "maps-to",
+   "src": "g |-> h\n",
+   "tier": "spec",
+   "why": "FIGURES.md arrow table",
+   "expect": {
+    "arrows": [
+     {
+      "label": null,
+      "head": "MapsTo",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "g",
+      "to": "h"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "A21",
+   "title": "maps-to, Unicode",
+   "src": "g ↦ h\n",
+   "tier": "spec",
+   "why": "FIGURES.md arrow table",
+   "expect": {
+    "arrows": [
+     {
+      "label": null,
+      "head": "MapsTo",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "g",
+      "to": "h"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "A22",
+   "title": "quoted label with a dash",
+   "src": "A -\"f-g\"-> B\n",
+   "tier": "spec",
+   "why": "FIGURES.md arrow table: quotes when the label has dashes",
+   "expect": {
+    "arrows": [
+     {
+      "label": "f-g",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "A23",
+   "title": "bend",
+   "src": "A -f-> B bend\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Options after TO'; model.rs: bend in degrees, + = left; bend = 30°",
+   "expect": {
+    "arrows": [
+     {
+      "label": "f",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 30.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "A24",
+   "title": "bend-right swap",
+   "src": "A -f-> B bend-right swap\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Options after TO'; model.rs: bend in degrees, + = left",
+   "expect": {
+    "arrows": [
+     {
+      "label": "f",
+      "head": "To",
+      "line": "Solid",
+      "side": "Swap",
+      "bend": -30.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "A25",
+   "title": "bend=40 near-end thick",
+   "src": "A -> B bend=40 near-end thick\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Options after TO'; model.rs: bend in degrees, + = left",
+   "expect": {
+    "arrows": [
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 40.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": true,
+      "color": null,
+      "label_pos": "NearEnd",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "A26",
+   "title": "loop",
+   "src": "A -f-> A loop\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Options after TO'; model.rs: bend in degrees, + = left (`loop`: a self-arrow)",
+   "expect": {
+    "arrows": [
+     {
+      "label": "f",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": true,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "A"
+     }
+    ],
+    "node_count": 1
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "A27",
+   "title": "iso with and without a label",
+   "src": "A -f-> B iso\nB -> C iso\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Options after TO'; model.rs: bend in degrees, + = left; model.rs keeps iso as a flag",
+   "expect": {
+    "arrows": [
+     {
+      "label": "f",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": true,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     },
+     {
+      "label": {
+       "any_of": [
+        null,
+        "\\cong"
+       ]
+      },
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": true,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "B",
+      "to": "C"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "A28",
+   "title": "dashed, colour, near-start options",
+   "src": "A -> B dashed color=teal near-start\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Options after TO'; model.rs: bend in degrees, + = left",
+   "expect": {
+    "arrows": [
+     {
+      "label": null,
+      "head": "To",
+      "line": "Dashed",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": "teal",
+      "label_pos": "NearStart",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "A29",
+   "title": "dotted option on a solid arrow, bend-left",
+   "src": "A -g-> B dotted bend-left\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Options after TO'; model.rs: bend in degrees, + = left",
+   "expect": {
+    "arrows": [
+     {
+      "label": "g",
+      "head": "To",
+      "line": "Dotted",
+      "side": "Auto",
+      "bend": 30.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "A30",
+   "title": "unknown option is a warning",
+   "src": "A -> B wiggly\nB -> C\n",
+   "tier": "spec",
+   "why": "FIGURES.md: 'an unknown option is a warning, not an error'",
+   "expect": {
+    "arrows": [
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     },
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "B",
+      "to": "C"
+     }
+    ]
+   },
+   "diag": {
+    "warn_lines": [
+     1
+    ],
+    "no_errors": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "A31",
+   "title": "non-palette colour is a warning",
+   "src": "A -> B color=pink\n",
+   "tier": "inferred",
+   "why": "palette names are blue violet teal maroon green ochre grey ink; anything else is an unknown option value",
+   "expect": {
+    "arrows": [
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": {
+       "any_of": [
+        null,
+        "pink"
+       ]
+      },
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {
+    "any_lines": [
+     1
+    ],
+    "no_errors": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "A32",
+   "title": "`;` separates statements",
+   "src": "A -f-> B; B -g-> C; A -\"g \\circ f\"-> C\n",
+   "tier": "spec",
+   "why": "FIGURES.md: '`;` also separates statements'",
+   "expect": {
+    "arrows": [
+     {
+      "label": "f",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     },
+     {
+      "label": "g",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "B",
+      "to": "C"
+     },
+     {
+      "label": "g \\circ f",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "C"
+     }
+    ],
+    "node_count": 3
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "A33",
+   "title": "every palette colour",
+   "src": "A0 -> B0 color=blue\nA1 -> B1 color=violet\nA2 -> B2 color=teal\nA3 -> B3 color=maroon\nA4 -> B4 color=green\nA5 -> B5 color=ochre\nA6 -> B6 color=grey\nA7 -> B7 color=ink\n",
+   "tier": "spec",
+   "why": "FIGURES.md palette list",
+   "expect": {
+    "arrows": [
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": "blue",
+      "label_pos": "Middle",
+      "from": "A0",
+      "to": "B0"
+     },
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": "violet",
+      "label_pos": "Middle",
+      "from": "A1",
+      "to": "B1"
+     },
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": "teal",
+      "label_pos": "Middle",
+      "from": "A2",
+      "to": "B2"
+     },
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": "maroon",
+      "label_pos": "Middle",
+      "from": "A3",
+      "to": "B3"
+     },
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": "green",
+      "label_pos": "Middle",
+      "from": "A4",
+      "to": "B4"
+     },
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": "ochre",
+      "label_pos": "Middle",
+      "from": "A5",
+      "to": "B5"
+     },
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": "grey",
+      "label_pos": "Middle",
+      "from": "A6",
+      "to": "B6"
+     },
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": "ink",
+      "label_pos": "Middle",
+      "from": "A7",
+      "to": "B7"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "A34",
+   "title": "LaTeX-command label and token nodes",
+   "src": "π₁(X) -f_*-> π₁(Y)\n",
+   "tier": "spec",
+   "why": "labels are tokens; sub-digits ₁ → _{1}",
+   "expect": {
+    "arrows": [
+     {
+      "label": "f_*",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "π₁(X)",
+      "to": "π₁(Y)"
+     }
+    ],
+    "nodes": [
+     {
+      "name": "π₁(X)",
+      "label": "\\pi_{1}(X)"
+     },
+     {
+      "name": "π₁(Y)",
+      "label": "\\pi_{1}(Y)"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "A35",
+   "title": "arrow label is a control sequence",
+   "src": "A -\\varphi-> B\nB -\\ker\\psi-> C\n",
+   "tier": "spec",
+   "why": "FIGURES.md arrow table",
+   "expect": {
+    "arrows": [
+     {
+      "label": "\\varphi",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     },
+     {
+      "label": "\\ker\\psi",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "B",
+      "to": "C"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "N01",
+   "title": "quoted node label",
+   "src": "A \"\\mathbb{Z}/n\\mathbb{Z}\" at 0,0\nA -> B\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Names and labels' + Unicode table",
+   "expect": {
+    "nodes": [
+     {
+      "name": "A",
+      "label": "\\mathbb{Z}/n\\mathbb{Z}",
+      "pos": {
+       "Cell": [
+        0,
+        0
+       ]
+      }
+     },
+     {
+      "name": "B",
+      "label": "B"
+     }
+    ],
+    "arrows": [
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ],
+    "node_count": 2
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "N02",
+   "title": "cell, fractional cell, absolute",
+   "src": "A at 1,0\nB at 0.5,1\nC at (3.2,-1)\nA -> B\nB -> C\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Placement'",
+   "expect": {
+    "nodes": [
+     {
+      "name": "A",
+      "pos": {
+       "Cell": [
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "name": "B",
+      "pos": {
+       "Cell": [
+        0.5,
+        1
+       ]
+      }
+     },
+     {
+      "name": "C",
+      "pos": {
+       "Abs": [
+        3.2,
+        -1
+       ]
+      }
+     }
+    ],
+    "node_count": 3
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "N03",
+   "title": "first mention wins",
+   "src": "A \"X\" -> B\nA \"Y\" -> C\n",
+   "tier": "inferred",
+   "why": "FIGURES.md: 'a quoted label follows its first mention'; 'First mention wins'",
+   "expect": {
+    "nodes": [
+     {
+      "name": "A",
+      "label": "X"
+     }
+    ],
+    "arrows": [
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     },
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "C"
+     }
+    ],
+    "node_count": 3
+   },
+   "diag": {
+    "no_errors": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "N04",
+   "title": "token shapes",
+   "src": "G/K -> \\ker\\varphi\nZ_n -> H'\n\\mathbb{Z} -> G^{ab}\n",
+   "tier": "spec",
+   "why": "FIGURES.md token examples (G/K, Z_n, H', \\ker\\varphi, \\mathbb{Z}, braces when balanced)",
+   "expect": {
+    "nodes": [
+     {
+      "name": "G/K",
+      "label": "G/K"
+     },
+     {
+      "name": "\\ker\\varphi",
+      "label": "\\ker\\varphi"
+     },
+     {
+      "name": "Z_n",
+      "label": "Z_n"
+     },
+     {
+      "name": "H'",
+      "label": "H'"
+     },
+     {
+      "name": "\\mathbb{Z}",
+      "label": "\\mathbb{Z}"
+     },
+     {
+      "name": "G^{ab}",
+      "label": "G^{ab}"
+     }
+    ],
+    "arrows": [
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "G/K",
+      "to": "\\ker\\varphi"
+     },
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "Z_n",
+      "to": "H'"
+     },
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "\\mathbb{Z}",
+      "to": "G^{ab}"
+     }
+    ],
+    "node_count": 6
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "N05",
+   "title": "Unicode node tokens",
+   "src": "φ(G) -> ℤ/nℤ\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Names and labels' + Unicode table",
+   "expect": {
+    "nodes": [
+     {
+      "name": "φ(G)",
+      "label": "\\varphi(G)"
+     },
+     {
+      "name": "ℤ/nℤ",
+      "label": "\\mathbb{Z}/n\\mathbb{Z}"
+     }
+    ],
+    "arrows": [
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "φ(G)",
+      "to": "ℤ/nℤ"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "N06",
+   "title": "sub/superscript digits",
+   "src": "x₁ -> g²\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Names and labels' + Unicode table (x₁ → x_{1}, g² → g^{2})",
+   "expect": {
+    "nodes": [
+     {
+      "name": "x₁",
+      "label": "x_{1}"
+     },
+     {
+      "name": "g²",
+      "label": "g^{2}"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "N07",
+   "title": "multi-digit sub/superscripts",
+   "src": "x₁₂ -> g³²\n",
+   "tier": "inferred",
+   "why": "'sub/superscript digits': a run is one script (x_{1}_{2} is a TeX 'Double subscript' error)",
+   "expect": {
+    "nodes": [
+     {
+      "name": "x₁₂",
+      "label": "x_{12}"
+     },
+     {
+      "name": "g³²",
+      "label": "g^{32}"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "N08",
+   "title": "binary operators in tokens",
+   "src": "A⊗B -> A⊕B\nG×H -> K\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Names and labels' + Unicode table",
+   "expect": {
+    "nodes": [
+     {
+      "name": "A⊗B",
+      "label": "A\\otimes B"
+     },
+     {
+      "name": "A⊕B",
+      "label": "A\\oplus B"
+     },
+     {
+      "name": "G×H",
+      "label": "G\\times H"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "N09",
+   "title": "symbol table in quoted labels",
+   "src": "X \"∅ ⊆ U ∩ V ⊂ U ∪ V\" at 0,0\nY \"a ∈ S, b ∉ S\" at 1,0\nZ \"n ≤ m ≥ k ≠ ∞\" at 2,0\nW \"f∘g ≅ h\" at 3,0\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Names and labels' + Unicode table; aliases accepted: \\le/\\leq, \\ne/\\neq, \\varnothing/\\emptyset",
+   "expect": {
+    "nodes": [
+     {
+      "name": "X",
+      "label": "\\emptyset \\subseteq U \\cap V \\subset U \\cup V"
+     },
+     {
+      "name": "Y",
+      "label": "a \\in S, b \\notin S"
+     },
+     {
+      "name": "Z",
+      "label": "n \\leq m \\geq k \\neq \\infty"
+     },
+     {
+      "name": "W",
+      "label": "f\\circ g \\cong h"
+     }
+    ],
+    "node_count": 4
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "N10",
+   "title": "ε, Φ, Ψ",
+   "src": "A -ε-> B\nΦ -> Ψ\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Names and labels' + Unicode table (ε → \\varepsilon)",
+   "expect": {
+    "arrows": [
+     {
+      "label": "\\varepsilon",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     },
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "Φ",
+      "to": "Ψ"
+     }
+    ],
+    "nodes": [
+     {
+      "name": "Φ",
+      "label": "\\Phi"
+     },
+     {
+      "name": "Ψ",
+      "label": "\\Psi"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "N11",
+   "title": "double-struck chain",
+   "src": "ℕ hook-> ℤ ; ℤ hook-> ℚ ; ℚ hook-> ℝ ; ℝ hook-> ℂ\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Names and labels' + Unicode table",
+   "expect": {
+    "nodes": [
+     {
+      "name": "ℕ",
+      "label": "\\mathbb{N}"
+     },
+     {
+      "name": "ℤ",
+      "label": "\\mathbb{Z}"
+     },
+     {
+      "name": "ℚ",
+      "label": "\\mathbb{Q}"
+     },
+     {
+      "name": "ℝ",
+      "label": "\\mathbb{R}"
+     },
+     {
+      "name": "ℂ",
+      "label": "\\mathbb{C}"
+     }
+    ],
+    "node_count": 5,
+    "arrows": [
+     {
+      "label": null,
+      "head": "Hook",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "ℕ",
+      "to": "ℤ"
+     },
+     {
+      "label": null,
+      "head": "Hook",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "ℤ",
+      "to": "ℚ"
+     },
+     {
+      "label": null,
+      "head": "Hook",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "ℚ",
+      "to": "ℝ"
+     },
+     {
+      "label": null,
+      "head": "Hook",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "ℝ",
+      "to": "ℂ"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "N12",
+   "title": "Greek letter followed by a letter",
+   "src": "φx -> ψg\n",
+   "tier": "inferred",
+   "why": "φ → \\varphi must not swallow the next letter: \\varphix is an undefined control sequence",
+   "expect": {
+    "nodes": [
+     {
+      "name": "φx",
+      "label": "\\varphi x"
+     },
+     {
+      "name": "ψg",
+      "label": "\\psi g"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "N13",
+   "title": "maps-to symbol in a label",
+   "src": "A -\"x ↦ x²\"-> B\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Names and labels' + Unicode table (↦ → \\mapsto inside a label)",
+   "expect": {
+    "arrows": [
+     {
+      "label": "x \\mapsto x^{2}",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "N14",
+   "title": "node statement alone",
+   "src": "A \"G\" at 2,1\n",
+   "tier": "spec",
+   "why": "FIGURES.md placement; a lone node is a figure",
+   "expect": {
+    "nodes": [
+     {
+      "name": "A",
+      "label": "G",
+      "pos": {
+       "Cell": [
+        2,
+        1
+       ]
+      }
+     }
+    ],
+    "node_count": 1
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "S01",
+   "title": "comments and blank lines",
+   "src": "% header\nA -> B % trailing\n\n% another\nB -> C\n",
+   "tier": "spec",
+   "why": "FIGURES.md: '%' starts a comment to the end of the line; blank lines fine",
+   "expect": {
+    "arrows": [
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     },
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "B",
+      "to": "C"
+     }
+    ],
+    "node_count": 3,
+    "min_comments": 2
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "S02",
+   "title": "escaped percent is not a comment",
+   "src": "A -\"50\\%\"-> B\n",
+   "tier": "inferred",
+   "why": "'% starts a comment … as in LaTeX': in LaTeX \\% is a percent sign",
+   "expect": {
+    "arrows": [
+     {
+      "label": "50\\%",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "S03",
+   "title": "`;` inside a quoted label",
+   "src": "A -\"a;b\"-> B\n",
+   "tier": "inferred",
+   "why": "quotes delimit a label; `;` only separates statements outside quotes",
+   "expect": {
+    "arrows": [
+     {
+      "label": "a;b",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "S04",
+   "title": "globals",
+   "src": "scale 1.2\nspacing 2.8,2\nsize small\nA -> B\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Free text and globals'",
+   "expect": {
+    "globals": {
+     "scale": 1.2,
+     "spacing": [
+      2.8,
+      2.0
+     ],
+     "size": "small"
+    },
+    "arrows": [
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "S05",
+   "title": "free text",
+   "src": "text \"kernel ↦ identity\" at (1,2)\nA -> B\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Free text'",
+   "expect": {
+    "texts": [
+     {
+      "contains": [
+       "kernel",
+       "identity"
+      ],
+      "pos": {
+       "Abs": [
+        1,
+        2
+       ]
+      }
+     }
+    ],
+    "arrows": [
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "S06",
+   "title": "CRLF line endings",
+   "src": "A -> B\r\nB -f-> C\r\n",
+   "tier": "inferred",
+   "why": "line-oriented; a \\r must not leak into names or labels",
+   "expect": {
+    "arrows": [
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     },
+     {
+      "label": "f",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "B",
+      "to": "C"
+     }
+    ],
+    "node_count": 3
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "S07",
+   "title": "tabs and indentation",
+   "src": "\tA -> B\n    B  ->   C\n",
+   "tier": "inferred",
+   "why": "whitespace separates; indentation is not meaningful outside grid blocks",
+   "expect": {
+    "arrows": [
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     },
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "B",
+      "to": "C"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "S08",
+   "title": "defaults",
+   "src": "A -> B\n",
+   "tier": "spec",
+   "why": "model.rs Globals::default",
+   "expect": {
+    "globals": {
+     "scale": 1.0,
+     "spacing": [
+      1.9,
+      1.35
+     ],
+     "size": "normal"
+    }
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "G01",
+   "title": "the spec's square",
+   "src": "grid\n  A --f--> B\n  |g       |h\n  v        v\n  C --k--> D\nend\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Grid blocks'",
+   "expect": {
+    "grid_cells": {
+     "A": [
+      0,
+      0
+     ],
+     "B": [
+      1,
+      0
+     ],
+     "C": [
+      0,
+      1
+     ],
+     "D": [
+      1,
+      1
+     ]
+    },
+    "node_count": 4,
+    "arrows": [
+     {
+      "label": "f",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     },
+     {
+      "label": "g",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "C"
+     },
+     {
+      "label": "h",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "B",
+      "to": "D"
+     },
+     {
+      "label": "k",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "C",
+      "to": "D"
+     }
+    ],
+    "grid_blocks": 1
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "G02",
+   "title": "pullback with a diagonal and bent arrows after end",
+   "src": "grid\n  X\n     \\u\n      P --q--> B\n      |p       |g\n      v        v\n      A --f--> C\nend\nX -x-> B bend-left\nX -y-> A bend-right\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Grid blocks' (diagonal `\\label` down-right; statements after end reference grid nodes)",
+   "expect": {
+    "grid_cells": {
+     "X": [
+      0,
+      0
+     ],
+     "P": [
+      1,
+      1
+     ],
+     "B": [
+      2,
+      1
+     ],
+     "A": [
+      1,
+      2
+     ],
+     "C": [
+      2,
+      2
+     ]
+    },
+    "node_count": 5,
+    "arrows": [
+     {
+      "label": "u",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "X",
+      "to": "P"
+     },
+     {
+      "label": "q",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "P",
+      "to": "B"
+     },
+     {
+      "label": "p",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "P",
+      "to": "A"
+     },
+     {
+      "label": "g",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "B",
+      "to": "C"
+     },
+     {
+      "label": "f",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "C"
+     },
+     {
+      "label": "x",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 30.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "X",
+      "to": "B"
+     },
+     {
+      "label": "y",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": -30.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "X",
+      "to": "A"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "G03",
+   "title": "triangle, down-right diagonal",
+   "src": "grid\n  A --f--> B\n     \\h    |g\n           v\n           C\nend\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Grid blocks'",
+   "expect": {
+    "grid_cells": {
+     "A": [
+      0,
+      0
+     ],
+     "B": [
+      1,
+      0
+     ],
+     "C": [
+      1,
+      1
+     ]
+    },
+    "node_count": 3,
+    "arrows": [
+     {
+      "label": "f",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     },
+     {
+      "label": "h",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "C"
+     },
+     {
+      "label": "g",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "B",
+      "to": "C"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "G04",
+   "title": "triangle, down-left diagonal",
+   "src": "grid\n  A --f--> B\n  |g     /h\n  v\n  C\nend\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Grid blocks' (`/label` down-left: from the upper-right node)",
+   "expect": {
+    "grid_cells": {
+     "A": [
+      0,
+      0
+     ],
+     "B": [
+      1,
+      0
+     ],
+     "C": [
+      0,
+      1
+     ]
+    },
+    "node_count": 3,
+    "arrows": [
+     {
+      "label": "f",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     },
+     {
+      "label": "g",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "C"
+     },
+     {
+      "label": "h",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "B",
+      "to": "C"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "G05",
+   "title": "misaligned columns + Unicode labels",
+   "src": "grid\n  G --φ--> H\n  |π        |ψ\n  v         v\n   K --χ--> L\nend\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Grid blocks': columns by clustering token starts (G@2,K@3 → col 0; H@11,L@12 → col 1); verticals within 2 columns",
+   "expect": {
+    "grid_cells": {
+     "G": [
+      0,
+      0
+     ],
+     "H": [
+      1,
+      0
+     ],
+     "K": [
+      0,
+      1
+     ],
+     "L": [
+      1,
+      1
+     ]
+    },
+    "node_count": 4,
+    "arrows": [
+     {
+      "label": "\\varphi",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "G",
+      "to": "H"
+     },
+     {
+      "label": "\\pi",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "G",
+      "to": "K"
+     },
+     {
+      "label": "\\psi",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "H",
+      "to": "L"
+     },
+     {
+      "label": "\\chi",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "K",
+      "to": "L"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "G06",
+   "title": "up arrows",
+   "src": "grid\n  A --f--> B\n  ^        ^\n  |s       |t\n  C --g--> D\nend\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Grid blocks': a column starting with ^ points up (from the lower node)",
+   "expect": {
+    "grid_cells": {
+     "A": [
+      0,
+      0
+     ],
+     "B": [
+      1,
+      0
+     ],
+     "C": [
+      0,
+      1
+     ],
+     "D": [
+      1,
+      1
+     ]
+    },
+    "arrows": [
+     {
+      "label": "f",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     },
+     {
+      "label": "s",
+      "head": "To",
+      "line": "Solid",
+      "side": "Swap",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "C",
+      "to": "A"
+     },
+     {
+      "label": "t",
+      "head": "To",
+      "line": "Solid",
+      "side": "Swap",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "D",
+      "to": "B"
+     },
+     {
+      "label": "g",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "C",
+      "to": "D"
+     }
+    ],
+    "side_note": "label typed right of an up arrow / on a leftward arrow keeps that place only with side=Swap (tikz-cd auto = left of travel). Corrected after review: my first expectation (Auto) was wrong; the implementation's original Swap was right."
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "G07",
+   "title": "dashed vertical with `:`",
+   "src": "grid\n  A --f--> B\n  :u       |g\n  v        v\n  C --h--> D\nend\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Grid blocks': ':' instead of '|' is dashed",
+   "expect": {
+    "arrows": [
+     {
+      "label": "f",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     },
+     {
+      "label": "u",
+      "head": "To",
+      "line": "Dashed",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "C"
+     },
+     {
+      "label": "g",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "B",
+      "to": "D"
+     },
+     {
+      "label": "h",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "C",
+      "to": "D"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "G08",
+   "title": "equals verticals, surjection, injection, reversed, dotted",
+   "src": "grid\n  A -->>   B >-->   C\n  ||       ‖\n  E <--f-- F ..>    J\nend\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Grid blocks': `-->>` surjection, `>-->` injection, `<--f--` reversed, `..>` dotted, `‖`/`||` equals",
+   "expect": {
+    "grid_cells": {
+     "A": [
+      0,
+      0
+     ],
+     "B": [
+      1,
+      0
+     ],
+     "C": [
+      2,
+      0
+     ],
+     "E": [
+      0,
+      1
+     ],
+     "F": [
+      1,
+      1
+     ],
+     "J": [
+      2,
+      1
+     ]
+    },
+    "arrows": [
+     {
+      "label": null,
+      "head": "TwoHeads",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     },
+     {
+      "label": null,
+      "head": "Tail",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "B",
+      "to": "C"
+     },
+     {
+      "label": null,
+      "head": "Equal",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "E"
+     },
+     {
+      "label": null,
+      "head": "Equal",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "B",
+      "to": "F"
+     },
+     {
+      "label": "f",
+      "head": "To",
+      "line": "Solid",
+      "side": "Swap",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "F",
+      "to": "E"
+     },
+     {
+      "label": null,
+      "head": "To",
+      "line": "Dotted",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "F",
+      "to": "J"
+     }
+    ],
+    "side_note": "label typed right of an up arrow / on a leftward arrow keeps that place only with side=Swap (tikz-cd auto = left of travel). Corrected after review: my first expectation (Auto) was wrong; the implementation's original Swap was right."
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "G09",
+   "title": "spaced dashes are dashed",
+   "src": "grid\n  A - - > B\n  X ..>   Y\nend\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Grid blocks': `- - >` is dashed",
+   "expect": {
+    "grid_cells": {
+     "A": [
+      0,
+      0
+     ],
+     "B": [
+      1,
+      0
+     ],
+     "X": [
+      0,
+      1
+     ],
+     "Y": [
+      1,
+      1
+     ]
+    },
+    "arrows": [
+     {
+      "label": null,
+      "head": "To",
+      "line": "Dashed",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     },
+     {
+      "label": null,
+      "head": "To",
+      "line": "Dotted",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "X",
+      "to": "Y"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "G10",
+   "title": "labelled surjection and injection in a grid",
+   "src": "grid\n  K >--ι--> G --π-->> Q\nend\n",
+   "tier": "inferred",
+   "why": "FIGURES.md 'Grid blocks': 'the label is between the dashes' applied to `-->>` and `>-->`",
+   "expect": {
+    "grid_cells": {
+     "K": [
+      0,
+      0
+     ],
+     "G": [
+      1,
+      0
+     ],
+     "Q": [
+      2,
+      0
+     ]
+    },
+    "arrows": [
+     {
+      "label": "\\iota",
+      "head": "Tail",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "K",
+      "to": "G"
+     },
+     {
+      "label": "\\pi",
+      "head": "TwoHeads",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "G",
+      "to": "Q"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "G11",
+   "title": "grid + a diagonal statement after end",
+   "src": "grid\n  A --f--> B\n  |g       |h\n  v        v\n  C --k--> D\nend\nA -\"h \\circ f\"-> D\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Grid blocks'",
+   "expect": {
+    "arrows": [
+     {
+      "label": "f",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     },
+     {
+      "label": "g",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "C"
+     },
+     {
+      "label": "h",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "B",
+      "to": "D"
+     },
+     {
+      "label": "k",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "C",
+      "to": "D"
+     },
+     {
+      "label": "h \\circ f",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "D"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "G12",
+   "title": "vertical label that starts with a backslash",
+   "src": "grid\n  G --\\varphi--> H\n  |\\pi          |\\psi\n  v             v\n  K --\\chi-->   L\nend\n",
+   "tier": "inferred",
+   "why": "FIGURES.md 'Grid blocks': 'a label written straight after' the bar; `|\\pi` is not a diagonal (that is `\\label` alone)",
+   "expect": {
+    "grid_cells": {
+     "G": [
+      0,
+      0
+     ],
+     "H": [
+      1,
+      0
+     ],
+     "K": [
+      0,
+      1
+     ],
+     "L": [
+      1,
+      1
+     ]
+    },
+    "arrows": [
+     {
+      "label": "\\varphi",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "G",
+      "to": "H"
+     },
+     {
+      "label": "\\pi",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "G",
+      "to": "K"
+     },
+     {
+      "label": "\\psi",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "H",
+      "to": "L"
+     },
+     {
+      "label": "\\chi",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "K",
+      "to": "L"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "G13",
+   "title": "short exact sequence with two zeros",
+   "src": "grid\n  0 --> K >--ι--> G --π-->> Q --> 0\nend\n",
+   "tier": "gap",
+   "why": "FIGURES.md names nodes by token and 'later mentions just refer to it' — but every SES writes 0 twice. A notes-writer expects five cells in a row, not an arrow looping back to the first 0.",
+   "expect": {
+    "node_cells_distinct": 5,
+    "arrows_count": 4
+   },
+   "diag": {
+    "no_errors": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "G14",
+   "title": "first isomorphism theorem",
+   "src": "grid\n  G   --φ-->  H\n  |π          ^\n  v           |ι\n  G/K --ψ--> \\varphi(G)\nend\n",
+   "tier": "inferred",
+   "why": "FIGURES.md 'Grid blocks'; columns cluster G,G/K @2 and H@14,\\varphi(G)@13; the up arrow goes from \\varphi(G) to H",
+   "expect": {
+    "grid_cells": {
+     "G": [
+      0,
+      0
+     ],
+     "H": [
+      1,
+      0
+     ],
+     "G/K": [
+      0,
+      1
+     ],
+     "\\varphi(G)": [
+      1,
+      1
+     ]
+    },
+    "arrows": [
+     {
+      "label": "\\varphi",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "G",
+      "to": "H"
+     },
+     {
+      "label": "\\pi",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "G",
+      "to": "G/K"
+     },
+     {
+      "label": "\\iota",
+      "head": "To",
+      "line": "Solid",
+      "side": "Swap",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "\\varphi(G)",
+      "to": "H"
+     },
+     {
+      "label": "\\psi",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "G/K",
+      "to": "\\varphi(G)"
+     }
+    ]
+   },
+   "diag": {
+    "no_errors": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "G15",
+   "title": "three-row grid with mixed verticals",
+   "src": "grid\n  A --> B\n  |     :\n  v     v\n  C --> D\n  ‖     ^\n  ‖     |\n  E --> F\nend\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Grid blocks'",
+   "expect": {
+    "grid_cells": {
+     "A": [
+      0,
+      0
+     ],
+     "B": [
+      1,
+      0
+     ],
+     "C": [
+      0,
+      1
+     ],
+     "D": [
+      1,
+      1
+     ],
+     "E": [
+      0,
+      2
+     ],
+     "F": [
+      1,
+      2
+     ]
+    },
+    "arrows": [
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     },
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "C"
+     },
+     {
+      "label": null,
+      "head": "To",
+      "line": "Dashed",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "B",
+      "to": "D"
+     },
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "C",
+      "to": "D"
+     },
+     {
+      "label": null,
+      "head": "Equal",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "C",
+      "to": "E"
+     },
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": {
+       "any_of": [
+        "Auto",
+        "Swap"
+       ]
+      },
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "F",
+      "to": "D"
+     },
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "E",
+      "to": "F"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "B01",
+   "title": "the spec's kernel picture",
+   "src": "blob G \"G\" {e, g, g^2, g^3}\nblob K \"\\ker\\varphi\" in G shaded {e, g^2}\nblob H \"H\" {e', h}\nG -φ-> H\ng |-> h ; e |-> e'\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Blobs'. The example lists e, g^2 in both G and K although 'an element listed in a child blob is also in its parent; don't list it twice' and names 'must be unique': expected: K owns e, g^2; G owns g, g^3; no error",
+   "expect": {
+    "blobs": [
+     {
+      "name": "G",
+      "label": "G",
+      "parent": null,
+      "shaded": false,
+      "elements_include": [
+       "g",
+       "g^3"
+      ]
+     },
+     {
+      "name": "K",
+      "label": "\\ker\\varphi",
+      "parent": "G",
+      "shaded": true,
+      "elements": [
+       "e",
+       "g^2"
+      ]
+     },
+     {
+      "name": "H",
+      "label": "H",
+      "parent": null,
+      "elements": [
+       "e'",
+       "h"
+      ]
+     }
+    ],
+    "arrows": [
+     {
+      "label": "\\varphi",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "G",
+      "to": "H"
+     },
+     {
+      "label": null,
+      "head": "MapsTo",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "g",
+      "to": "h"
+     },
+     {
+      "label": null,
+      "head": "MapsTo",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "e",
+      "to": "e'"
+     }
+    ],
+    "node_count": 0,
+    "unique_elements": true
+   },
+   "diag": {
+    "no_errors": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "B02",
+   "title": "blob options",
+   "src": "blob X \"X\" {a, b} shape=bean size=3,2 label=below color=teal\nblob Y {c} shape=tall at (4,0) label=inside\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Blobs' options; a blob without a quoted label is labelled by its name (inferred)",
+   "expect": {
+    "blobs": [
+     {
+      "name": "X",
+      "label": "X",
+      "elements": [
+       "a",
+       "b"
+      ],
+      "shape": "Bean",
+      "size": [
+       3,
+       2
+      ],
+      "label_place": "Below",
+      "color": "teal"
+     },
+     {
+      "name": "Y",
+      "label": {
+       "any_of": [
+        "Y",
+        ""
+       ]
+      },
+      "elements": [
+       "c"
+      ],
+      "shape": "Tall",
+      "pos": {
+       "Abs": [
+        4,
+        0
+       ]
+      },
+      "label_place": "Inside"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "B03",
+   "title": "nested three deep",
+   "src": "blob G \"G\" {g}\nblob H \"H\" in G {h}\nblob K \"K\" in H shaded {k}\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Blobs'",
+   "expect": {
+    "blobs": [
+     {
+      "name": "G",
+      "parent": null,
+      "elements": [
+       "g"
+      ]
+     },
+     {
+      "name": "H",
+      "parent": "G",
+      "elements": [
+       "h"
+      ]
+     },
+     {
+      "name": "K",
+      "parent": "H",
+      "elements": [
+       "k"
+      ],
+      "shaded": true
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "B04",
+   "title": "function between sets",
+   "src": "blob A \"A\" {a_1, a_2}\nblob B \"B\" {b}\nA -f-> B\na_1 |-> b\na_2 ↦ b\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Blobs'",
+   "expect": {
+    "blobs": [
+     {
+      "name": "A",
+      "elements": [
+       "a_1",
+       "a_2"
+      ]
+     },
+     {
+      "name": "B",
+      "elements": [
+       "b"
+      ]
+     }
+    ],
+    "arrows": [
+     {
+      "label": "f",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     },
+     {
+      "label": null,
+      "head": "MapsTo",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "a_1",
+      "to": "b"
+     },
+     {
+      "label": null,
+      "head": "MapsTo",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "a_2",
+      "to": "b"
+     }
+    ],
+    "node_count": 0
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "B05",
+   "title": "projection onto a quotient, Unicode elements",
+   "src": "blob G \"G\" {ε, g}\nblob Q \"G/K\" {K, gK}\nG -π->> Q\nε |-> K ; g |-> gK\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Blobs' + Unicode",
+   "expect": {
+    "blobs": [
+     {
+      "name": "G",
+      "elements": [
+       "ε",
+       "g"
+      ],
+      "element_labels": [
+       "\\varepsilon",
+       "g"
+      ]
+     },
+     {
+      "name": "Q",
+      "label": "G/K",
+      "elements": [
+       "K",
+       "gK"
+      ]
+     }
+    ],
+    "arrows": [
+     {
+      "label": "\\pi",
+      "head": "TwoHeads",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "G",
+      "to": "Q"
+     },
+     {
+      "label": null,
+      "head": "MapsTo",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "ε",
+      "to": "K"
+     },
+     {
+      "label": null,
+      "head": "MapsTo",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "g",
+      "to": "gK"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "B06",
+   "title": "duplicate element name in unrelated blobs",
+   "src": "blob A {x}\nblob B {x}\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Blobs': 'Element names … must be unique in the figure'",
+   "expect": {},
+   "diag": {
+    "any_lines": [
+     2
+    ]
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "B07",
+   "title": "unknown parent",
+   "src": "blob K \"K\" in Nowhere {k}\nA -> B\n",
+   "tier": "inferred",
+   "why": "`in PARENT` must name a blob; anything else is reported, and the rest renders",
+   "expect": {
+    "arrows": [
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {
+    "any_lines": [
+     1
+    ]
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "B08",
+   "title": "braced element tokens",
+   "src": "blob Z \"\\mathbb{Z}\" {g^{2}, x_{1}, -1}\n",
+   "tier": "spec",
+   "why": "FIGURES.md tokens: braces inside a token when balanced",
+   "expect": {
+    "blobs": [
+     {
+      "name": "Z",
+      "label": "\\mathbb{Z}",
+      "elements": [
+       "g^{2}",
+       "x_{1}",
+       "-1"
+      ]
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "B09",
+   "title": "unknown blob option",
+   "src": "blob X \"X\" sparkly {a}\n",
+   "tier": "spec",
+   "why": "unknown option → warning",
+   "expect": {
+    "blobs": [
+     {
+      "name": "X",
+      "elements": [
+       "a"
+      ]
+     }
+    ]
+   },
+   "diag": {
+    "warn_lines": [
+     1
+    ],
+    "no_errors": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "B10",
+   "title": "blobs in a row (layout)",
+   "src": "blob A \"A\" {a}\nblob B \"B\" {b}\nblob C \"C\" {c}\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Blobs': top-level blobs go in a row, left to right, in order",
+   "expect": {
+    "blobs": [
+     {
+      "name": "A"
+     },
+     {
+      "name": "B"
+     },
+     {
+      "name": "C"
+     }
+    ],
+    "blob_row": [
+     "A",
+     "B",
+     "C"
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "P01",
+   "title": "square, defaults",
+   "src": "ngon P 4\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'N-gons' + model.rs NGon (axis k → 2k, k.5 → 2k+1)",
+   "expect": {
+    "ngons": [
+     {
+      "name": "P",
+      "n": 4,
+      "labels": [
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
+      "all_axes": false,
+      "axes": [],
+      "rotation": 0,
+      "turn": 0,
+      "flip": null,
+      "slots": {
+       "1": 0,
+       "2": 1,
+       "3": 2,
+       "4": 3
+      }
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "P02",
+   "title": "pentagon, labels, all axes, rotation",
+   "src": "ngon P 5 labels a,b,c,d,e axes rotation\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'N-gons' + model.rs NGon (axis k → 2k, k.5 → 2k+1)",
+   "expect": {
+    "ngons": [
+     {
+      "name": "P",
+      "n": 5,
+      "labels": [
+       "a",
+       "b",
+       "c",
+       "d",
+       "e"
+      ],
+      "all_axes": true,
+      "axes": [],
+      "rotation": 1,
+      "turn": 0,
+      "flip": null,
+      "slots": {
+       "1": 0,
+       "2": 1,
+       "3": 2,
+       "4": 3,
+       "5": 4
+      },
+      "axis_dirs": [
+       18.0,
+       54.0,
+       90.0,
+       126.0,
+       162.0
+      ]
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "P03",
+   "title": "hexagon, two vertex axes, rotation=2",
+   "src": "ngon Q 6 axis 1 axis 2 rotation=2\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'N-gons' + model.rs NGon (axis k → 2k, k.5 → 2k+1)",
+   "expect": {
+    "ngons": [
+     {
+      "name": "Q",
+      "n": 6,
+      "labels": [
+       "1",
+       "2",
+       "3",
+       "4",
+       "5",
+       "6"
+      ],
+      "all_axes": false,
+      "axes": [
+       2,
+       4
+      ],
+      "rotation": 2,
+      "turn": 0,
+      "flip": null,
+      "axis_dirs": [
+       0.0,
+       120.0
+      ]
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "P04",
+   "title": "hexagon, edge axes",
+   "src": "ngon Q 6 axis 1.5 axis 3.5\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'N-gons' + model.rs NGon (axis k → 2k, k.5 → 2k+1) (1.5 → 3, 3.5 → 7)",
+   "expect": {
+    "ngons": [
+     {
+      "name": "Q",
+      "n": 6,
+      "labels": [
+       "1",
+       "2",
+       "3",
+       "4",
+       "5",
+       "6"
+      ],
+      "all_axes": false,
+      "axes": [
+       3,
+       7
+      ],
+      "rotation": 0,
+      "turn": 0,
+      "flip": null,
+      "axis_dirs": [
+       90.0,
+       150.0
+      ]
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "P05",
+   "title": "triangle turned once",
+   "src": "ngon T 3 turn=1\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'N-gons' + model.rs NGon (axis k → 2k, k.5 → 2k+1)",
+   "expect": {
+    "ngons": [
+     {
+      "name": "T",
+      "n": 3,
+      "labels": [
+       "1",
+       "2",
+       "3"
+      ],
+      "all_axes": false,
+      "axes": [],
+      "rotation": 0,
+      "turn": 1,
+      "flip": null,
+      "slots": {
+       "1": 1,
+       "2": 2,
+       "3": 0
+      }
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "P06",
+   "title": "square flipped across axis 1",
+   "src": "ngon T 4 flip=1\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'N-gons' + model.rs NGon (axis k → 2k, k.5 → 2k+1)",
+   "expect": {
+    "ngons": [
+     {
+      "name": "T",
+      "n": 4,
+      "labels": [
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
+      "all_axes": false,
+      "axes": [],
+      "rotation": 0,
+      "turn": 0,
+      "flip": 2,
+      "slots": {
+       "1": 0,
+       "2": 3,
+       "3": 2,
+       "4": 1
+      }
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "P07",
+   "title": "square turned then flipped",
+   "src": "ngon T 4 turn=1 flip=1\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'N-gons' + model.rs NGon (axis k → 2k, k.5 → 2k+1): flip applies after turn",
+   "expect": {
+    "ngons": [
+     {
+      "name": "T",
+      "n": 4,
+      "labels": [
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
+      "all_axes": false,
+      "axes": [],
+      "rotation": 0,
+      "turn": 1,
+      "flip": 2,
+      "slots": {
+       "1": 3,
+       "2": 2,
+       "3": 1,
+       "4": 0
+      }
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "P08",
+   "title": "hexagon flipped across an edge axis",
+   "src": "ngon S 6 flip=1.5\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'N-gons' + model.rs NGon (axis k → 2k, k.5 → 2k+1)",
+   "expect": {
+    "ngons": [
+     {
+      "name": "S",
+      "n": 6,
+      "labels": [
+       "1",
+       "2",
+       "3",
+       "4",
+       "5",
+       "6"
+      ],
+      "all_axes": false,
+      "axes": [],
+      "rotation": 0,
+      "turn": 0,
+      "flip": 3,
+      "slots": {
+       "1": 1,
+       "2": 0,
+       "3": 5,
+       "4": 4,
+       "5": 3,
+       "6": 2
+      }
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "P09",
+   "title": "odd n with an edge axis",
+   "src": "ngon T 3 axis 1.5\nA -> B\n",
+   "tier": "inferred",
+   "why": "k.5 is only meaningful 'if n is even'; for odd n the axis through vertex k already bisects the opposite edge. Expected: a diagnostic on line 1 (accepting it as the equivalent vertex axis 3, code 6, is fine too)",
+   "expect": {
+    "ngons": [
+     {
+      "name": "T",
+      "n": 3,
+      "labels": [
+       "1",
+       "2",
+       "3"
+      ],
+      "all_axes": false,
+      "axes": {
+       "any_of": [
+        [],
+        [
+         6
+        ]
+       ]
+      },
+      "rotation": 0,
+      "turn": 0,
+      "flip": null
+     }
+    ],
+    "arrows": [
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {
+    "any_lines": [
+     1
+    ],
+    "no_errors": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "P10",
+   "title": "n too small",
+   "src": "ngon P 2\nA -> B\n",
+   "tier": "inferred",
+   "why": "a polygon needs n ≥ 3",
+   "expect": {
+    "arrows": [
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {
+    "any_lines": [
+     1
+    ]
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "P11",
+   "title": "axis out of range",
+   "src": "ngon P 4 axis 5\n",
+   "tier": "inferred",
+   "why": "vertices are 1..n",
+   "expect": {},
+   "diag": {
+    "any_lines": [
+     1
+    ]
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "P12",
+   "title": "radius and absolute position",
+   "src": "ngon P 4 radius=1.5 at (2,0)\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'N-gons' + model.rs NGon (axis k → 2k, k.5 → 2k+1)",
+   "expect": {
+    "ngons": [
+     {
+      "name": "P",
+      "n": 4,
+      "labels": [
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
+      "all_axes": false,
+      "axes": [],
+      "rotation": 0,
+      "turn": 0,
+      "flip": null,
+      "radius": 1.5,
+      "pos": {
+       "Abs": [
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "P13",
+   "title": "a sequence: e, r, s",
+   "src": "ngon A 3 at (0,0)\nngon B 3 turn=1 at (3,0)\nngon C 3 flip=1 at (6,0)\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'N-gons' + model.rs NGon (axis k → 2k, k.5 → 2k+1): 'Several ngons in a row show a sequence'",
+   "expect": {
+    "ngons": [
+     {
+      "name": "A",
+      "n": 3,
+      "labels": [
+       "1",
+       "2",
+       "3"
+      ],
+      "all_axes": false,
+      "axes": [],
+      "rotation": 0,
+      "turn": 0,
+      "flip": null,
+      "slots": {
+       "1": 0,
+       "2": 1,
+       "3": 2
+      },
+      "pos": {
+       "Abs": [
+        0,
+        0
+       ]
+      }
+     },
+     {
+      "name": "B",
+      "n": 3,
+      "labels": [
+       "1",
+       "2",
+       "3"
+      ],
+      "all_axes": false,
+      "axes": [],
+      "rotation": 0,
+      "turn": 1,
+      "flip": null,
+      "slots": {
+       "1": 1,
+       "2": 2,
+       "3": 0
+      },
+      "pos": {
+       "Abs": [
+        3,
+        0
+       ]
+      }
+     },
+     {
+      "name": "C",
+      "n": 3,
+      "labels": [
+       "1",
+       "2",
+       "3"
+      ],
+      "all_axes": false,
+      "axes": [],
+      "rotation": 0,
+      "turn": 0,
+      "flip": 2,
+      "slots": {
+       "1": 0,
+       "2": 2,
+       "3": 1
+      },
+      "pos": {
+       "Abs": [
+        6,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "P14",
+   "title": "turn larger than n",
+   "src": "ngon P 5 turn=7\n",
+   "tier": "inferred",
+   "why": "r^7 = r^2 in D5",
+   "expect": {
+    "ngons": [
+     {
+      "name": "P",
+      "n": 5,
+      "labels": [
+       "1",
+       "2",
+       "3",
+       "4",
+       "5"
+      ],
+      "all_axes": false,
+      "axes": [],
+      "rotation": 0,
+      "turn": {
+       "any_of": [
+        7,
+        2
+       ]
+      },
+      "flip": null,
+      "slots": {
+       "1": 2,
+       "2": 3,
+       "3": 4,
+       "4": 0,
+       "5": 1
+      }
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "P15",
+   "title": "hexagon, all axes",
+   "src": "ngon H 6 axes\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'N-gons' + model.rs NGon (axis k → 2k, k.5 → 2k+1): n even → 3 vertex-vertex + 3 edge-edge axes",
+   "expect": {
+    "ngons": [
+     {
+      "name": "H",
+      "n": 6,
+      "labels": [
+       "1",
+       "2",
+       "3",
+       "4",
+       "5",
+       "6"
+      ],
+      "all_axes": true,
+      "axes": [],
+      "rotation": 0,
+      "turn": 0,
+      "flip": null,
+      "axis_dirs": [
+       0.0,
+       30.0,
+       60.0,
+       90.0,
+       120.0,
+       150.0
+      ]
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "P16",
+   "title": "heptagon all axes, turned and flipped",
+   "src": "ngon P 7 axes turn=3 flip=2\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'N-gons' + model.rs NGon (axis k → 2k, k.5 → 2k+1)",
+   "expect": {
+    "ngons": [
+     {
+      "name": "P",
+      "n": 7,
+      "labels": [
+       "1",
+       "2",
+       "3",
+       "4",
+       "5",
+       "6",
+       "7"
+      ],
+      "all_axes": true,
+      "axes": [],
+      "rotation": 0,
+      "turn": 3,
+      "flip": 4,
+      "slots": {
+       "1": 6,
+       "2": 5,
+       "3": 4,
+       "4": 3,
+       "5": 2,
+       "6": 1,
+       "7": 0
+      },
+      "axis_dirs": [
+       12.857142857142861,
+       38.571428571428584,
+       64.28571428571428,
+       90.0,
+       115.71428571428572,
+       141.42857142857144,
+       167.14285714285714
+      ]
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "P17",
+   "title": "missing n",
+   "src": "ngon P\nA -> B\n",
+   "tier": "spec",
+   "why": "FIGURES.md error handling",
+   "expect": {
+    "arrows": [
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {
+    "error_lines": [
+     1
+    ]
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "C01",
+   "title": "D4 <r, s>",
+   "src": "cayley D4 <r, s>\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Cayley graphs'; |D4| = 8; r: 8 arcs, s involution: 4 edges",
+   "expect": {
+    "cayleys": [
+     {
+      "group": {
+       "Named": "D4"
+      },
+      "gens": [
+       "r",
+       "s"
+      ],
+      "layout": "Auto",
+      "labels": true,
+      "legend": false,
+      "group_key": "D4<r,s>"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "C02",
+   "title": "D4 from a presentation",
+   "src": "cayley <a, b | a^4, b^2, (ab)^2>\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Cayley graphs'",
+   "expect": {
+    "cayleys": [
+     {
+      "group": {
+       "Presentation": [
+        [
+         "a",
+         "b"
+        ],
+        [
+         "a^4",
+         "b^2",
+         "(ab)^2"
+        ]
+       ]
+      },
+      "gens": [
+       "a",
+       "b"
+      ],
+      "layout": "Auto",
+      "labels": true,
+      "legend": false,
+      "group_key": "<a,b|a^4,b^2,(ab)^2>"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "C03",
+   "title": "Z6 additive",
+   "src": "cayley Z6 <1>\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Cayley graphs'",
+   "expect": {
+    "cayleys": [
+     {
+      "group": {
+       "Named": "Z6"
+      },
+      "gens": [
+       "1"
+      ],
+      "layout": "Auto",
+      "labels": true,
+      "legend": false,
+      "group_key": "Z6<1>"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "C04",
+   "title": "C5",
+   "src": "cayley C5 <r>\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Cayley graphs'",
+   "expect": {
+    "cayleys": [
+     {
+      "group": {
+       "Named": "C5"
+      },
+      "gens": [
+       "r"
+      ],
+      "layout": "Auto",
+      "labels": true,
+      "legend": false,
+      "group_key": "C5<r>"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "C05",
+   "title": "V4",
+   "src": "cayley V4 <a, b>\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Cayley graphs'; both involutions: 2 + 2 edges",
+   "expect": {
+    "cayleys": [
+     {
+      "group": {
+       "Named": "V4"
+      },
+      "gens": [
+       "a",
+       "b"
+      ],
+      "layout": "Auto",
+      "labels": true,
+      "legend": false,
+      "group_key": "V4<a,b>"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "C06",
+   "title": "Z2xZ2",
+   "src": "cayley Z2xZ2 <a, b>\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Cayley graphs'",
+   "expect": {
+    "cayleys": [
+     {
+      "group": {
+       "Named": "Z2xZ2"
+      },
+      "gens": [
+       "a",
+       "b"
+      ],
+      "layout": "Auto",
+      "labels": true,
+      "legend": false,
+      "group_key": "Z2xZ2<a,b>"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "C07",
+   "title": "Q8",
+   "src": "cayley Q8 <i, j>\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Cayley graphs'; i, j of order 4: 8 + 8 arcs",
+   "expect": {
+    "cayleys": [
+     {
+      "group": {
+       "Named": "Q8"
+      },
+      "gens": [
+       "i",
+       "j"
+      ],
+      "layout": "Auto",
+      "labels": true,
+      "legend": false,
+      "group_key": "Q8<i,j>"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "C08",
+   "title": "S3",
+   "src": "cayley S3 <a, b>\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Cayley graphs'; order 6, non-abelian",
+   "expect": {
+    "cayleys": [
+     {
+      "group": {
+       "Named": "S3"
+      },
+      "gens": [
+       "a",
+       "b"
+      ],
+      "layout": "Auto",
+      "labels": true,
+      "legend": false,
+      "group_key": "S3<a,b>"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "C09",
+   "title": "S4",
+   "src": "cayley S4 <a, b>\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Cayley graphs'; order 24",
+   "expect": {
+    "cayleys": [
+     {
+      "group": {
+       "Named": "S4"
+      },
+      "gens": [
+       "a",
+       "b"
+      ],
+      "layout": "Auto",
+      "labels": true,
+      "legend": false,
+      "group_key": "S4<a,b>"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "C10",
+   "title": "A4",
+   "src": "cayley A4 <a, b>\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Cayley graphs'; order 12, no element of order 6",
+   "expect": {
+    "cayleys": [
+     {
+      "group": {
+       "Named": "A4"
+      },
+      "gens": [
+       "a",
+       "b"
+      ],
+      "layout": "Auto",
+      "labels": true,
+      "legend": false,
+      "group_key": "A4<a,b>"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "C11",
+   "title": "Z3 x Z4 (spaced)",
+   "src": "cayley Z3 x Z4 <a, b>\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Cayley graphs': `Zm x Zn`; grid layout for products",
+   "expect": {
+    "cayleys": [
+     {
+      "group": {
+       "Named": {
+        "any_of": [
+         "Z3xZ4",
+         "Z3 x Z4"
+        ]
+       }
+      },
+      "gens": [
+       "a",
+       "b"
+      ],
+      "layout": "Auto",
+      "labels": true,
+      "legend": false,
+      "group_key": "Z3xZ4<a,b>"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "C12",
+   "title": "A5 from a presentation",
+   "src": "cayley <a, b | a^2, b^3, (ab)^5>\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Cayley graphs': 60 ≤ 96; a: 30 edges, b: 60 arcs",
+   "expect": {
+    "cayleys": [
+     {
+      "group": {
+       "Presentation": [
+        [
+         "a",
+         "b"
+        ],
+        [
+         "a^2",
+         "b^3",
+         "(ab)^5"
+        ]
+       ]
+      },
+      "gens": [
+       "a",
+       "b"
+      ],
+      "layout": "Auto",
+      "labels": true,
+      "legend": false,
+      "group_key": "<a,b|a^2,b^3,(ab)^5>"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "C13",
+   "title": "S4 from a presentation",
+   "src": "cayley <a, b | a^2, b^3, (ab)^4>\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Cayley graphs'",
+   "expect": {
+    "cayleys": [
+     {
+      "group": {
+       "Presentation": [
+        [
+         "a",
+         "b"
+        ],
+        [
+         "a^2",
+         "b^3",
+         "(ab)^4"
+        ]
+       ]
+      },
+      "gens": [
+       "a",
+       "b"
+      ],
+      "layout": "Auto",
+      "labels": true,
+      "legend": false,
+      "group_key": "<a,b|a^2,b^3,(ab)^4>"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "C14",
+   "title": "cyclic from a presentation",
+   "src": "cayley <a | a^7>\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Cayley graphs'",
+   "expect": {
+    "cayleys": [
+     {
+      "group": {
+       "Presentation": [
+        [
+         "a"
+        ],
+        [
+         "a^7"
+        ]
+       ]
+      },
+      "gens": [
+       "a"
+      ],
+      "layout": "Auto",
+      "labels": true,
+      "legend": false,
+      "group_key": "<a|a^7>"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "C16",
+   "title": "options",
+   "src": "cayley D3 <r, s> layout=circle legend labels=none\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Cayley graphs'",
+   "expect": {
+    "cayleys": [
+     {
+      "group": {
+       "Named": "D3"
+      },
+      "gens": [
+       "r",
+       "s"
+      ],
+      "layout": "Circle",
+      "labels": false,
+      "legend": true,
+      "group_key": "D3<r,s>"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "C17",
+   "title": "Z2: a single involution",
+   "src": "cayley Z2 <1>\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Cayley graphs': involution → 1 edge",
+   "expect": {
+    "cayleys": [
+     {
+      "group": {
+       "Named": "Z2"
+      },
+      "gens": [
+       "1"
+      ],
+      "layout": "Auto",
+      "labels": true,
+      "legend": false,
+      "group_key": "Z2<1>"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "C18",
+   "title": "D6 prism",
+   "src": "cayley D6 <r, s>\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Cayley graphs': 12 elements, prism (two hexagons)",
+   "expect": {
+    "cayleys": [
+     {
+      "group": {
+       "Named": "D6"
+      },
+      "gens": [
+       "r",
+       "s"
+      ],
+      "layout": "Auto",
+      "labels": true,
+      "legend": false,
+      "group_key": "D6<r,s>"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "C19",
+   "title": "Q8 from a presentation",
+   "src": "cayley <a, b | a^4, a^2b^2, b^3aba>\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Cayley graphs'; relators are words, juxtaposed",
+   "expect": {
+    "cayleys": [
+     {
+      "group": {
+       "Presentation": [
+        [
+         "a",
+         "b"
+        ],
+        [
+         "a^4",
+         "a^2b^2",
+         "b^3aba"
+        ]
+       ]
+      },
+      "gens": [
+       "a",
+       "b"
+      ],
+      "layout": "Auto",
+      "labels": true,
+      "legend": false,
+      "group_key": "<a,b|a^4,a^2b^2,b^3aba>"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "C20",
+   "title": "Z6 <2, 3>",
+   "src": "cayley Z6 <2, 3>\n",
+   "tier": "inferred",
+   "why": "additive generators are elements: 2 has order 3 (6 arcs), 3 has order 2 (3 edges)",
+   "expect": {
+    "cayleys": [
+     {
+      "group": {
+       "Named": "Z6"
+      },
+      "gens": [
+       "2",
+       "3"
+      ],
+      "layout": "Auto",
+      "labels": true,
+      "legend": false,
+      "group_key": "Z6<2,3>"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "C21",
+   "title": "generator order decides colours",
+   "src": "cayley D4 <s, r>\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Cayley graphs': s gets blue (4 edges, no head), r maroon (8 arcs)",
+   "expect": {
+    "cayleys": [
+     {
+      "group": {
+       "Named": "D4"
+      },
+      "gens": [
+       "s",
+       "r"
+      ],
+      "layout": "Auto",
+      "labels": true,
+      "legend": false,
+      "group_key": "D4<s,r>"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "C22",
+   "title": "D4 with layout=grid",
+   "src": "cayley D4 <r, s> layout=grid labels=none\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Cayley graphs'",
+   "expect": {
+    "cayleys": [
+     {
+      "group": {
+       "Named": "D4"
+      },
+      "gens": [
+       "r",
+       "s"
+      ],
+      "layout": "Grid",
+      "labels": false,
+      "legend": false,
+      "group_key": "D4<r,s>"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "C15",
+   "title": "infinite dihedral is refused, the rest renders",
+   "src": "cayley <a, b | a^2, b^2>\nA -> B\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Cayley graphs': coset enumeration ≤ 96 elements; D∞ is infinite → a message for line 1, and A -> B still builds",
+   "expect": {
+    "cayleys": [
+     {
+      "group": {
+       "Presentation": [
+        [
+         "a",
+         "b"
+        ],
+        [
+         "a^2",
+         "b^2"
+        ]
+       ]
+      },
+      "gens": [
+       "a",
+       "b"
+      ]
+     }
+    ],
+    "arrows": [
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {},
+   "build": {
+    "compile": true,
+    "report_line": 1
+   },
+   "look": false
+  },
+  {
+   "id": "C23",
+   "title": "unknown group name",
+   "src": "cayley Foo7 <a>\nA -> B\n",
+   "tier": "inferred",
+   "why": "not in the known list; reported (parse or build) on line 1",
+   "expect": {
+    "arrows": [
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {},
+   "build": {
+    "compile": true,
+    "report_line": 1
+   },
+   "look": false
+  },
+  {
+   "id": "E01",
+   "title": "arrow with no target",
+   "src": "A ->\nB -> C\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Error handling': 'line N: …', the rest still renders",
+   "expect": {
+    "arrows": [
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "B",
+      "to": "C"
+     }
+    ]
+   },
+   "diag": {
+    "error_lines": [
+     1
+    ]
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "E02",
+   "title": "nonsense line",
+   "src": "frobnicate the widget\nB -> C\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Error handling': 'line N: …', the rest still renders",
+   "expect": {
+    "arrows": [
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "B",
+      "to": "C"
+     }
+    ]
+   },
+   "diag": {
+    "any_lines": [
+     1
+    ]
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "E03",
+   "title": "unbalanced quote",
+   "src": "A \"unclosed -> B\nC -> D\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Error handling': 'line N: …', the rest still renders",
+   "expect": {
+    "arrows": [
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "C",
+      "to": "D"
+     }
+    ]
+   },
+   "diag": {
+    "any_lines": [
+     1
+    ]
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "E04",
+   "title": "grid with no end",
+   "src": "A -> B\ngrid\n  C --> D\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Error handling': 'line N: …', the rest still renders",
+   "expect": {
+    "arrows_include": [
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {
+    "any_lines": [
+     2
+    ]
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "E05",
+   "title": "several bad lines",
+   "src": "A ->\nB -> C\n->> D\nC -> D\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Error handling': 'line N: …', the rest still renders",
+   "expect": {
+    "arrows": [
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "B",
+      "to": "C"
+     },
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "C",
+      "to": "D"
+     }
+    ]
+   },
+   "diag": {
+    "error_lines": [
+     1,
+     3
+    ]
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "E06",
+   "title": "empty file",
+   "src": "",
+   "tier": "spec",
+   "why": "an empty figure parses to nothing, quietly",
+   "expect": {
+    "node_count": 0
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": "either"
+   },
+   "look": false
+  },
+  {
+   "id": "E07",
+   "title": "malformed position",
+   "src": "A at 1\nA -> B\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Error handling': 'line N: …', the rest still renders",
+   "expect": {
+    "arrows": [
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {
+    "any_lines": [
+     1
+    ]
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "E08",
+   "title": "malformed global",
+   "src": "spacing banana\nA -> B\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Error handling': 'line N: …', the rest still renders",
+   "expect": {
+    "arrows": [
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "A",
+      "to": "B"
+     }
+    ]
+   },
+   "diag": {
+    "any_lines": [
+     1
+    ]
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "E09",
+   "title": "only comments",
+   "src": "% nothing yet\n",
+   "tier": "spec",
+   "why": "comments only: no diagnostics",
+   "expect": {
+    "min_comments": 1
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": "either"
+   },
+   "look": false
+  },
+  {
+   "id": "L01",
+   "title": "chain goes left to right",
+   "src": "A -> B\nB -> C\nC -> D\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Nodes without a position are auto-placed'",
+   "expect": {
+    "auto_chain": [
+     "A",
+     "B",
+     "C",
+     "D"
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "L02",
+   "title": "3-cycle becomes a triangle",
+   "src": "A -> B\nB -> C\nA -> C\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Nodes without a position are auto-placed'",
+   "expect": {
+    "auto_shape": {
+     "kind": "triangle",
+     "nodes": [
+      "A",
+      "B",
+      "C"
+     ]
+    }
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "L03",
+   "title": "4-cycle becomes a square",
+   "src": "A -> B\nB -> D\nA -> C\nC -> D\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Nodes without a position are auto-placed'",
+   "expect": {
+    "auto_shape": {
+     "kind": "square",
+     "nodes": [
+      "A",
+      "B",
+      "C",
+      "D"
+     ]
+    }
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "L04",
+   "title": "branching becomes a fan",
+   "src": "A -> B\nA -> C\nA -> D\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Nodes without a position are auto-placed'",
+   "expect": {
+    "auto_shape": {
+     "kind": "fan",
+     "nodes": [
+      "A",
+      "B",
+      "C",
+      "D"
+     ]
+    }
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "L05",
+   "title": "partial placement: rest to nearest free cells",
+   "src": "A at 0,0\nB at 2,0\nA -> C\nC -> B\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Nodes without a position are auto-placed'",
+   "expect": {
+    "auto_shape": {
+     "kind": "integer_cells",
+     "nodes": [
+      "A",
+      "B",
+      "C"
+     ]
+    }
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "L06",
+   "title": "spacing global moves cells",
+   "src": "spacing 3,2\nA at 0,0\nB at 1,1\nA -> B\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'spacing 2.8,2 changes that'",
+   "expect": {
+    "cell_vector": {
+     "from": "A",
+     "to": "B",
+     "dx": 3.0,
+     "dy": -2.0
+    }
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "L07",
+   "title": "default cell size",
+   "src": "A at 0,0\nB at 1,1\nA -> B\n",
+   "tier": "spec",
+   "why": "cells are 1.9 cm × 1.35 cm (FIG-POLISH: tikz-cd's default size); rows go down, y up",
+   "expect": {
+    "cell_vector": {
+     "from": "A",
+     "to": "B",
+     "dx": 1.9,
+     "dy": -1.35
+    }
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": false
+  },
+  {
+   "id": "R01",
+   "title": "kernel and image, with a projection",
+   "src": "blob G \"G\" {e, g, g^2, g^3}\nblob K \"\\ker\\varphi\" in G shaded {e, g^2}\nblob H \"H\" {e', h}\nG -φ-> H\ng |-> h ; e |-> e'\ng^3 |-> h ; g^2 |-> e'\ntext \"kernel ↦ identity\" at (0,-2.2)\n",
+   "tier": "inferred",
+   "why": "FIGURES.md blob example + text",
+   "expect": {},
+   "diag": {
+    "no_errors": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": true
+  },
+  {
+   "id": "R02",
+   "title": "universal property of the quotient",
+   "src": "grid\n  G --φ--> H\n  |π     /\\bar\\varphi\n  v\n  G/K\nend\n",
+   "tier": "inferred",
+   "why": "FIGURES.md 'Grid blocks': `/label` down-left from the upper-right node H to G/K; the label starts with a backslash but follows `/`, so it is not a `\\` diagonal",
+   "expect": {
+    "grid_cells": {
+     "G": [
+      0,
+      0
+     ],
+     "H": [
+      1,
+      0
+     ],
+     "G/K": [
+      0,
+      1
+     ]
+    },
+    "arrows": [
+     {
+      "label": "\\varphi",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "G",
+      "to": "H"
+     },
+     {
+      "label": "\\pi",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "G",
+      "to": "G/K"
+     },
+     {
+      "label": "\\bar\\varphi",
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "H",
+      "to": "G/K"
+     }
+    ]
+   },
+   "diag": {
+    "no_errors": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": true
+  },
+  {
+   "id": "R03",
+   "title": "D4 Cayley graph with legend",
+   "src": "cayley D4 <r, s> legend\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Cayley graphs'",
+   "expect": {},
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": true
+  },
+  {
+   "id": "R04",
+   "title": "dihedral sequence",
+   "src": "ngon A 4 axes at (0,0)\nngon B 4 turn=1 rotation at (3.5,0)\nngon C 4 flip=1.5 at (7,0)\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'N-gons' + model.rs NGon (axis k → 2k, k.5 → 2k+1)",
+   "expect": {},
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": true
+  },
+  {
+   "id": "R05",
+   "title": "SES of groups, Unicode",
+   "src": "1 at 0,0\nN at 1,0\nG at 2,0\nG/N at 3,0\n1' \"1\" at 4,0\n1 -> N ; N >-ι-> G ; G -π->> G/N ; G/N -> 1'\n",
+   "tier": "spec",
+   "why": "placement + labels declared first (first mention wins), then the arrows; 1' is labelled 1",
+   "expect": {
+    "nodes": [
+     {
+      "name": "1'",
+      "label": "1",
+      "pos": {
+       "Cell": [
+        4,
+        0
+       ]
+      }
+     }
+    ],
+    "arrows": [
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "1",
+      "to": "N"
+     },
+     {
+      "label": "\\iota",
+      "head": "Tail",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "N",
+      "to": "G"
+     },
+     {
+      "label": "\\pi",
+      "head": "TwoHeads",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "G",
+      "to": "G/N"
+     },
+     {
+      "label": null,
+      "head": "To",
+      "line": "Solid",
+      "side": "Auto",
+      "bend": 0.0,
+      "is_loop": false,
+      "iso": false,
+      "thick": false,
+      "color": null,
+      "label_pos": "Middle",
+      "from": "G/N",
+      "to": "1'"
+     }
+    ]
+   },
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": true
+  },
+  {
+   "id": "R06",
+   "title": "square with iso and bends",
+   "src": "grid\n  A --f--> B\n  |g       |h\n  v        v\n  C --k--> D\nend\nA -> D iso\nA -m-> B bend-left\n",
+   "tier": "spec",
+   "why": "FIGURES.md 'Grid blocks'",
+   "expect": {},
+   "diag": {
+    "clean": true
+   },
+   "build": {
+    "compile": true
+   },
+   "look": true
+  }
+ ],
+ "groups": {
+  "D4<r,s>": {
+   "order": 8,
+   "gens": [
+    {
+     "name": "r",
+     "order": 4,
+     "edges": 8,
+     "perm": [
+      1,
+      3,
+      5,
+      6,
+      2,
+      7,
+      0,
+      4
+     ]
+    },
+    {
+     "name": "s",
+     "order": 2,
+     "edges": 4,
+     "perm": [
+      2,
+      4,
+      0,
+      7,
+      1,
+      6,
+      5,
+      3
+     ]
+    }
+   ],
+   "element_orders": {
+    "1": 1,
+    "2": 5,
+    "4": 2
+   },
+   "abelian": false,
+   "total_edges": 12,
+   "source": "dihedral model r^k s^f (r = rotation, s = reflection, by name), order 2n = 8"
+  },
+  "<a,b|a^4,b^2,(ab)^2>": {
+   "order": 8,
+   "gens": [
+    {
+     "name": "a",
+     "order": 4,
+     "edges": 8,
+     "perm": [
+      1,
+      2,
+      3,
+      0,
+      7,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "name": "b",
+     "order": 2,
+     "edges": 4,
+     "perm": [
+      4,
+      5,
+      6,
+      7,
+      0,
+      1,
+      2,
+      3
+     ]
+    }
+   ],
+   "element_orders": {
+    "1": 1,
+    "2": 5,
+    "4": 2
+   },
+   "abelian": false,
+   "total_edges": 12,
+   "source": "own Todd-Coxeter; sympy FpGroup.order() = 8 agrees"
+  },
+  "Z6<1>": {
+   "order": 6,
+   "gens": [
+    {
+     "name": "1",
+     "order": 6,
+     "edges": 6,
+     "perm": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      0
+     ]
+    }
+   ],
+   "element_orders": {
+    "1": 1,
+    "2": 1,
+    "3": 2,
+    "6": 2
+   },
+   "abelian": true,
+   "total_edges": 6,
+   "source": "Z/6 additive, generators as integers"
+  },
+  "C5<r>": {
+   "order": 5,
+   "gens": [
+    {
+     "name": "r",
+     "order": 5,
+     "edges": 5,
+     "perm": [
+      1,
+      2,
+      3,
+      4,
+      0
+     ]
+    }
+   ],
+   "element_orders": {
+    "1": 1,
+    "5": 4
+   },
+   "abelian": true,
+   "total_edges": 5,
+   "source": "cyclic of order 5, the generator is a fixed generator"
+  },
+  "V4<a,b>": {
+   "order": 4,
+   "gens": [
+    {
+     "name": "a",
+     "order": 2,
+     "edges": 2,
+     "perm": [
+      1,
+      0,
+      3,
+      2
+     ]
+    },
+    {
+     "name": "b",
+     "order": 2,
+     "edges": 2,
+     "perm": [
+      2,
+      3,
+      0,
+      1
+     ]
+    }
+   ],
+   "element_orders": {
+    "1": 1,
+    "2": 3
+   },
+   "abelian": true,
+   "total_edges": 4,
+   "source": "Z2 x Z2 as pairs, a=(1,0), b=(0,1)"
+  },
+  "Z2xZ2<a,b>": {
+   "order": 4,
+   "gens": [
+    {
+     "name": "a",
+     "order": 2,
+     "edges": 2,
+     "perm": [
+      1,
+      0,
+      3,
+      2
+     ]
+    },
+    {
+     "name": "b",
+     "order": 2,
+     "edges": 2,
+     "perm": [
+      2,
+      3,
+      0,
+      1
+     ]
+    }
+   ],
+   "element_orders": {
+    "1": 1,
+    "2": 3
+   },
+   "abelian": true,
+   "total_edges": 4,
+   "source": "Z2 x Z2 as pairs, a=(1,0), b=(0,1)"
+  },
+  "Q8<i,j>": {
+   "order": 8,
+   "gens": [
+    {
+     "name": "i",
+     "order": 4,
+     "edges": 8,
+     "perm": [
+      1,
+      3,
+      5,
+      6,
+      2,
+      7,
+      0,
+      4
+     ]
+    },
+    {
+     "name": "j",
+     "order": 4,
+     "edges": 8,
+     "perm": [
+      2,
+      4,
+      3,
+      7,
+      6,
+      1,
+      5,
+      0
+     ]
+    }
+   ],
+   "element_orders": {
+    "1": 1,
+    "2": 1,
+    "4": 6
+   },
+   "abelian": false,
+   "total_edges": 16,
+   "source": "quaternion units, generators i, j"
+  },
+  "S3<a,b>": {
+   "order": 6,
+   "gens": [
+    {
+     "name": "a",
+     "order": 2,
+     "edges": 3,
+     "perm": [
+      1,
+      0,
+      4,
+      5,
+      2,
+      3
+     ]
+    },
+    {
+     "name": "b",
+     "order": 3,
+     "edges": 6,
+     "perm": [
+      2,
+      3,
+      5,
+      4,
+      1,
+      0
+     ]
+    }
+   ],
+   "element_orders": {
+    "1": 1,
+    "2": 3,
+    "3": 2
+   },
+   "abelian": false,
+   "total_edges": 9,
+   "source": "S3 as permutations; generator choice is the implementation's (order and element orders checked)"
+  },
+  "S4<a,b>": {
+   "order": 24,
+   "gens": [
+    {
+     "name": "a",
+     "order": 2,
+     "edges": 12,
+     "perm": [
+      1,
+      0,
+      4,
+      6,
+      2,
+      9,
+      3,
+      12,
+      13,
+      5,
+      11,
+      10,
+      7,
+      8,
+      18,
+      19,
+      21,
+      22,
+      14,
+      15,
+      23,
+      16,
+      17,
+      20
+     ]
+    },
+    {
+     "name": "b",
+     "order": 4,
+     "edges": 24,
+     "perm": [
+      2,
+      3,
+      5,
+      7,
+      8,
+      10,
+      11,
+      13,
+      14,
+      15,
+      0,
+      16,
+      17,
+      1,
+      19,
+      20,
+      22,
+      23,
+      12,
+      4,
+      21,
+      9,
+      6,
+      18
+     ]
+    }
+   ],
+   "element_orders": {
+    "1": 1,
+    "2": 9,
+    "3": 8,
+    "4": 6
+   },
+   "abelian": false,
+   "total_edges": 36,
+   "source": "S4 as permutations (transposition, 4-cycle); generator choice is the implementation's"
+  },
+  "A4<a,b>": {
+   "order": 12,
+   "gens": [
+    {
+     "name": "a",
+     "order": 2,
+     "edges": 6,
+     "perm": [
+      1,
+      0,
+      4,
+      6,
+      2,
+      9,
+      3,
+      8,
+      7,
+      5,
+      11,
+      10
+     ]
+    },
+    {
+     "name": "b",
+     "order": 3,
+     "edges": 12,
+     "perm": [
+      2,
+      3,
+      5,
+      7,
+      8,
+      0,
+      9,
+      1,
+      10,
+      11,
+      4,
+      6
+     ]
+    }
+   ],
+   "element_orders": {
+    "1": 1,
+    "2": 3,
+    "3": 8
+   },
+   "abelian": false,
+   "total_edges": 18,
+   "source": "A4 as even permutations ((12)(34), (123)); generator choice is the implementation's"
+  },
+  "Z3xZ4<a,b>": {
+   "order": 12,
+   "gens": [
+    {
+     "name": "a",
+     "order": 3,
+     "edges": 12,
+     "perm": [
+      1,
+      3,
+      4,
+      0,
+      6,
+      7,
+      2,
+      9,
+      10,
+      5,
+      11,
+      8
+     ]
+    },
+    {
+     "name": "b",
+     "order": 4,
+     "edges": 12,
+     "perm": [
+      2,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      0,
+      11,
+      1,
+      3
+     ]
+    }
+   ],
+   "element_orders": {
+    "1": 1,
+    "2": 1,
+    "3": 2,
+    "4": 2,
+    "6": 2,
+    "12": 4
+   },
+   "abelian": true,
+   "total_edges": 24,
+   "source": "Z3 x Z4 as pairs, a=(1,0), b=(0,1)"
+  },
+  "<a,b|a^2,b^3,(ab)^5>": {
+   "order": 60,
+   "gens": [
+    {
+     "name": "a",
+     "order": 2,
+     "edges": 30,
+     "perm": [
+      1,
+      0,
+      12,
+      10,
+      5,
+      4,
+      7,
+      6,
+      9,
+      8,
+      3,
+      17,
+      2,
+      14,
+      13,
+      16,
+      15,
+      11,
+      19,
+      18,
+      21,
+      20,
+      23,
+      22,
+      29,
+      26,
+      25,
+      28,
+      27,
+      24,
+      35,
+      32,
+      31,
+      34,
+      33,
+      30,
+      37,
+      36,
+      39,
+      38,
+      45,
+      42,
+      41,
+      44,
+      43,
+      40,
+      47,
+      46,
+      49,
+      48,
+      51,
+      50,
+      53,
+      52,
+      55,
+      54,
+      57,
+      56,
+      59,
+      58
+     ]
+    },
+    {
+     "name": "b",
+     "order": 3,
+     "edges": 60,
+     "perm": [
+      2,
+      4,
+      3,
+      0,
+      11,
+      6,
+      24,
+      8,
+      30,
+      10,
+      18,
+      1,
+      13,
+      23,
+      15,
+      40,
+      17,
+      25,
+      9,
+      20,
+      39,
+      22,
+      41,
+      12,
+      5,
+      16,
+      27,
+      49,
+      29,
+      31,
+      7,
+      28,
+      33,
+      57,
+      35,
+      36,
+      34,
+      38,
+      50,
+      19,
+      14,
+      21,
+      43,
+      53,
+      45,
+      46,
+      44,
+      48,
+      54,
+      26,
+      37,
+      52,
+      59,
+      42,
+      47,
+      56,
+      58,
+      32,
+      55,
+      51
+     ]
+    }
+   ],
+   "element_orders": {
+    "1": 1,
+    "2": 15,
+    "3": 20,
+    "5": 24
+   },
+   "abelian": false,
+   "total_edges": 90,
+   "source": "own Todd-Coxeter; sympy FpGroup.order() = 60 agrees"
+  },
+  "<a,b|a^2,b^3,(ab)^4>": {
+   "order": 24,
+   "gens": [
+    {
+     "name": "a",
+     "order": 2,
+     "edges": 12,
+     "perm": [
+      1,
+      0,
+      10,
+      8,
+      5,
+      4,
+      7,
+      6,
+      3,
+      13,
+      2,
+      12,
+      11,
+      9,
+      15,
+      14,
+      17,
+      16,
+      21,
+      20,
+      19,
+      18,
+      23,
+      22
+     ]
+    },
+    {
+     "name": "b",
+     "order": 3,
+     "edges": 24,
+     "perm": [
+      2,
+      4,
+      3,
+      0,
+      9,
+      6,
+      18,
+      8,
+      14,
+      1,
+      11,
+      17,
+      13,
+      19,
+      7,
+      16,
+      23,
+      10,
+      5,
+      12,
+      21,
+      22,
+      20,
+      15
+     ]
+    }
+   ],
+   "element_orders": {
+    "1": 1,
+    "2": 9,
+    "3": 8,
+    "4": 6
+   },
+   "abelian": false,
+   "total_edges": 36,
+   "source": "own Todd-Coxeter; sympy FpGroup.order() = 24 agrees"
+  },
+  "<a|a^7>": {
+   "order": 7,
+   "gens": [
+    {
+     "name": "a",
+     "order": 7,
+     "edges": 7,
+     "perm": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      0
+     ]
+    }
+   ],
+   "element_orders": {
+    "1": 1,
+    "7": 6
+   },
+   "abelian": true,
+   "total_edges": 7,
+   "source": "own Todd-Coxeter; sympy FpGroup.order() = 7 agrees"
+  },
+  "D3<r,s>": {
+   "order": 6,
+   "gens": [
+    {
+     "name": "r",
+     "order": 3,
+     "edges": 6,
+     "perm": [
+      1,
+      3,
+      5,
+      0,
+      2,
+      4
+     ]
+    },
+    {
+     "name": "s",
+     "order": 2,
+     "edges": 3,
+     "perm": [
+      2,
+      4,
+      0,
+      5,
+      1,
+      3
+     ]
+    }
+   ],
+   "element_orders": {
+    "1": 1,
+    "2": 3,
+    "3": 2
+   },
+   "abelian": false,
+   "total_edges": 9,
+   "source": "dihedral model r^k s^f (r = rotation, s = reflection, by name), order 2n = 6"
+  },
+  "Z2<1>": {
+   "order": 2,
+   "gens": [
+    {
+     "name": "1",
+     "order": 2,
+     "edges": 1,
+     "perm": [
+      1,
+      0
+     ]
+    }
+   ],
+   "element_orders": {
+    "1": 1,
+    "2": 1
+   },
+   "abelian": true,
+   "total_edges": 1,
+   "source": "Z/2 additive, generators as integers"
+  },
+  "D6<r,s>": {
+   "order": 12,
+   "gens": [
+    {
+     "name": "r",
+     "order": 6,
+     "edges": 12,
+     "perm": [
+      1,
+      3,
+      5,
+      6,
+      2,
+      8,
+      10,
+      4,
+      11,
+      0,
+      9,
+      7
+     ]
+    },
+    {
+     "name": "s",
+     "order": 2,
+     "edges": 6,
+     "perm": [
+      2,
+      4,
+      0,
+      7,
+      1,
+      9,
+      11,
+      3,
+      10,
+      5,
+      8,
+      6
+     ]
+    }
+   ],
+   "element_orders": {
+    "1": 1,
+    "2": 7,
+    "3": 2,
+    "6": 2
+   },
+   "abelian": false,
+   "total_edges": 18,
+   "source": "dihedral model r^k s^f (r = rotation, s = reflection, by name), order 2n = 12"
+  },
+  "<a,b|a^4,a^2b^2,b^3aba>": {
+   "order": 8,
+   "gens": [
+    {
+     "name": "a",
+     "order": 4,
+     "edges": 8,
+     "perm": [
+      1,
+      2,
+      3,
+      0,
+      6,
+      7,
+      5,
+      4
+     ]
+    },
+    {
+     "name": "b",
+     "order": 4,
+     "edges": 8,
+     "perm": [
+      5,
+      6,
+      4,
+      7,
+      0,
+      2,
+      3,
+      1
+     ]
+    }
+   ],
+   "element_orders": {
+    "1": 1,
+    "2": 1,
+    "4": 6
+   },
+   "abelian": false,
+   "total_edges": 16,
+   "source": "own Todd-Coxeter; sympy FpGroup.order() = 8 agrees"
+  },
+  "Z6<2,3>": {
+   "order": 6,
+   "gens": [
+    {
+     "name": "2",
+     "order": 3,
+     "edges": 6,
+     "perm": [
+      1,
+      3,
+      4,
+      0,
+      5,
+      2
+     ]
+    },
+    {
+     "name": "3",
+     "order": 2,
+     "edges": 3,
+     "perm": [
+      2,
+      4,
+      0,
+      5,
+      1,
+      3
+     ]
+    }
+   ],
+   "element_orders": {
+    "1": 1,
+    "2": 1,
+    "3": 2,
+    "6": 2
+   },
+   "abelian": true,
+   "total_edges": 9,
+   "source": "Z/6 additive, generators as integers"
+  },
+  "D4<s,r>": {
+   "order": 8,
+   "gens": [
+    {
+     "name": "s",
+     "order": 2,
+     "edges": 4,
+     "perm": [
+      2,
+      4,
+      0,
+      7,
+      1,
+      6,
+      5,
+      3
+     ]
+    },
+    {
+     "name": "r",
+     "order": 4,
+     "edges": 8,
+     "perm": [
+      1,
+      3,
+      5,
+      6,
+      2,
+      7,
+      0,
+      4
+     ]
+    }
+   ],
+   "element_orders": {
+    "1": 1,
+    "2": 5,
+    "4": 2
+   },
+   "abelian": false,
+   "total_edges": 12,
+   "source": "dihedral model r^k s^f (r = rotation, s = reflection, by name), order 2n = 8"
+  },
+  "<a,b|a^2,b^2>": {
+   "order": null,
+   "infinite_or_huge": true,
+   "source": "todd-coxeter overflowed 20000 cosets"
+  }
+ }
+}

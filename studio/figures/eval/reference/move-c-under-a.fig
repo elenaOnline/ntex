@@ -1,0 +1,6 @@
+A -f-> B
+A -h-> C
+B -g-> C
+A at 0,0
+B at 1,0
+C at 0,1

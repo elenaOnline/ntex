@@ -1,0 +1,500 @@
+% Ntex Figures, Ask-box evaluation tasks. Hand-editable.
+%
+% Each task:
+%   === <id> <kind>            kind: cd | blob | ngon | cayley | tidy
+%   --- ask                    the instruction, as the author would type it
+%   --- source                 the .fig file before (may be empty)
+%   --- expect                 one check per line, against the PARSED answer
+%   --- touch                  what the instruction may change (comma list);
+%                              everything else in the source must come back
+%                              unchanged and in order. Names (nodes, blobs,
+%                              ngons, cayleys), arrow pairs `A->B` (either
+%                              direction), `text`, `globals`, or `*`.
+%
+% Checks (see src/main.rs, `check`):
+%   node N [label=L] [cell=x,y] [cell~x,y (or unplaced)] [color=c]
+%   arrow A->B | A--B (either way) | *->B [label=L|none] [head=H] [line=L]
+%         [bend] [bend=left|right|0] [loop] [swap] [iso] [thick] [color=c] [pos=NearEnd]
+%         (bare `bend` is either side; left/right are relative to the arrow's direction)
+%   no node N | no arrow A->B | no blob N
+%   count arrows=N | nodes>=N | blobs | ngons | cayleys | elements | texts | grids
+%   blob N|* [label=] [parent=] [shaded] [color=] [shape=] [has=a,b] [lacks=a,b] [place=Below]
+%   ngon N|* [n=] [axes] [noaxes] [axis=1,2.5] [rotation=k] [turn=k] [flip=k] [labels=a,b]
+%   cayley N|* [group=Q8] [pres] [gens=a,b] [ngens=2] [rels=3] [layout=Grid] [legend] [nolabels]
+%   comment TEXT | text TEXT | globals [spacing=x,y] [size=s] [scale=s]
+%   below C A (same column, lower row) | right B A (same row, further right)
+%   apart A B (the arrows between A and B curve to different sides, so none
+%             overlaps: A->B bend-left with B->A bend-left, not bend-right)
+% Alternatives with |, e.g. head=Tail|Hook. Labels compare without spaces,
+% $ and braces, after Unicode → LaTeX.
+
+=== pullback cd
+--- ask
+make this a pullback square, add P in the corner with its two projections
+--- source
+% fibre product
+B -g-> D
+C -f-> D
+B at 1,0
+C at 0,1
+D at 1,1
+--- expect
+node P cell~0,0
+arrow P->B
+arrow P->C
+count arrows=4
+count nodes=4
+comment fibre product
+--- touch
+P, P->B, P->C
+
+=== label-verticals cd
+--- ask
+label the vertical arrows g and h
+--- source
+grid
+  A --f--> B
+  |        |
+  v        v
+  C --k--> D
+end
+--- expect
+arrow A->C label=g
+arrow B->D label=h
+arrow A->B label=f
+arrow C->D label=k
+count arrows=4
+--- touch
+A->C, B->D
+
+=== triangle-to-square cd
+--- ask
+turn this triangle into a commutative square: A top left, B top right, C bottom left, D bottom right, arrows A→B→D and A→C→D, plus a dashed diagonal from A to D
+--- source
+% composition
+A -f-> B
+B -g-> C
+A -"g \circ f"-> C
+--- expect
+node A cell~0,0
+node B cell=1,0
+node C cell=0,1
+node D cell=1,1
+arrow A->B
+arrow B->D
+arrow A->C
+arrow C->D
+arrow A->D line=Dashed
+no arrow B->C
+count arrows=5
+comment composition
+--- touch
+*
+
+=== move-c-under-a cd
+--- ask
+move C under A
+--- source
+A -f-> B
+A -h-> C
+B -g-> C
+A at 0,0
+B at 1,0
+C at 2,0
+--- expect
+node C cell=0,1
+node A cell=0,0
+node B cell=1,0
+count arrows=3
+--- touch
+C
+
+=== ses cd
+--- ask
+make this a short exact sequence 1 → K ↪ G ↠ Q → 1, with ι and π on the two middle maps
+--- source
+% the extension
+K -> G
+G -> Q
+--- expect
+arrow K->G label=\iota head=Tail|Hook
+arrow G->Q label=\pi head=TwoHeads
+arrow *->K
+arrow Q->*
+count nodes=5
+count arrows=4
+comment the extension
+--- touch
+*
+
+=== induced-map cd
+--- ask
+add the induced map from G/N to H, dashed, labelled \bar\varphi
+--- source
+% first isomorphism theorem
+G -π->> G/N
+G -φ-> H
+G at 0,0
+G/N at 1,0
+H at 0,1
+--- expect
+arrow G/N->H line=Dashed label=\bar\varphi
+count arrows=3
+--- touch
+G/N->H
+
+=== bend-iso cd
+--- ask
+bend both arrows so they don't sit on top of each other, and mark f as an iso
+--- source
+A -f-> B
+B -g-> A
+--- expect
+arrow A->B label=f bend iso
+arrow B->A label=g bend
+apart A B
+count arrows=2
+--- touch
+A->B
+
+=== swap-label cd
+--- ask
+put the label of h on the other side
+--- source
+% triangle
+A -f-> B
+A -h-> C
+B -g-> C
+A at 0,0; B at 1,0; C at 1,1
+--- expect
+arrow A->C label=h swap
+count arrows=3
+--- touch
+A->C
+
+=== delete-d cd
+--- ask
+delete D and its arrow
+--- source
+A -f-> B
+B -g-> C
+A -"g \circ f"-> C
+C -> D
+--- expect
+no node D
+no arrow C->D
+count arrows=3
+--- touch
+D, C->D
+
+=== loop cd
+--- ask
+add an endomorphism e on X, drawn as a loop
+--- source
+X -f-> Y
+X at 0,0
+Y at 1,0
+--- expect
+arrow X->X label=e loop
+count arrows=2
+--- touch
+X->X
+
+=== globals cd
+--- ask
+spread the columns out to 3.5 cm and make the labels small
+--- source
+A -"\text{a long label}"-> B
+B -"\text{another one}"-> C
+--- expect
+globals spacing=3.5,* size=small
+count arrows=2
+--- touch
+globals
+
+=== equals-grid cd
+--- ask
+add a row under this: C and D, with an equals sign from B down to D and a map k from C to D; A to C is the inclusion i
+--- source
+grid
+  A --f--> B
+end
+--- expect
+arrow A->B label=f
+arrow B--D head=Equal
+arrow C->D label=k
+arrow A->C label=i head=Hook|Tail
+node C cell=0,1
+node D cell=1,1
+count arrows=4
+--- touch
+*
+
+=== kernel-blob blob
+--- ask
+add the kernel inside G and shade it, it's {e, g^2}
+--- source
+blob G "G" {e, g, g^2, g^3}
+blob H "H" {e', h}
+G -φ-> H
+--- expect
+blob * parent=G shaded has=e,g^2
+blob G has=g,g^3 lacks=e,g^2
+count elements=6
+count blobs=3
+--- touch
+G
+
+=== kernel-to-identity blob
+--- ask
+show the kernel going to the identity: e and g^2 both map to e'
+--- source
+blob G "G" {g, g^3}
+blob K "\ker\varphi" in G shaded {e, g^2}
+blob H "H" {e', h}
+G -φ-> H
+--- expect
+arrow e->e' head=MapsTo
+arrow g^2->e' head=MapsTo
+count blobs=3
+--- touch
+e->e', g^2->e'
+
+=== image-blob blob
+--- ask
+add the image of φ inside H, it's {e', h}, and colour it teal
+--- source
+blob G "G" {e, g, g^2, g^3}
+blob H "H" {e', h, k, hk}
+G -φ-> H
+--- expect
+blob * parent=H has=e',h color=teal
+blob H lacks=e',h has=k,hk
+count elements=8
+--- touch
+H
+
+=== blob-shapes blob
+--- ask
+make X tall and Y wide, and put Y's label underneath
+--- source
+blob X "X" {x_1, x_2, x_3}
+blob Y "Y" {y_1, y_2}
+X -p->> Y
+--- expect
+blob X shape=Tall
+blob Y shape=Wide place=Below
+count elements=5
+--- touch
+X, Y
+
+=== function-arrows blob
+--- ask
+draw f: A → B sending a ↦ 1, b ↦ 1, c ↦ 3, and label the big arrow f
+--- source
+% not injective
+blob A "A" {a, b, c}
+blob B "B" {1, 2, 3}
+--- expect
+arrow A->B label=f
+arrow a->1 head=MapsTo
+arrow b->1 head=MapsTo
+arrow c->3 head=MapsTo
+count arrows=4
+--- touch
+A->B, a->1, b->1, c->3
+
+=== messy-blobs blob
+--- ask
+fix this: e is listed twice, and give K the label \ker\varphi
+--- source
+blob G "G" {e,g,g²}
+blob K in G shaded {e}
+--- expect
+blob K label=\ker\varphi parent=G shaded has=e
+blob G lacks=e
+count elements=3
+--- touch
+G, K
+
+=== d5-axes ngon
+--- ask
+draw D5 with all reflection axes
+--- source
+% dihedral pictures
+--- expect
+ngon * n=5 axes
+count ngons=1
+comment dihedral pictures
+--- touch
+
+=== square-rotation ngon
+--- ask
+add the rotation arrow and the axis through vertex 1
+--- source
+ngon P 4
+--- expect
+ngon P n=4 rotation=1 axis=1
+count ngons=1
+--- touch
+P
+
+=== sequence ngon
+--- ask
+show it again after r and after s (the flip across the axis through 1), side by side
+--- source
+ngon P 4 labels 1,2,3,4
+--- expect
+ngon P n=4 turn=0
+ngon * n=4 turn=1
+ngon * n=4 flip=1
+count ngons=3
+--- touch
+
+=== hexagon-edges ngon
+--- ask
+add the axes through the midpoints of edges 1 and 2
+--- source
+ngon H 6
+--- expect
+ngon H n=6 axis=1.5,2.5 noaxes
+--- touch
+H
+
+=== triangle-turn ngon
+--- ask
+label the vertices a, b, c and draw it after one turn next to it
+--- source
+ngon T 3
+--- expect
+ngon T n=3 labels=a,b,c turn=0
+ngon * n=3 labels=a,b,c turn=1
+count ngons=2
+--- touch
+T
+
+=== pentagon-swap ngon
+--- ask
+drop the axes and show rotation by 2 instead
+--- source
+% D5
+ngon P 5 labels a,b,c,d,e axes
+--- expect
+ngon P n=5 noaxes rotation=2 labels=a,b,c,d,e
+comment D5
+--- touch
+P
+
+=== q8 cayley
+--- ask
+cayley graph of Q8
+--- source
+% quaternions
+--- expect
+cayley * group=Q8 ngens=2
+count cayleys=1
+comment quaternions
+--- touch
+
+=== d4-legend cayley
+--- ask
+add a legend and hide the vertex labels
+--- source
+cayley D4 <r, s>
+--- expect
+cayley * group=D4 gens=r,s legend nolabels
+count cayleys=1
+--- touch
+*
+
+=== presentation cayley
+--- ask
+cayley graph of <a, b | a^3, b^2, (ab)^2>
+--- source
+--- expect
+cayley * pres gens=a,b rels=3
+count cayleys=1
+--- touch
+
+=== z2xz4 cayley
+--- ask
+make it Z2 × Z4 instead, on a grid
+--- source
+% product
+cayley Z8 <1>
+--- expect
+cayley * group=Z2xZ4 layout=Grid
+count cayleys=1
+comment product
+--- touch
+*
+
+=== tidy-lines tidy
+--- ask
+tidy this up, one statement per line
+--- source
+% my sequence
+A -f-> B;B  -g->  C
+C at 2,0 ; A at 0,0 ;B at 1,0
+--- expect
+arrow A->B label=f
+arrow B->C label=g
+node A cell=0,0
+node B cell=1,0
+node C cell=2,0
+count arrows=2
+comment my sequence
+--- touch
+
+=== tidy-triangle tidy
+--- ask
+clean this up and lay it out as a triangle: G top left, H top right, K under H
+--- source
+G -φ-> H ; H -ψ-> K
+G -ψ∘φ-> K
+--- expect
+node G cell=0,0
+node H cell=1,0
+node K cell=1,1
+arrow G->H label=\varphi
+arrow H->K label=\psi
+arrow G->K label=\psi\circ\varphi
+count arrows=3
+--- touch
+G, H, K
+
+=== to-grid tidy
+--- ask
+write this as a grid block
+--- source
+A -f-> B
+A -g-> C
+B -h-> D
+C -k-> D
+A at 0,0; B at 1,0; C at 0,1; D at 1,1
+--- expect
+count grids=1
+arrow A->B label=f
+arrow A->C label=g
+arrow B->D label=h
+arrow C->D label=k
+node D cell=1,1
+count arrows=4
+--- touch
+*
+
+=== note-text blob
+--- ask
+add a note under the picture saying kernel ↦ identity
+--- source
+blob G "G" {g, g^3}
+blob K "\ker\varphi" in G shaded {e, g^2}
+blob H "H" {e', h}
+G -φ-> H
+e |-> e' ; g^2 |-> e'
+--- expect
+text kernel
+count texts=1
+count arrows=3
+--- touch
+text

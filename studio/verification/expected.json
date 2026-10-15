@@ -1,0 +1,9147 @@
+{
+ "about": "Ntex Studio acceptance data, ADVERSARY. Buffers use ‸ for the cursor (insert mode). Measured in a real headless ntex (verification/try.lua) on 2026-10-07 unless 'measured_today' shows the value differs (then the value here is derived from the spec; see acceptance.md).",
+ "snippets": [
+  {
+   "id": "C01",
+   "title": "plain maths auto, two tab stops",
+   "draft": {
+    "id": null,
+    "trigger": "ff",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\frac{"
+     },
+     {
+      "Tab": {
+       "n": 1,
+       "default": ""
+      }
+     },
+     {
+      "Text": "}{"
+     },
+     {
+      "Tab": {
+       "n": 2,
+       "default": ""
+      }
+     },
+     {
+      "Text": "}"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  math(\"ff\", [[\\frac{<>}{<>}]], \"yours\"),",
+   "alts": [],
+   "semantic": false,
+   "note": "",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "steps": [
+      {
+       "keys": "ff",
+       "buffer": "$\\frac{‸}{}$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      },
+      {
+       "keys": "a<Tab>",
+       "buffer": "$\\frac{a}{‸}$",
+       "mode": "i",
+       "sel": null,
+       "expanded": []
+      },
+      {
+       "keys": "b<Tab>",
+       "buffer": "$\\frac{a}{b}‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C02",
+   "title": "]] inside the body needs a level-1 long string",
+   "draft": {
+    "id": null,
+    "trigger": "dbr",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "a]]b"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  math(\"dbr\", [=[a]]b]=], \"yours\"),",
+   "alts": [],
+   "semantic": false,
+   "note": "",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "steps": [
+      {
+       "keys": "dbr",
+       "buffer": "$a]]b‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C03",
+   "title": "body ENDING in ] (no ]] inside) still cannot use [[…]]",
+   "draft": {
+    "id": null,
+    "trigger": "lrs",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\left[ "
+     },
+     {
+      "Tab": {
+       "n": 1,
+       "default": ""
+      }
+     },
+     {
+      "Text": " \\right]"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  math(\"lrs\", [=[\\left[ <> \\right]]=], \"yours\"),",
+   "alts": [
+    "  math(\"lrs\", \"\\\\left[ <> \\\\right]\", \"yours\"),"
+   ],
+   "semantic": true,
+   "note": "",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "steps": [
+      {
+       "keys": "lrs",
+       "buffer": "$\\left[ ‸ \\right]$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      },
+      {
+       "keys": "x<Tab>",
+       "buffer": "$\\left[ x \\right]‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C04",
+   "title": "leading newline (Lua drops the first newline of a long string)",
+   "draft": {
+    "id": null,
+    "trigger": "nlx",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\n\\quad"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  math(\"nlx\", [[\n\n\\quad]], \"yours\"),",
+   "alts": [],
+   "semantic": false,
+   "note": "",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "\\[\na ‸\n\\]",
+     "select": null,
+     "steps": [
+      {
+       "keys": "nlx",
+       "buffer": "\\[\na \n\\quad‸\n\\]",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C05",
+   "title": "trailing space kept in the Lua; dropped by ntex only in inline maths",
+   "draft": {
+    "id": null,
+    "trigger": "tsp",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\otimes "
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  math(\"tsp\", [[\\otimes ]], \"yours\"),",
+   "alts": [],
+   "semantic": false,
+   "note": "",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$a ‸$",
+     "select": null,
+     "steps": [
+      {
+       "keys": "tsp",
+       "buffer": "$a \\otimes‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      }
+     ]
+    },
+    {
+     "ft": "tex",
+     "text": "\\[\na ‸\n\\]",
+     "select": null,
+     "steps": [
+      {
+       "keys": "tsp",
+       "buffer": "\\[\na \\otimes ‸\n\\]",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C06",
+   "title": "tab character, text, Tab, line start (a Castel-style environment)",
+   "draft": {
+    "id": null,
+    "trigger": "thm",
+    "kind": "Plain",
+    "context": "Text",
+    "fires": "Tab",
+    "math_where": "Any",
+    "line": "Start",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\begin{theorem}\n\t"
+     },
+     {
+      "Tab": {
+       "n": 1,
+       "default": ""
+      }
+     },
+     {
+      "Text": "\n\\end{theorem}"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  text(\"thm\", [[\\begin{theorem}\n\t<>\n\\end{theorem}]], \"yours\", { line = \"start\", tab = true }),",
+   "alts": [
+    "  text(\"thm\", [[\\begin{theorem}\n\t<>\n\\end{theorem}]], \"yours\", { tab = true, line = \"start\" }),",
+    "  text(\"thm\", [[\n\\begin{theorem}\n\t<>\n\\end{theorem}]], \"yours\", { tab = true, line = \"start\" }),",
+    "  text(\"thm\", [[\n\\begin{theorem}\n\t<>\n\\end{theorem}]], \"yours\", { line = \"start\", tab = true }),"
+   ],
+   "semantic": false,
+   "note": "ARCHITECTURE lists opts order where, line, tab, … but its own example (and her files) write { tab = true, line = \"start\" }: both accepted",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "‸",
+     "select": null,
+     "steps": [
+      {
+       "keys": "thm<Tab>",
+       "buffer": "\\begin{theorem}\n\t‸\n\\end{theorem}",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      },
+      {
+       "keys": "x<Tab>",
+       "buffer": "\\begin{theorem}\n\tx\n\\end{theorem}‸",
+       "mode": "i",
+       "sel": null,
+       "expanded": []
+      }
+     ]
+    },
+    {
+     "ft": "tex",
+     "text": "Say thm‸",
+     "select": null,
+     "steps": [
+      {
+       "keys": "<Tab>",
+       "buffer": "Say thm ‸",
+       "mode": "i",
+       "sel": null,
+       "expanded": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C07",
+   "title": "literal % → %%",
+   "draft": {
+    "id": null,
+    "trigger": "pct",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "50\\%"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  math(\"pct\", [[50\\%%]], \"yours\"),",
+   "alts": [],
+   "semantic": false,
+   "note": "",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "steps": [
+      {
+       "keys": "pct",
+       "buffer": "$50\\%‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C08",
+   "title": "literal %1 and %V text in a plain snippet → %%1, %%V",
+   "draft": {
+    "id": null,
+    "trigger": "pcx",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\%1 \\%V"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  math(\"pcx\", [[\\%%1 \\%%V]], \"yours\"),",
+   "alts": [],
+   "semantic": false,
+   "note": "",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "steps": [
+      {
+       "keys": "pcx",
+       "buffer": "$\\%1 \\%V‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C09",
+   "title": "literal <> → %<%> (BRIDGE's escape)",
+   "draft": {
+    "id": null,
+    "trigger": "ltg",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "a<>b"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  math(\"ltg\", [[a%<%>b]], \"yours\"),",
+   "alts": [],
+   "semantic": false,
+   "note": "",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "steps": [
+      {
+       "keys": "ltg",
+       "buffer": "$a<>b‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C10",
+   "title": "literal <3> → %<3%>",
+   "draft": {
+    "id": null,
+    "trigger": "lt3",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "x<3>y"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  math(\"lt3\", [[x%<3%>y]], \"yours\"),",
+   "alts": [],
+   "semantic": false,
+   "note": "",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "steps": [
+      {
+       "keys": "lt3",
+       "buffer": "$x<3>y‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C11",
+   "title": "literal <:x> → %<:x%>",
+   "draft": {
+    "id": null,
+    "trigger": "ltx",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "u<:x>v"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  math(\"ltx\", [[u%<:x%>v]], \"yours\"),",
+   "alts": [],
+   "semantic": false,
+   "note": "",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "steps": [
+      {
+       "keys": "ltx",
+       "buffer": "$u<:x>v‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C12",
+   "title": "literal <b> does not read as a tab stop: left alone",
+   "draft": {
+    "id": null,
+    "trigger": "ltb",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "a<b>c"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  math(\"ltb\", [[a<b>c]], \"yours\"),",
+   "alts": [
+    "  math(\"ltb\", [[a%<b%>c]], \"yours\"),"
+   ],
+   "semantic": false,
+   "note": "",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "steps": [
+      {
+       "keys": "ltb",
+       "buffer": "$a<b>c‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C13",
+   "title": "mirror: tab stop 1 typed twice → numbered",
+   "draft": {
+    "id": null,
+    "trigger": "bnv",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\begin{"
+     },
+     {
+      "Tab": {
+       "n": 1,
+       "default": ""
+      }
+     },
+     {
+      "Text": "}\n"
+     },
+     {
+      "Tab": {
+       "n": 2,
+       "default": ""
+      }
+     },
+     {
+      "Text": "\n\\end{"
+     },
+     {
+      "Tab": {
+       "n": 1,
+       "default": ""
+      }
+     },
+     {
+      "Text": "}"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  math(\"bnv\", [[\\begin{<1>}\n<2>\n\\end{<1>}]], \"yours\"),",
+   "alts": [
+    "  math(\"bnv\", [[\n\\begin{<1>}\n<2>\n\\end{<1>}]], \"yours\"),"
+   ],
+   "semantic": false,
+   "note": "her files open a multi-line body with [[ and a newline (Lua drops it): accepted",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "\\[\n‸\n\\]",
+     "select": null,
+     "steps": [
+      {
+       "keys": "bnv",
+       "buffer": "\\[\n\\begin{‸}\n\n\\end{}\n\\]",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      },
+      {
+       "keys": "foo",
+       "buffer": "\\[\n\\begin{foo‸}\n\n\\end{foo}\n\\]",
+       "mode": "i",
+       "sel": null,
+       "expanded": []
+      },
+      {
+       "keys": "<Tab>",
+       "buffer": "\\[\n\\begin{foo}\n‸\n\\end{foo}\n\\]",
+       "mode": "i",
+       "sel": null,
+       "expanded": []
+      },
+      {
+       "keys": "z<Tab>",
+       "buffer": "\\[\n\\begin{foo}\nz\n\\end{foo}‸\n\\]",
+       "mode": "i",
+       "sel": null,
+       "expanded": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C14",
+   "title": "defaults with spaces",
+   "draft": {
+    "id": null,
+    "trigger": "dsp",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\sum_{"
+     },
+     {
+      "Tab": {
+       "n": 1,
+       "default": "i = 1"
+      }
+     },
+     {
+      "Text": "}^{"
+     },
+     {
+      "Tab": {
+       "n": 2,
+       "default": "n"
+      }
+     },
+     {
+      "Text": "}"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  math(\"dsp\", [[\\sum_{<:i = 1>}^{<:n>}]], \"yours\"),",
+   "alts": [],
+   "semantic": false,
+   "note": "",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "steps": [
+      {
+       "keys": "dsp",
+       "buffer": "$\\sum_{i = 1}^{n}$",
+       "mode": "s",
+       "sel": "i = 1",
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      },
+      {
+       "keys": "<Tab>",
+       "buffer": "$\\sum_{i = 1}^{n}$",
+       "mode": "s",
+       "sel": "n",
+       "expanded": []
+      },
+      {
+       "keys": "<Tab>",
+       "buffer": "$\\sum_{i = 1}^{n}‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C15",
+   "title": "out-of-order tab stops → every one numbered",
+   "draft": {
+    "id": null,
+    "trigger": "frr",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\frac{"
+     },
+     {
+      "Tab": {
+       "n": 2,
+       "default": ""
+      }
+     },
+     {
+      "Text": "}{"
+     },
+     {
+      "Tab": {
+       "n": 1,
+       "default": ""
+      }
+     },
+     {
+      "Text": "}"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  math(\"frr\", [[\\frac{<2>}{<1>}]], \"yours\"),",
+   "alts": [],
+   "semantic": false,
+   "note": "",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "steps": [
+      {
+       "keys": "frr",
+       "buffer": "$\\frac{}{‸}$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      },
+      {
+       "keys": "a<Tab>",
+       "buffer": "$\\frac{‸}{a}$",
+       "mode": "i",
+       "sel": null,
+       "expanded": []
+      },
+      {
+       "keys": "b<Tab>",
+       "buffer": "$\\frac{b}{a}‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C16",
+   "title": "exit point <0> before the last tab stop",
+   "draft": {
+    "id": null,
+    "trigger": "itd",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\int "
+     },
+     "Exit",
+     {
+      "Text": " \\, d"
+     },
+     {
+      "Tab": {
+       "n": 1,
+       "default": "x"
+      }
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  math(\"itd\", [[\\int <0> \\, d<:x>]], \"yours\"),",
+   "alts": [
+    "  math(\"itd\", [[\\int <0> \\, d<1:x>]], \"yours\"),"
+   ],
+   "semantic": false,
+   "note": "",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "steps": [
+      {
+       "keys": "itd",
+       "buffer": "$\\int  \\, dx$",
+       "mode": "s",
+       "sel": "x",
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      },
+      {
+       "keys": "t<Tab>",
+       "buffer": "$\\int ‸ \\, dt$",
+       "mode": "i",
+       "sel": null,
+       "expanded": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C17",
+   "title": "post: %1 is the letter before",
+   "draft": {
+    "id": null,
+    "trigger": "bbm",
+    "kind": "Post",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\mathbb{"
+     },
+     {
+      "Capture": 1
+     },
+     {
+      "Text": "}"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  post(\"bbm\", [[\\mathbb{%1}]], \"yours\"),",
+   "alts": [],
+   "semantic": false,
+   "note": "",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "steps": [
+      {
+       "keys": "Rbbm",
+       "buffer": "$\\mathbb{R}‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      }
+     ]
+    },
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "steps": [
+      {
+       "keys": "bbm",
+       "buffer": "$bbm‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C18",
+   "title": "pattern with two captures, eg given",
+   "draft": {
+    "id": null,
+    "trigger": "(%a)vv(%d)",
+    "kind": "Pattern",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "xvv2",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\vec{"
+     },
+     {
+      "Capture": 1
+     },
+     {
+      "Text": "}_{"
+     },
+     {
+      "Capture": 2
+     },
+     {
+      "Text": "}"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  pat(\"(%a)vv(%d)\", [[\\vec{%1}_{%2}]], \"yours\", { eg = \"xvv2\" }),",
+   "alts": [],
+   "semantic": false,
+   "note": "",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "steps": [
+      {
+       "keys": "xvv2",
+       "buffer": "$\\vec{x}_{2}‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C19",
+   "title": "visual: %V, select then key",
+   "draft": {
+    "id": null,
+    "trigger": "D",
+    "kind": "Visual",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\boldsymbol{"
+     },
+     "Selection",
+     {
+      "Text": "}"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  vis(\"D\", [[\\boldsymbol{%V}]], \"yours\"),",
+   "alts": [],
+   "semantic": false,
+   "note": "",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$‸a+b$",
+     "select": 3,
+     "steps": [
+      {
+       "keys": "D",
+       "buffer": "$\\boldsymbol{a+b}$",
+       "mode": "s",
+       "sel": "\\boldsymbol{a+b}",
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C20",
+   "title": "text, list item rule, auto",
+   "draft": {
+    "id": null,
+    "trigger": "todo",
+    "kind": "Plain",
+    "context": "Text",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "ListItem",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\textbf{TODO}: "
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  text(\"todo\", [[\\textbf{TODO}: ]], \"yours\", { line = \"list item\" }),",
+   "alts": [],
+   "semantic": false,
+   "note": "",
+   "tries": [
+    {
+     "ft": "md",
+     "text": "- ‸",
+     "select": null,
+     "steps": [
+      {
+       "keys": "todo",
+       "buffer": "- \\textbf{TODO}: ‸",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      }
+     ]
+    },
+    {
+     "ft": "md",
+     "text": "‸",
+     "select": null,
+     "steps": [
+      {
+       "keys": "todo",
+       "buffer": "todo‸",
+       "mode": "i",
+       "sel": null,
+       "expanded": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C21",
+   "title": "ft = tex only (Tab, line start)",
+   "draft": {
+    "id": null,
+    "trigger": "sect",
+    "kind": "Plain",
+    "context": "Text",
+    "fires": "Tab",
+    "math_where": "Any",
+    "line": "Start",
+    "ft": "Tex",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\section{"
+     },
+     {
+      "Tab": {
+       "n": 1,
+       "default": ""
+      }
+     },
+     {
+      "Text": "}"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  text(\"sect\", [[\\section{<>}]], \"yours\", { line = \"start\", tab = true, ft = \"tex\" }),",
+   "alts": [
+    "  text(\"sect\", [[\\section{<>}]], \"yours\", { tab = true, line = \"start\", ft = \"tex\" }),"
+   ],
+   "semantic": false,
+   "note": "",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "‸",
+     "select": null,
+     "steps": [
+      {
+       "keys": "sect<Tab>",
+       "buffer": "\\section{‸}",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      }
+     ]
+    },
+    {
+     "ft": "md",
+     "text": "‸",
+     "select": null,
+     "steps": [
+      {
+       "keys": "sect<Tab>",
+       "buffer": "sect    ‸",
+       "mode": "i",
+       "sel": null,
+       "expanded": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C22",
+   "title": "priority 1 beats her existing trigger (sq in operations.lua)",
+   "draft": {
+    "id": null,
+    "trigger": "sq",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 1,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\sqrt[3]{"
+     },
+     {
+      "Tab": {
+       "n": 1,
+       "default": ""
+      }
+     },
+     {
+      "Text": "}"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  math(\"sq\", [[\\sqrt[3]{<>}]], \"yours\", { priority = 1 }),",
+   "alts": [],
+   "semantic": false,
+   "note": "",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "steps": [
+      {
+       "keys": "sq",
+       "buffer": "$\\sqrt[3]{‸}$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C22b",
+   "title": "same trigger, no priority: which one wins is load order",
+   "draft": {
+    "id": null,
+    "trigger": "sq",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\sqrt[3]{"
+     },
+     {
+      "Tab": {
+       "n": 1,
+       "default": ""
+      }
+     },
+     {
+      "Text": "}"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  math(\"sq\", [[\\sqrt[3]{<>}]], \"yours\"),",
+   "alts": [],
+   "semantic": false,
+   "note": "",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "steps": [
+      {
+       "keys": "sq",
+       "buffer": "$\\sqrt{ ‸ }$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "operations.lua"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C23",
+   "title": "check function",
+   "draft": {
+    "id": null,
+    "trigger": "aa",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "return line:find(\"=\", 1, true) ~= nil",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\alpha"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  math(\"aa\", [[\\alpha]], \"yours\", { check = function(line, trigger, captures) return line:find(\"=\", 1, true) ~= nil end }),",
+   "alts": [],
+   "semantic": false,
+   "note": "",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$x=‸$",
+     "select": null,
+     "steps": [
+      {
+       "keys": "aa",
+       "buffer": "$x=\\alpha‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      }
+     ]
+    },
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "steps": [
+      {
+       "keys": "aa",
+       "buffer": "$aa‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C24",
+   "title": "quote and backslash in the trigger: \\q\"",
+   "draft": {
+    "id": null,
+    "trigger": "\\q\"",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\quad"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  math(\"\\\\q\\\"\", [[\\quad]], \"yours\"),",
+   "alts": [
+    "  math([[\\q\"]], [[\\quad]], \"yours\"),"
+   ],
+   "semantic": false,
+   "note": "",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$a‸$",
+     "select": null,
+     "steps": [
+      {
+       "keys": "\\q\"",
+       "buffer": "$a\\quad‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C25",
+   "title": "unicode in the output",
+   "draft": {
+    "id": null,
+    "trigger": "tto",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "↦ ∘ α"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  math(\"tto\", [[↦ ∘ α]], \"yours\"),",
+   "alts": [],
+   "semantic": false,
+   "note": "",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "steps": [
+      {
+       "keys": "tto",
+       "buffer": "$↦ ∘ α‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C26",
+   "title": "unicode trigger",
+   "draft": {
+    "id": null,
+    "trigger": "→",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\to"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  math(\"→\", [[\\to]], \"yours\"),",
+   "alts": [],
+   "semantic": false,
+   "note": "",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$a‸$",
+     "select": null,
+     "steps": [
+      {
+       "keys": "→",
+       "buffer": "$a\\to‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C27",
+   "title": "suffix",
+   "draft": {
+    "id": null,
+    "trigger": "tp",
+    "kind": "Suffix",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "^{\\top}"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  suffix(\"tp\", [[^{\\top}]], \"yours\"),",
+   "alts": [],
+   "semantic": false,
+   "note": "",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "steps": [
+      {
+       "keys": "Atp",
+       "buffer": "$A^{\\top}‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C28",
+   "title": "maths on Tab (math_tab)",
+   "draft": {
+    "id": null,
+    "trigger": "ip",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Tab",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\langle "
+     },
+     {
+      "Tab": {
+       "n": 1,
+       "default": ""
+      }
+     },
+     {
+      "Text": ", "
+     },
+     {
+      "Tab": {
+       "n": 2,
+       "default": ""
+      }
+     },
+     {
+      "Text": " \\rangle"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  math_tab(\"ip\", [[\\langle <>, <> \\rangle]], \"yours\"),",
+   "alts": [],
+   "semantic": false,
+   "note": "",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "steps": [
+      {
+       "keys": "ip<Tab>",
+       "buffer": "$\\langle ‸,  \\rangle$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      },
+      {
+       "keys": "u<Tab>",
+       "buffer": "$\\langle u, ‸ \\rangle$",
+       "mode": "i",
+       "sel": null,
+       "expanded": []
+      },
+      {
+       "keys": "v<Tab>",
+       "buffer": "$\\langle u, v \\rangle‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": []
+      }
+     ]
+    },
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "steps": [
+      {
+       "keys": "ip",
+       "buffer": "$ip‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C29",
+   "title": "display maths only, desc with a quote and a backslash, priority",
+   "draft": {
+    "id": null,
+    "trigger": "nrm",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Display",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 2,
+    "desc": "The \"norm\" \\| x \\|",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\|"
+     },
+     {
+      "Tab": {
+       "n": 1,
+       "default": ""
+      }
+     },
+     {
+      "Text": "\\|"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  math(\"nrm\", [[\\|<>\\|]], \"yours\", { where = \"display\", priority = 2, desc = \"The \\\"norm\\\" \\\\| x \\\\|\" }),",
+   "alts": [],
+   "semantic": false,
+   "note": "",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "\\[\n‸\n\\]",
+     "select": null,
+     "steps": [
+      {
+       "keys": "nrm",
+       "buffer": "\\[\n\\|‸\\|\n\\]",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      }
+     ]
+    },
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "steps": [
+      {
+       "keys": "nrm",
+       "buffer": "$nrm‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C30",
+   "title": "]] and ]=] both in the body → level 2",
+   "draft": {
+    "id": null,
+    "trigger": "lv2",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "a]]b]=]c"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  math(\"lv2\", [==[a]]b]=]c]==], \"yours\"),",
+   "alts": [],
+   "semantic": false,
+   "note": "",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "steps": [
+      {
+       "keys": "lv2",
+       "buffer": "$a]]b]=]c‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C31",
+   "title": "a % inside a tab stop default is NOT doubled (helpers.parse reads defaults raw)",
+   "draft": {
+    "id": null,
+    "trigger": "pcd",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Tab": {
+       "n": 1,
+       "default": "50%"
+      }
+     },
+     {
+      "Text": " off"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  math(\"pcd\", [[<:50%> off]], \"yours\"),",
+   "alts": [],
+   "semantic": false,
+   "note": "",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "steps": [
+      {
+       "keys": "pcd",
+       "buffer": "$50% off$",
+       "mode": "s",
+       "sel": "50%",
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C33",
+   "title": "inline maths only (where = inline), text Tab auto in markdown too",
+   "draft": {
+    "id": null,
+    "trigger": "hlf",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Inline",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\tfrac12"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  math(\"hlf\", [[\\tfrac12]], \"yours\", { where = \"inline\" }),",
+   "alts": [],
+   "semantic": false,
+   "note": "",
+   "tries": [
+    {
+     "ft": "md",
+     "text": "$‸$",
+     "select": null,
+     "steps": [
+      {
+       "keys": "hlf",
+       "buffer": "$\\tfrac12‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      }
+     ]
+    },
+    {
+     "ft": "md",
+     "text": "$$\n‸\n$$",
+     "select": null,
+     "steps": [
+      {
+       "keys": "hlf",
+       "buffer": "$$\nhlf‸\n$$",
+       "mode": "i",
+       "sel": null,
+       "expanded": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C34",
+   "title": "visual with a tab stop (no longer stays selected)",
+   "draft": {
+    "id": null,
+    "trigger": "E",
+    "kind": "Visual",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\frac{"
+     },
+     "Selection",
+     {
+      "Text": "}{"
+     },
+     {
+      "Tab": {
+       "n": 1,
+       "default": ""
+      }
+     },
+     {
+      "Text": "}"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  vis(\"E\", [[\\frac{%V}{<>}]], \"yours\"),",
+   "alts": [],
+   "semantic": false,
+   "note": "",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$‸a+b$",
+     "select": 3,
+     "steps": [
+      {
+       "keys": "E",
+       "buffer": "$\\frac{a+b}{‸}$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      },
+      {
+       "keys": "2<Tab>",
+       "buffer": "$\\frac{a+b}{2}‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C35",
+   "title": "pattern on Tab",
+   "draft": {
+    "id": null,
+    "trigger": "ve(%a)",
+    "kind": "Pattern",
+    "context": "Math",
+    "fires": "Tab",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "vex",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\vec{"
+     },
+     {
+      "Capture": 1
+     },
+     {
+      "Text": "}"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  pat(\"ve(%a)\", [[\\vec{%1}]], \"yours\", { tab = true, eg = \"vex\" }),",
+   "alts": [],
+   "semantic": false,
+   "note": "",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "steps": [
+      {
+       "keys": "vex<Tab>",
+       "buffer": "$\\vec{x}‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C36",
+   "title": "RawLua is written verbatim (trimmed, comma ensured)",
+   "draft": {
+    "id": null,
+    "trigger": "rw",
+    "kind": "RawLua",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [],
+    "raw_lua": "math(\"rw\", [[\\rho]], \"yours\")",
+    "pinned": []
+   },
+   "entry": "  math(\"rw\", [[\\rho]], \"yours\"),",
+   "alts": [
+    "math(\"rw\", [[\\rho]], \"yours\"),"
+   ],
+   "semantic": false,
+   "note": "",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "steps": [
+      {
+       "keys": "rw",
+       "buffer": "$\\rho‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C37",
+   "title": "mirror carrying a default: only the first occurrence has it",
+   "draft": {
+    "id": null,
+    "trigger": "mrd",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Tab": {
+       "n": 1,
+       "default": "x"
+      }
+     },
+     {
+      "Text": " = "
+     },
+     {
+      "Tab": {
+       "n": 1,
+       "default": ""
+      }
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  math(\"mrd\", [[<1:x> = <1>]], \"yours\"),",
+   "alts": [],
+   "semantic": false,
+   "note": "",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "steps": [
+      {
+       "keys": "mrd",
+       "buffer": "$x = x$",
+       "mode": "s",
+       "sel": "x",
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      },
+      {
+       "keys": "y<Tab>",
+       "buffer": "$y = y‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C39",
+   "title": "Text + Tab, after text (line = after text)",
+   "draft": {
+    "id": null,
+    "trigger": "eqq",
+    "kind": "Plain",
+    "context": "Text",
+    "fires": "Tab",
+    "math_where": "Any",
+    "line": "AfterText",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": " \\eqref{"
+     },
+     {
+      "Tab": {
+       "n": 1,
+       "default": ""
+      }
+     },
+     {
+      "Text": "}"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  text(\"eqq\", [[ \\eqref{<>}]], \"yours\", { line = \"after text\", tab = true }),",
+   "alts": [
+    "  text(\"eqq\", [[ \\eqref{<>}]], \"yours\", { tab = true, line = \"after text\" }),"
+   ],
+   "semantic": false,
+   "note": "",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "‸",
+     "select": null,
+     "steps": [
+      {
+       "keys": "see eqq<Tab>",
+       "buffer": "see  \\eqref{‸}",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      }
+     ]
+    },
+    {
+     "ft": "tex",
+     "text": "‸",
+     "select": null,
+     "steps": [
+      {
+       "keys": "eqq<Tab>",
+       "buffer": "eqq ‸",
+       "mode": "i",
+       "sel": null,
+       "expanded": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C32",
+   "title": "trailing newline in a text Tab snippet",
+   "draft": {
+    "id": null,
+    "trigger": "hrl",
+    "kind": "Plain",
+    "context": "Text",
+    "fires": "Tab",
+    "math_where": "Any",
+    "line": "Start",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\hrule\n"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  text(\"hrl\", [[\\hrule\n]], \"yours\", { line = \"start\", tab = true }),",
+   "alts": [
+    "  text(\"hrl\", [[\\hrule\n]], \"yours\", { tab = true, line = \"start\" }),"
+   ],
+   "semantic": true,
+   "note": "",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "‸",
+     "select": null,
+     "steps": [
+      {
+       "keys": "hrl<Tab>",
+       "buffer": "\\hrule\n‸",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ],
+       "measured_today": "‸\\hrule"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C38",
+   "title": "trailing newline in maths (display)",
+   "draft": {
+    "id": null,
+    "trigger": "nlz",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\quad\n"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  math(\"nlz\", [[\\quad\n]], \"yours\"),",
+   "alts": [],
+   "semantic": true,
+   "note": "",
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "\\[\na ‸\n\\]",
+     "select": null,
+     "steps": [
+      {
+       "keys": "nlz",
+       "buffer": "\\[\na \\quad\n‸\n\\]",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ],
+       "measured_today": "\\[\na ‸\\quad\n\\]"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "conflicts": [
+  {
+   "id": "K01",
+   "title": "new auto 'in' shadows inn, int, infi (and suffix invs)",
+   "draft": {
+    "id": null,
+    "trigger": "in",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\in"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  math(\"in\", [[\\in]], \"yours\"),",
+   "findings": [
+    "shadows"
+   ],
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$x ‸$",
+     "select": null,
+     "with": [
+      {
+       "keys": "inn",
+       "buffer": "$x \\inn‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      }
+     ],
+     "without": [
+      {
+       "keys": "inn",
+       "buffer": "$x \\in‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "sets.lua"
+       ]
+      }
+     ]
+    },
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "with": [
+      {
+       "keys": "int",
+       "buffer": "$\\int‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      }
+     ],
+     "without": [
+      {
+       "keys": "int",
+       "buffer": "$\\int‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "calculus.lua"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "K02",
+   "title": "new auto 'lim2' is shadowed by lim (symbols.lua): it can never be typed",
+   "draft": {
+    "id": null,
+    "trigger": "lim2",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\lim_{n}"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  math(\"lim2\", [[\\lim_{n}]], \"yours\"),",
+   "findings": [
+    "shadowed-by"
+   ],
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "with": [
+      {
+       "keys": "lim2",
+       "buffer": "$\\lim_{ 2‸ \\to \\infty }$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "symbols.lua"
+       ]
+      }
+     ],
+     "without": [
+      {
+       "keys": "lim2",
+       "buffer": "$\\lim_{ 2‸ \\to \\infty }$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "symbols.lua"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "K03",
+   "title": "new auto 'srx' is shadowed mid-word by suffix sr",
+   "draft": {
+    "id": null,
+    "trigger": "srx",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\sigma_r"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  math(\"srx\", [[\\sigma_r]], \"yours\"),",
+   "findings": [
+    "shadowed-by"
+   ],
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "with": [
+      {
+       "keys": "srx",
+       "buffer": "$^{2}x‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "operations.lua"
+       ]
+      }
+     ],
+     "without": [
+      {
+       "keys": "srx",
+       "buffer": "$^{2}x‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "operations.lua"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "K04",
+   "title": "new auto 'pix' is shadowed by pi (greek.lua)",
+   "draft": {
+    "id": null,
+    "trigger": "pix",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\pi x"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  math(\"pix\", [[\\pi x]], \"yours\"),",
+   "findings": [
+    "shadowed-by"
+   ],
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "with": [
+      {
+       "keys": "pix",
+       "buffer": "$\\pix‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "greek.lua"
+       ]
+      }
+     ],
+     "without": [
+      {
+       "keys": "pix",
+       "buffer": "$\\pix‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "greek.lua"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "K05",
+   "title": "new text auto 'be' shadows the Tab shortcut beg (text.lua)",
+   "draft": {
+    "id": null,
+    "trigger": "be",
+    "kind": "Plain",
+    "context": "Text",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\beta"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  text(\"be\", [[\\beta]], \"yours\"),",
+   "findings": [
+    "shadows"
+   ],
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "‸",
+     "select": null,
+     "with": [
+      {
+       "keys": "beg<Tab>",
+       "buffer": "\\betag  ‸",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      }
+     ],
+     "without": [
+      {
+       "keys": "beg<Tab>",
+       "buffer": "\\begin{‸}\n\t\n\\end{}",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "text.lua"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "K06",
+   "title": "new auto 'a1b' is shadowed by the auto subscript pattern at a1",
+   "draft": {
+    "id": null,
+    "trigger": "a1b",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\aleph_1"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  math(\"a1b\", [[\\aleph_1]], \"yours\"),",
+   "findings": [
+    "shadowed-by"
+   ],
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "with": [
+      {
+       "keys": "a1b",
+       "buffer": "$a_{1}b‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "subscripts.lua"
+       ]
+      }
+     ],
+     "without": [
+      {
+       "keys": "a1b",
+       "buffer": "$a_{1}b‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "subscripts.lua"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "K07",
+   "title": "new auto 'su' shadows sum, sub, sup=",
+   "draft": {
+    "id": null,
+    "trigger": "su",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\sigma_u"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  math(\"su\", [[\\sigma_u]], \"yours\"),",
+   "findings": [
+    "shadows"
+   ],
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "with": [
+      {
+       "keys": "sum",
+       "buffer": "$\\sigma_um‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      }
+     ],
+     "without": [
+      {
+       "keys": "sum",
+       "buffer": "$\\sum‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "symbols.lua"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "K08",
+   "title": "new auto 'xx' duplicates symbols.lua xx: hers wins (load order) until priority 1",
+   "draft": {
+    "id": null,
+    "trigger": "xx",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\chi"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  math(\"xx\", [[\\chi]], \"yours\"),",
+   "findings": [
+    "duplicate"
+   ],
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "with": [
+      {
+       "keys": "xx",
+       "buffer": "$\\times‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "symbols.lua"
+       ]
+      }
+     ],
+     "without": [
+      {
+       "keys": "xx",
+       "buffer": "$\\times‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "symbols.lua"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "K09",
+   "title": "text 'sum' does not conflict with maths 'sum' (different context)",
+   "draft": {
+    "id": null,
+    "trigger": "sum",
+    "kind": "Plain",
+    "context": "Text",
+    "fires": "Tab",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "summary"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  text(\"sum\", [[summary]], \"yours\", { tab = true }),",
+   "findings": [],
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "‸",
+     "select": null,
+     "with": [
+      {
+       "keys": "sum<Tab>",
+       "buffer": "summary‸",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      }
+     ],
+     "without": [
+      {
+       "keys": "sum<Tab>",
+       "buffer": "sum ‸",
+       "mode": "i",
+       "sel": null,
+       "expanded": []
+      }
+     ]
+    },
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "with": [
+      {
+       "keys": "sum",
+       "buffer": "$\\sum‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "symbols.lua"
+       ]
+      }
+     ],
+     "without": [
+      {
+       "keys": "sum",
+       "buffer": "$\\sum‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "symbols.lua"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "K10",
+   "title": "new vis 'B' duplicates visual.lua B",
+   "draft": {
+    "id": null,
+    "trigger": "B",
+    "kind": "Visual",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\mathbf{"
+     },
+     "Selection",
+     {
+      "Text": "}"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  vis(\"B\", [[\\mathbf{%V}]], \"yours\"),",
+   "findings": [
+    "duplicate"
+   ],
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$‸a+b$",
+     "select": 3,
+     "with": [
+      {
+       "keys": "B",
+       "buffer": "$\\underset{ ‸ }{ a+b }$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "visual.lua"
+       ]
+      }
+     ],
+     "without": [
+      {
+       "keys": "B",
+       "buffer": "$\\underset{ ‸ }{ a+b }$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "visual.lua"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "K11",
+   "title": "new text auto 'the' fires inside ordinary English",
+   "draft": {
+    "id": null,
+    "trigger": "the",
+    "kind": "Plain",
+    "context": "Text",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\theta"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  text(\"the\", [[\\theta]], \"yours\"),",
+   "findings": [
+    "english-words"
+   ],
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "‸",
+     "select": null,
+     "with": [
+      {
+       "keys": "then",
+       "buffer": "\\thetan‸",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      }
+     ],
+     "without": [
+      {
+       "keys": "then",
+       "buffer": "then‸",
+       "mode": "i",
+       "sel": null,
+       "expanded": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "K12",
+   "title": "new math_tab 'par' duplicates calculus.lua par (Tab)",
+   "draft": {
+    "id": null,
+    "trigger": "par",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Tab",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\parallel"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  math_tab(\"par\", [[\\parallel]], \"yours\"),",
+   "findings": [
+    "duplicate"
+   ],
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "with": [
+      {
+       "keys": "par<Tab>",
+       "buffer": "$\\frac{ \\partial y }{ \\partial x }$",
+       "mode": "s",
+       "sel": "y",
+       "expanded": [
+        "calculus.lua"
+       ]
+      }
+     ],
+     "without": [
+      {
+       "keys": "par<Tab>",
+       "buffer": "$\\frac{ \\partial y }{ \\partial x }$",
+       "mode": "s",
+       "sel": "y",
+       "expanded": [
+        "calculus.lua"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "K13",
+   "title": "new auto 'ff' conflicts with nothing",
+   "draft": {
+    "id": null,
+    "trigger": "ff",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\frac{"
+     },
+     {
+      "Tab": {
+       "n": 1,
+       "default": ""
+      }
+     },
+     {
+      "Text": "}{"
+     },
+     {
+      "Tab": {
+       "n": 2,
+       "default": ""
+      }
+     },
+     {
+      "Text": "}"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  math(\"ff\", [[\\frac{<>}{<>}]], \"yours\"),",
+   "findings": [],
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "with": [
+      {
+       "keys": "ff",
+       "buffer": "$\\frac{‸}{}$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "zz_adv.lua"
+       ]
+      }
+     ],
+     "without": [
+      {
+       "keys": "ff",
+       "buffer": "$ff‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "K14",
+   "title": "new post 'hat' duplicates accents.lua post hat",
+   "draft": {
+    "id": null,
+    "trigger": "hat",
+    "kind": "Post",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\widehat{"
+     },
+     {
+      "Capture": 1
+     },
+     {
+      "Text": "}"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "entry": "  post(\"hat\", [[\\widehat{%1}]], \"yours\"),",
+   "findings": [
+    "duplicate"
+   ],
+   "tries": [
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "select": null,
+     "with": [
+      {
+       "keys": "xhat",
+       "buffer": "$\\hat{x}‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "accents.lua"
+       ]
+      }
+     ],
+     "without": [
+      {
+       "keys": "xhat",
+       "buffer": "$\\hat{x}‸$",
+       "mode": "i",
+       "sel": null,
+       "expanded": [
+        "accents.lua"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "known": [
+  {
+   "trigger": "hat",
+   "pattern": "(%a)hat",
+   "kind": "post",
+   "where": "math",
+   "how": "auto",
+   "body": "\\hat{%1}",
+   "file": "accents.lua",
+   "line": 26,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "bar",
+   "pattern": "(%a)bar",
+   "kind": "post",
+   "where": "math",
+   "how": "auto",
+   "body": "\\bar{%1}",
+   "file": "accents.lua",
+   "line": 27,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "dot",
+   "pattern": "(%a)dot",
+   "kind": "post",
+   "where": "math",
+   "how": "auto",
+   "body": "\\dot{%1}",
+   "file": "accents.lua",
+   "line": 28,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": -1,
+   "desc": null
+  },
+  {
+   "trigger": "ddot",
+   "pattern": "(%a)ddot",
+   "kind": "post",
+   "where": "math",
+   "how": "auto",
+   "body": "\\ddot{%1}",
+   "file": "accents.lua",
+   "line": 29,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 1,
+   "desc": null
+  },
+  {
+   "trigger": "tilde",
+   "pattern": "(%a)tilde",
+   "kind": "post",
+   "where": "math",
+   "how": "auto",
+   "body": "\\tilde{%1}",
+   "file": "accents.lua",
+   "line": 30,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "und",
+   "pattern": "(%a)und",
+   "kind": "post",
+   "where": "math",
+   "how": "auto",
+   "body": "\\underline{%1}",
+   "file": "accents.lua",
+   "line": 31,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "vec",
+   "pattern": "(%a)vec",
+   "kind": "post",
+   "where": "math",
+   "how": "auto",
+   "body": "\\vec{%1}",
+   "file": "accents.lua",
+   "line": 32,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": ",.",
+   "pattern": "(%a),%.",
+   "kind": "post",
+   "where": "math",
+   "how": "auto",
+   "body": "\\mathbf{%1}",
+   "file": "accents.lua",
+   "line": 33,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": ".,",
+   "pattern": "(%a)%.,",
+   "kind": "post",
+   "where": "math",
+   "how": "auto",
+   "body": "\\mathbf{%1}",
+   "file": "accents.lua",
+   "line": 34,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "\\greek,.",
+   "pattern": "\\(%a+),%.",
+   "kind": "pattern",
+   "where": "math",
+   "how": "auto",
+   "body": "\\boldsymbol{\\%1}",
+   "file": "accents.lua",
+   "line": 35,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "\\greek.,",
+   "pattern": "\\(%a+)%.,",
+   "kind": "pattern",
+   "where": "math",
+   "how": "auto",
+   "body": "\\boldsymbol{\\%1}",
+   "file": "accents.lua",
+   "line": 36,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "hat",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\hat{<>}",
+   "file": "accents.lua",
+   "line": 38,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "bar",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\bar{<>}",
+   "file": "accents.lua",
+   "line": 39,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "dot",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\dot{<>}",
+   "file": "accents.lua",
+   "line": 40,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": -1,
+   "desc": null
+  },
+  {
+   "trigger": "ddot",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\ddot{<>}",
+   "file": "accents.lua",
+   "line": 41,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "cdot",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\cdot",
+   "file": "accents.lua",
+   "line": 42,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "tilde",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\tilde{<>}",
+   "file": "accents.lua",
+   "line": 43,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "und",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\underline{<>}",
+   "file": "accents.lua",
+   "line": 44,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "vec",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\vec{<>}",
+   "file": "accents.lua",
+   "line": 45,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "pmod",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\pmod{<:n>}",
+   "file": "accents.lua",
+   "line": 46,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "gen",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\langle <> \\rangle ",
+   "file": "brackets.lua",
+   "line": 12,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "norm",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\lvert <> \\rvert ",
+   "file": "brackets.lua",
+   "line": 13,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 1,
+   "desc": null
+  },
+  {
+   "trigger": "Norm",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\lVert <> \\rVert ",
+   "file": "brackets.lua",
+   "line": 14,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 1,
+   "desc": null
+  },
+  {
+   "trigger": "ceil",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\lceil <> \\rceil ",
+   "file": "brackets.lua",
+   "line": 15,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "floor",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\lfloor <> \\rfloor ",
+   "file": "brackets.lua",
+   "line": 16,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "mod",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "/",
+   "file": "brackets.lua",
+   "line": 17,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "(",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "(<>)",
+   "file": "brackets.lua",
+   "line": 18,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "{",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "{<>}",
+   "file": "brackets.lua",
+   "line": 19,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "[",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "[<>]",
+   "file": "brackets.lua",
+   "line": 20,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "lr(",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\left( <> \\right) ",
+   "file": "brackets.lua",
+   "line": 21,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "lr{",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\left\\{ <> \\right\\} ",
+   "file": "brackets.lua",
+   "line": 22,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "lr[",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\left[ <> \\right] ",
+   "file": "brackets.lua",
+   "line": 23,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "lr|",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\left| <> \\right| ",
+   "file": "brackets.lua",
+   "line": 24,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "lra",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\left< <> \\right> ",
+   "file": "brackets.lua",
+   "line": 25,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "lr",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "tab",
+   "body": "\\left( <> \\right) ",
+   "file": "brackets.lua",
+   "line": 28,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "lrb",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "tab",
+   "body": "\\left\\{ <> \\right\\} ",
+   "file": "brackets.lua",
+   "line": 29,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "par",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "tab",
+   "body": "\\frac{ \\partial <:y> }{ \\partial <:x> } ",
+   "file": "calculus.lua",
+   "line": 12,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "pa‹y›‹x›",
+   "pattern": "pa(%a)(%a)",
+   "kind": "pattern",
+   "where": "math",
+   "how": "tab",
+   "body": "\\frac{ \\partial %1 }{ \\partial %2 } ",
+   "file": "calculus.lua",
+   "line": 13,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "ddt",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\frac{d}{dt} ",
+   "file": "calculus.lua",
+   "line": 14,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "int",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\int",
+   "file": "calculus.lua",
+   "line": 16,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": -1,
+   "desc": null
+  },
+  {
+   "trigger": "\\int",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "tab",
+   "body": "\\int <> \\, d<:x> ",
+   "file": "calculus.lua",
+   "line": 17,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "dint",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\int_{<:0>}^{<:1>} <> \\, d<:x> ",
+   "file": "calculus.lua",
+   "line": 18,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "oint",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\oint",
+   "file": "calculus.lua",
+   "line": 19,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "iint",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\iint",
+   "file": "calculus.lua",
+   "line": 20,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "iiint",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\iiint",
+   "file": "calculus.lua",
+   "line": 21,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "oinf",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\int_{0}^{\\infty} <> \\, d<:x> ",
+   "file": "calculus.lua",
+   "line": 22,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "infi",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\int_{-\\infty}^{\\infty} <> \\, d<:x> ",
+   "file": "calculus.lua",
+   "line": 23,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "tayl",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "<1:f>(<2:x> + <3:h>) = <1>(<2>) + <1>'(<2>)<3> + <1>''(<2>) \\frac{<3>^{2}}{2!} + \\dots",
+   "file": "calculus.lua",
+   "line": 25,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "pu",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\pu{ <> }",
+   "file": "chemistry.lua",
+   "line": 11,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "cee",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\ce{ <> }",
+   "file": "chemistry.lua",
+   "line": 12,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "he4",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "{}^{4}_{2}He ",
+   "file": "chemistry.lua",
+   "line": 13,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "he3",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "{}^{3}_{2}He ",
+   "file": "chemistry.lua",
+   "line": 14,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "iso",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "{}^{<:4>}_{<:2>}<:He>",
+   "file": "chemistry.lua",
+   "line": 15,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "beg",
+   "pattern": null,
+   "kind": "math",
+   "where": "display",
+   "how": "auto",
+   "body": "\\begin{<1>}\n\t<2>\n\\end{<1>}",
+   "file": "environments.lua",
+   "line": 27,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "beg",
+   "pattern": null,
+   "kind": "math",
+   "where": "inline",
+   "how": "auto",
+   "body": "\\begin{<1>} <2> \\end{<1>}",
+   "file": "environments.lua",
+   "line": 31,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "pmat",
+   "pattern": null,
+   "kind": "math",
+   "where": "display",
+   "how": "auto",
+   "body": "\\begin{pmatrix}\n<>\n\\end{pmatrix}",
+   "file": "environments.lua",
+   "line": 33,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "pmat",
+   "pattern": null,
+   "kind": "math",
+   "where": "inline",
+   "how": "auto",
+   "body": "\\begin{pmatrix}<>\\end{pmatrix}",
+   "file": "environments.lua",
+   "line": 33,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "bmat",
+   "pattern": null,
+   "kind": "math",
+   "where": "display",
+   "how": "auto",
+   "body": "\\begin{bmatrix}\n<>\n\\end{bmatrix}",
+   "file": "environments.lua",
+   "line": 34,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "bmat",
+   "pattern": null,
+   "kind": "math",
+   "where": "inline",
+   "how": "auto",
+   "body": "\\begin{bmatrix}<>\\end{bmatrix}",
+   "file": "environments.lua",
+   "line": 34,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "Bmat",
+   "pattern": null,
+   "kind": "math",
+   "where": "display",
+   "how": "auto",
+   "body": "\\begin{Bmatrix}\n<>\n\\end{Bmatrix}",
+   "file": "environments.lua",
+   "line": 35,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "Bmat",
+   "pattern": null,
+   "kind": "math",
+   "where": "inline",
+   "how": "auto",
+   "body": "\\begin{Bmatrix}<>\\end{Bmatrix}",
+   "file": "environments.lua",
+   "line": 35,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "vmat",
+   "pattern": null,
+   "kind": "math",
+   "where": "display",
+   "how": "auto",
+   "body": "\\begin{vmatrix}\n<>\n\\end{vmatrix}",
+   "file": "environments.lua",
+   "line": 36,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "vmat",
+   "pattern": null,
+   "kind": "math",
+   "where": "inline",
+   "how": "auto",
+   "body": "\\begin{vmatrix}<>\\end{vmatrix}",
+   "file": "environments.lua",
+   "line": 36,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "Vmat",
+   "pattern": null,
+   "kind": "math",
+   "where": "display",
+   "how": "auto",
+   "body": "\\begin{Vmatrix}\n<>\n\\end{Vmatrix}",
+   "file": "environments.lua",
+   "line": 37,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "Vmat",
+   "pattern": null,
+   "kind": "math",
+   "where": "inline",
+   "how": "auto",
+   "body": "\\begin{Vmatrix}<>\\end{Vmatrix}",
+   "file": "environments.lua",
+   "line": 37,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "matrix",
+   "pattern": null,
+   "kind": "math",
+   "where": "display",
+   "how": "auto",
+   "body": "\\begin{matrix}\n<>\n\\end{matrix}",
+   "file": "environments.lua",
+   "line": 38,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "matrix",
+   "pattern": null,
+   "kind": "math",
+   "where": "inline",
+   "how": "auto",
+   "body": "\\begin{matrix}<>\\end{matrix}",
+   "file": "environments.lua",
+   "line": 38,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "cases",
+   "pattern": null,
+   "kind": "math",
+   "where": "display",
+   "how": "auto",
+   "body": "\\begin{cases}\n<>\n\\end{cases}",
+   "file": "environments.lua",
+   "line": 39,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "cases",
+   "pattern": null,
+   "kind": "math",
+   "where": "inline",
+   "how": "auto",
+   "body": "\\begin{cases}<>\\end{cases}",
+   "file": "environments.lua",
+   "line": 39,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "align",
+   "pattern": null,
+   "kind": "math",
+   "where": "display",
+   "how": "auto",
+   "body": "\\begin{align}\n<>\n\\end{align}",
+   "file": "environments.lua",
+   "line": 40,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "align",
+   "pattern": null,
+   "kind": "math",
+   "where": "inline",
+   "how": "auto",
+   "body": "\\begin{align}<>\\end{align}",
+   "file": "environments.lua",
+   "line": 40,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "array",
+   "pattern": null,
+   "kind": "math",
+   "where": "display",
+   "how": "auto",
+   "body": "\\begin{array}\n<>\n\\end{array}",
+   "file": "environments.lua",
+   "line": 41,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "array",
+   "pattern": null,
+   "kind": "math",
+   "where": "inline",
+   "how": "auto",
+   "body": "\\begin{array}<>\\end{array}",
+   "file": "environments.lua",
+   "line": 41,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "iden‹n›",
+   "pattern": "iden(%d)",
+   "kind": "pattern",
+   "where": "math",
+   "how": "auto",
+   "body": null,
+   "file": "environments.lua",
+   "line": 43,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "phi",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\varphi",
+   "file": "greek.lua",
+   "line": 12,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "lmd",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\lambda",
+   "file": "greek.lua",
+   "line": 13,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "pi",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\pi",
+   "file": "greek.lua",
+   "line": 14,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "zeta",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\zeta",
+   "file": "greek.lua",
+   "line": 15,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "sr",
+   "pattern": null,
+   "kind": "suffix",
+   "where": "math",
+   "how": "auto",
+   "body": "^{2}",
+   "file": "operations.lua",
+   "line": 13,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "cb",
+   "pattern": null,
+   "kind": "suffix",
+   "where": "math",
+   "how": "auto",
+   "body": "^{3}",
+   "file": "operations.lua",
+   "line": 14,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "rd",
+   "pattern": null,
+   "kind": "suffix",
+   "where": "math",
+   "how": "auto",
+   "body": "^{<>}",
+   "file": "operations.lua",
+   "line": 15,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "_",
+   "pattern": null,
+   "kind": "suffix",
+   "where": "math",
+   "how": "auto",
+   "body": "_{<>}",
+   "file": "operations.lua",
+   "line": 16,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "sts",
+   "pattern": null,
+   "kind": "suffix",
+   "where": "math",
+   "how": "auto",
+   "body": "_\\text{<>}",
+   "file": "operations.lua",
+   "line": 17,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "sq",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\sqrt{ <> }",
+   "file": "operations.lua",
+   "line": 18,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "//",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\frac{<>}{<>}",
+   "file": "operations.lua",
+   "line": 19,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "ee",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "e^{ <> }",
+   "file": "operations.lua",
+   "line": 20,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "invs",
+   "pattern": null,
+   "kind": "suffix",
+   "where": "math",
+   "how": "auto",
+   "body": "^{-1}",
+   "file": "operations.lua",
+   "line": 21,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "exp",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\exp",
+   "file": "operations.lua",
+   "line": 22,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "log",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\log",
+   "file": "operations.lua",
+   "line": 23,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "ln",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\ln",
+   "file": "operations.lua",
+   "line": 24,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "conj",
+   "pattern": null,
+   "kind": "suffix",
+   "where": "math",
+   "how": "auto",
+   "body": "^{*}",
+   "file": "operations.lua",
+   "line": 25,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "Re",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\mathrm{Re}",
+   "file": "operations.lua",
+   "line": 26,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "Im",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\mathrm{Im}",
+   "file": "operations.lua",
+   "line": 27,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "bf",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\mathbf{<>}",
+   "file": "operations.lua",
+   "line": 28,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "rm",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\mathrm{<>}",
+   "file": "operations.lua",
+   "line": 29,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "compl",
+   "pattern": null,
+   "kind": "suffix",
+   "where": "math",
+   "how": "auto",
+   "body": "^{c}",
+   "file": "operations.lua",
+   "line": 30,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "det",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\det",
+   "file": "operations.lua",
+   "line": 33,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "trace",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\mathrm{Tr}",
+   "file": "operations.lua",
+   "line": 34,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "kbt",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "k_{B}T",
+   "file": "physics.lua",
+   "line": 11,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "msun",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "M_{\\odot}",
+   "file": "physics.lua",
+   "line": 12,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "dag",
+   "pattern": null,
+   "kind": "suffix",
+   "where": "math",
+   "how": "auto",
+   "body": "^{\\dagger}",
+   "file": "physics.lua",
+   "line": 15,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "o+",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\oplus ",
+   "file": "physics.lua",
+   "line": 16,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "ox",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\otimes ",
+   "file": "physics.lua",
+   "line": 17,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "bra",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\bra{<>} ",
+   "file": "physics.lua",
+   "line": 18,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "ket",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\ket{<>} ",
+   "file": "physics.lua",
+   "line": 19,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "brk",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\braket{ <> | <> } ",
+   "file": "physics.lua",
+   "line": 20,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "outer",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\ket{<1:\\psi>} \\bra{<1>} ",
+   "file": "physics.lua",
+   "line": 21,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "CC",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\mathcal{C}",
+   "file": "sets.lua",
+   "line": 13,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "Nat",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\mathbb{N}",
+   "file": "sets.lua",
+   "line": 14,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "FF",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\mathbb{F}",
+   "file": "sets.lua",
+   "line": 15,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "disj",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\mathcal{D}",
+   "file": "sets.lua",
+   "line": 16,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "pow",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\mathcal{P}",
+   "file": "sets.lua",
+   "line": 17,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "uu",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\cup",
+   "file": "sets.lua",
+   "line": 18,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "UU",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\bigcup_{<>}",
+   "file": "sets.lua",
+   "line": 19,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "NN",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\bigcap_{<>}",
+   "file": "sets.lua",
+   "line": 20,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "exx",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\exists",
+   "file": "sets.lua",
+   "line": 21,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "fall",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\forall",
+   "file": "sets.lua",
+   "line": 22,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "psub",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\subset",
+   "file": "sets.lua",
+   "line": 23,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "diff",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\setminus",
+   "file": "sets.lua",
+   "line": 24,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "imp",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\implies",
+   "file": "sets.lua",
+   "line": 25,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "qed",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\ \\blacksquare",
+   "file": "sets.lua",
+   "line": 26,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "nn",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\cap",
+   "file": "sets.lua",
+   "line": 27,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": -1,
+   "desc": null
+  },
+  {
+   "trigger": "iff",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\iff",
+   "file": "sets.lua",
+   "line": 28,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "ninn",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\notin",
+   "file": "sets.lua",
+   "line": 29,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "st.",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\text{ s.t. }",
+   "file": "sets.lua",
+   "line": 30,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "odp",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\langle <> , <> \\rangle ",
+   "file": "sets.lua",
+   "line": 31,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "sub",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\subseteq",
+   "file": "sets.lua",
+   "line": 32,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "neg",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\neg",
+   "file": "sets.lua",
+   "line": 33,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "and",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\land{}",
+   "file": "sets.lua",
+   "line": 35,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "orr",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\lor{}",
+   "file": "sets.lua",
+   "line": 36,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "inn",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\in ",
+   "file": "sets.lua",
+   "line": 37,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "\\\\\\",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\setminus{}",
+   "file": "sets.lua",
+   "line": 38,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "sup=",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\supseteq{}",
+   "file": "sets.lua",
+   "line": 39,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "eset",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\varnothing{}",
+   "file": "sets.lua",
+   "line": 40,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "set",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\{ <> \\}",
+   "file": "sets.lua",
+   "line": 41,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "cset",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\{ <> : <>\\}",
+   "file": "sets.lua",
+   "line": 42,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "‹letter›‹digit›",
+   "pattern": "(%a)(%d)",
+   "kind": "pattern",
+   "where": "math",
+   "how": "auto",
+   "body": "%1_{%2}",
+   "file": "subscripts.lua",
+   "line": 32,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": -1,
+   "desc": null
+  },
+  {
+   "trigger": "\\‹greek›‹digit›",
+   "pattern": "\\(%a+)(%d)",
+   "kind": "pattern",
+   "where": "math",
+   "how": "auto",
+   "body": "\\%1_{%2}",
+   "file": "subscripts.lua",
+   "line": 33,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": -1,
+   "desc": null
+  },
+  {
+   "trigger": "x_{‹digits›}‹digit›",
+   "pattern": "(%a)_{(%d+)}(%d)",
+   "kind": "pattern",
+   "where": "math",
+   "how": "auto",
+   "body": "%1_{%2%3}",
+   "file": "subscripts.lua",
+   "line": 34,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": -1,
+   "desc": null
+  },
+  {
+   "trigger": "\\‹greek›_{‹digits›}‹digit›",
+   "pattern": "\\(%a+)_{(%d+)}(%d)",
+   "kind": "pattern",
+   "where": "math",
+   "how": "auto",
+   "body": "\\%1_{%2%3}",
+   "file": "subscripts.lua",
+   "line": 35,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": -1,
+   "desc": null
+  },
+  {
+   "trigger": "\\‹accent›{x}‹digit›",
+   "pattern": "\\(%a+){(\\?%a+)}(%d)",
+   "kind": "pattern",
+   "where": "math",
+   "how": "auto",
+   "body": "\\%1{%2}_{%3}",
+   "file": "subscripts.lua",
+   "line": 36,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": -1,
+   "desc": null
+  },
+  {
+   "trigger": "\\‹accent›{x}_{‹digits›}‹digit›",
+   "pattern": "\\(%a+){(\\?%a+)}_{(%d+)}(%d)",
+   "kind": "pattern",
+   "where": "math",
+   "how": "auto",
+   "body": "\\%1{%2}_{%3%4}",
+   "file": "subscripts.lua",
+   "line": 37,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": -1,
+   "desc": null
+  },
+  {
+   "trigger": "\\‹accent›{\\‹accent›{x}}‹digit›",
+   "pattern": "\\(%a+){\\(%a+){(\\?%a+)}}(%d)",
+   "kind": "pattern",
+   "where": "math",
+   "how": "auto",
+   "body": "\\%1{\\%2{%3}}_{%4}",
+   "file": "subscripts.lua",
+   "line": 38,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": -1,
+   "desc": null
+  },
+  {
+   "trigger": "\\‹accent›{\\‹accent›{x}}_{‹digits›}‹digit›",
+   "pattern": "\\(%a+){\\(%a+){(\\?%a+)}}_{(%d+)}(%d)",
+   "kind": "pattern",
+   "where": "math",
+   "how": "auto",
+   "body": "\\%1{\\%2{%3}}_{%4%5}",
+   "file": "subscripts.lua",
+   "line": 39,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": -1,
+   "desc": null
+  },
+  {
+   "trigger": "xjj",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "x_{j}",
+   "file": "subscripts.lua",
+   "line": 41,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "xp1",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "x_{n+1}",
+   "file": "subscripts.lua",
+   "line": 42,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "ynn",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "y_{n}",
+   "file": "subscripts.lua",
+   "line": 43,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "yii",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "y_{i}",
+   "file": "subscripts.lua",
+   "line": 44,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "yjj",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "y_{j}",
+   "file": "subscripts.lua",
+   "line": 45,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "ooo",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\infty",
+   "file": "symbols.lua",
+   "line": 12,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "sum",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\sum",
+   "file": "symbols.lua",
+   "line": 13,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "prod",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\prod",
+   "file": "symbols.lua",
+   "line": 14,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "\\sum",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "tab",
+   "body": "\\sum_{<:i>=<:1>}^{<:N>} ",
+   "file": "symbols.lua",
+   "line": 15,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "\\prod",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "tab",
+   "body": "\\prod_{<:i>=<:1>}^{<:N>} ",
+   "file": "symbols.lua",
+   "line": 16,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "lim",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\lim_{ <:n> \\to <:\\infty> } ",
+   "file": "symbols.lua",
+   "line": 17,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "+-",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\pm",
+   "file": "symbols.lua",
+   "line": 18,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "-+",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\mp",
+   "file": "symbols.lua",
+   "line": 19,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "...",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\dots",
+   "file": "symbols.lua",
+   "line": 20,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "nabl",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\nabla",
+   "file": "symbols.lua",
+   "line": 21,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "xx",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\times",
+   "file": "symbols.lua",
+   "line": 22,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "**",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\cdot",
+   "file": "symbols.lua",
+   "line": 23,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "para",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\parallel",
+   "file": "symbols.lua",
+   "line": 24,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "===",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\equiv",
+   "file": "symbols.lua",
+   "line": 26,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "!=",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\neq",
+   "file": "symbols.lua",
+   "line": 27,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": ">=",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\geq",
+   "file": "symbols.lua",
+   "line": 28,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "geq",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\geq",
+   "file": "symbols.lua",
+   "line": 28,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "leq",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\leq",
+   "file": "symbols.lua",
+   "line": 29,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "<=",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\leq",
+   "file": "symbols.lua",
+   "line": 29,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": ">>",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\gg",
+   "file": "symbols.lua",
+   "line": 30,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "<<",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\ll",
+   "file": "symbols.lua",
+   "line": 31,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "simm",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\sim",
+   "file": "symbols.lua",
+   "line": 32,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "sim=",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\simeq",
+   "file": "symbols.lua",
+   "line": 33,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "prop",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\propto",
+   "file": "symbols.lua",
+   "line": 34,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "<->",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\leftrightarrow ",
+   "file": "symbols.lua",
+   "line": 36,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "->",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\to",
+   "file": "symbols.lua",
+   "line": 37,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "!>",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\mapsto",
+   "file": "symbols.lua",
+   "line": 38,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "=>",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\implies",
+   "file": "symbols.lua",
+   "line": 39,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "=<",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\impliedby",
+   "file": "symbols.lua",
+   "line": 40,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "Nat",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\mathcal{N}",
+   "file": "symbols.lua",
+   "line": 42,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "LL",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\mathcal{L}",
+   "file": "symbols.lua",
+   "line": 42,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "HH",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\mathcal{H}",
+   "file": "symbols.lua",
+   "line": 43,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "RR",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\mathbb{R}",
+   "file": "symbols.lua",
+   "line": 44,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "ZZ",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\mathbb{Z}",
+   "file": "symbols.lua",
+   "line": 45,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "QQ",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\mathbb{Q}",
+   "file": "symbols.lua",
+   "line": 45,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "lll",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\ell",
+   "file": "symbols.lua",
+   "line": 50,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "mcal",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\mathcal{<>}",
+   "file": "symbols.lua",
+   "line": 51,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "star",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\star",
+   "file": "symbols.lua",
+   "line": 52,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "perp",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\perp",
+   "file": "symbols.lua",
+   "line": 53,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "~~",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\sim ",
+   "file": "symbols.lua",
+   "line": 54,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "<!",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\triangleleft ",
+   "file": "symbols.lua",
+   "line": 55,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "<>",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\diamond ",
+   "file": "symbols.lua",
+   "line": 56,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "DD",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\mathbb{D}",
+   "file": "symbols.lua",
+   "line": 57,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "mk",
+   "pattern": null,
+   "kind": "text",
+   "where": "text",
+   "how": "auto",
+   "body": "$<>$",
+   "file": "text.lua",
+   "line": 31,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "dm",
+   "pattern": null,
+   "kind": "text",
+   "where": "text",
+   "how": "auto",
+   "body": null,
+   "file": "text.lua",
+   "line": 32,
+   "origin": "yours",
+   "group": null,
+   "line_rule": "start",
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "dm",
+   "pattern": null,
+   "kind": "text",
+   "where": "text",
+   "how": "auto",
+   "body": null,
+   "file": "text.lua",
+   "line": 33,
+   "origin": "yours",
+   "group": null,
+   "line_rule": "after text",
+   "ft": null,
+   "priority": 1,
+   "desc": null
+  },
+  {
+   "trigger": "dm",
+   "pattern": null,
+   "kind": "text",
+   "where": "text",
+   "how": "auto",
+   "body": null,
+   "file": "text.lua",
+   "line": 34,
+   "origin": "yours",
+   "group": null,
+   "line_rule": "list item",
+   "ft": null,
+   "priority": 2,
+   "desc": null
+  },
+  {
+   "trigger": "text",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\text{<>}",
+   "file": "text.lua",
+   "line": 36,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "\"",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\text{ <> }",
+   "file": "text.lua",
+   "line": 37,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "table",
+   "pattern": null,
+   "kind": "text",
+   "where": "text",
+   "how": "tab",
+   "body": "\\begin{table}[<:htpb>]\n\t\\centering\n\t\\caption{<:caption>}\n\t\\label{tab:<:label>}\n\t\\begin{tabular}{<:c>}\n\t<>\n\t\\end{tabular}\n\\end{table}",
+   "file": "text.lua",
+   "line": 41,
+   "origin": "yours",
+   "group": null,
+   "line_rule": "start",
+   "ft": "tex",
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "fig",
+   "pattern": null,
+   "kind": "text",
+   "where": "text",
+   "how": "tab",
+   "body": "\\begin{figure}[<:htpb>]\n\t\\centering\n\t\\includegraphics[width=0.8\\textwidth]{<>}\n\t\\caption{<:caption>}\n\t\\label{fig:<:label>}\n\\end{figure}",
+   "file": "text.lua",
+   "line": 50,
+   "origin": "yours",
+   "group": null,
+   "line_rule": "start",
+   "ft": "tex",
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "desc",
+   "pattern": null,
+   "kind": "text",
+   "where": "text",
+   "how": "tab",
+   "body": "\\begin{description}\n\t\\item[<>] <>\n\\end{description}",
+   "file": "text.lua",
+   "line": 57,
+   "origin": "yours",
+   "group": null,
+   "line_rule": "start",
+   "ft": "tex",
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "pac",
+   "pattern": null,
+   "kind": "text",
+   "where": "text",
+   "how": "tab",
+   "body": "\\usepackage[<:options>]{<:package>}",
+   "file": "text.lua",
+   "line": 61,
+   "origin": "yours",
+   "group": null,
+   "line_rule": "start",
+   "ft": "tex",
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "beg",
+   "pattern": null,
+   "kind": "text",
+   "where": "text",
+   "how": "tab",
+   "body": "\\begin{<1>}\n\t<2>\n\\end{<1>}",
+   "file": "text.lua",
+   "line": 64,
+   "origin": "yours",
+   "group": null,
+   "line_rule": "start",
+   "ft": "tex",
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "enum",
+   "pattern": null,
+   "kind": "text",
+   "where": "text",
+   "how": "tab",
+   "body": "\\begin{enumerate}\n\t\\item <>\n\\end{enumerate}",
+   "file": "text.lua",
+   "line": 68,
+   "origin": "yours",
+   "group": null,
+   "line_rule": "start",
+   "ft": "tex",
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "item",
+   "pattern": null,
+   "kind": "text",
+   "where": "text",
+   "how": "tab",
+   "body": "\\begin{itemize}\n\t\\item <>\n\\end{itemize}",
+   "file": "text.lua",
+   "line": 72,
+   "origin": "yours",
+   "group": null,
+   "line_rule": "start",
+   "ft": "tex",
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "ali",
+   "pattern": null,
+   "kind": "text",
+   "where": "text",
+   "how": "tab",
+   "body": "\\begin{align*}\n\t<>\n\\end{align*}",
+   "file": "text.lua",
+   "line": 76,
+   "origin": "yours",
+   "group": null,
+   "line_rule": "start",
+   "ft": "tex",
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "plot",
+   "pattern": null,
+   "kind": "text",
+   "where": "text",
+   "how": "tab",
+   "body": "\\begin{figure}[<>]\n\t\\centering\n\t\\begin{tikzpicture}\n\t\t\\begin{axis}[\n\t\t\txmin= <2:-10>, xmax= <3:10>,\n\t\t\tymin= <4:-10>, ymax = <5:10>,\n\t\t\taxis lines = middle,\n\t\t]\n\t\t\t\\addplot[domain=<2>:<3>, samples=<6:100>]{<7>};\n\t\t\\end{axis}\n\t\\end{tikzpicture}\n\t\\caption{<8>}\n\t\\label{<9>}\n\\end{figure}",
+   "file": "text.lua",
+   "line": 80,
+   "origin": "yours",
+   "group": null,
+   "line_rule": "start",
+   "ft": "tex",
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "bigfun",
+   "pattern": null,
+   "kind": "text",
+   "where": "text",
+   "how": "tab",
+   "body": "\\begin{align*}\n\t<1>: <2> &\\longrightarrow <3> \\\\\n\t<4> &\\longmapsto <1>(<4>) = <>\n\\end{align*}",
+   "file": "text.lua",
+   "line": 95,
+   "origin": "yours",
+   "group": null,
+   "line_rule": "start",
+   "ft": "tex",
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "sin",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\sin",
+   "file": "trig.lua",
+   "line": 18,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "cos",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\cos",
+   "file": "trig.lua",
+   "line": 19,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "tan",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\tan",
+   "file": "trig.lua",
+   "line": 20,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "csc",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\csc",
+   "file": "trig.lua",
+   "line": 21,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "sec",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\sec",
+   "file": "trig.lua",
+   "line": 22,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "cot",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\cot",
+   "file": "trig.lua",
+   "line": 23,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "arcsin",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\arcsin",
+   "file": "trig.lua",
+   "line": 24,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "arccos",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\arccos",
+   "file": "trig.lua",
+   "line": 25,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "arctan",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\arctan",
+   "file": "trig.lua",
+   "line": 26,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "\\sin‹letter›",
+   "pattern": "\\(%a+)(%a)",
+   "kind": "pattern",
+   "where": "math",
+   "how": "auto",
+   "body": "\\%1 %2",
+   "file": "trig.lua",
+   "line": 27,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "\\sinh‹letter›",
+   "pattern": "\\(%a+)(%a)",
+   "kind": "pattern",
+   "where": "math",
+   "how": "auto",
+   "body": "\\%1 %2",
+   "file": "trig.lua",
+   "line": 28,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "arccsc",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\operatorname{arccsc}",
+   "file": "trig.lua",
+   "line": 30,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 1,
+   "desc": null
+  },
+  {
+   "trigger": "arcsec",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\operatorname{arcsec}",
+   "file": "trig.lua",
+   "line": 31,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 1,
+   "desc": null
+  },
+  {
+   "trigger": "arccot",
+   "pattern": null,
+   "kind": "math",
+   "where": "math",
+   "how": "auto",
+   "body": "\\operatorname{arccot}",
+   "file": "trig.lua",
+   "line": 32,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 1,
+   "desc": null
+  },
+  {
+   "trigger": "U",
+   "pattern": null,
+   "kind": "visual",
+   "where": "math",
+   "how": "visual",
+   "body": "\\underbrace{ %V }_{ <> }",
+   "file": "visual.lua",
+   "line": 12,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "O",
+   "pattern": null,
+   "kind": "visual",
+   "where": "math",
+   "how": "visual",
+   "body": "\\overbrace{ %V }^{ <> }",
+   "file": "visual.lua",
+   "line": 13,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "B",
+   "pattern": null,
+   "kind": "visual",
+   "where": "math",
+   "how": "visual",
+   "body": "\\underset{ <> }{ %V }",
+   "file": "visual.lua",
+   "line": 14,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "C",
+   "pattern": null,
+   "kind": "visual",
+   "where": "math",
+   "how": "visual",
+   "body": "\\cancel{ %V }",
+   "file": "visual.lua",
+   "line": 15,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "K",
+   "pattern": null,
+   "kind": "visual",
+   "where": "math",
+   "how": "visual",
+   "body": "\\cancelto{ <> }{ %V }",
+   "file": "visual.lua",
+   "line": 16,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "S",
+   "pattern": null,
+   "kind": "visual",
+   "where": "math",
+   "how": "visual",
+   "body": "\\sqrt{ %V }",
+   "file": "visual.lua",
+   "line": 17,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "(",
+   "pattern": null,
+   "kind": "visual",
+   "where": "math",
+   "how": "visual",
+   "body": "(%V)",
+   "file": "visual.lua",
+   "line": 18,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "[",
+   "pattern": null,
+   "kind": "visual",
+   "where": "math",
+   "how": "visual",
+   "body": "[%V]",
+   "file": "visual.lua",
+   "line": 19,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "{",
+   "pattern": null,
+   "kind": "visual",
+   "where": "math",
+   "how": "visual",
+   "body": "{%V}",
+   "file": "visual.lua",
+   "line": 20,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  },
+  {
+   "trigger": "/",
+   "pattern": null,
+   "kind": "visual",
+   "where": "math",
+   "how": "visual",
+   "body": "\\frac{%V}{<>}",
+   "file": "visual.lua",
+   "line": 23,
+   "origin": "yours",
+   "group": null,
+   "line_rule": null,
+   "ft": null,
+   "priority": 0,
+   "desc": null
+  }
+ ],
+ "files": {
+  "chemistry.lua": {
+   "title": "Chemistry",
+   "n": 5,
+   "triggers": [
+    "pu",
+    "cee",
+    "he4",
+    "he3",
+    "iso"
+   ]
+  },
+  "physics.lua": {
+   "title": "Physics",
+   "n": 9,
+   "triggers": [
+    "kbt",
+    "msun",
+    "dag",
+    "o+",
+    "ox",
+    "bra",
+    "ket",
+    "brk",
+    "outer"
+   ]
+  },
+  "calculus.lua": {
+   "title": "Calculus",
+   "n": 12,
+   "triggers": [
+    "par",
+    "pa(%a)(%a)",
+    "ddt",
+    "int",
+    "\\int",
+    "dint",
+    "oint",
+    "iint",
+    "iiint",
+    "oinf",
+    "infi",
+    "tayl"
+   ]
+  },
+  "environments.lua": {
+   "title": "Environments",
+   "n": 12,
+   "triggers": [
+    "beg",
+    "beg",
+    "pmat",
+    "bmat",
+    "Bmat",
+    "vmat",
+    "Vmat",
+    "matrix",
+    "cases",
+    "align",
+    "array",
+    "iden(%d)"
+   ]
+  },
+  "brackets.lua": {
+   "title": "Brackets",
+   "n": 16,
+   "triggers": [
+    "gen",
+    "norm",
+    "Norm",
+    "ceil",
+    "floor",
+    "mod",
+    "(",
+    "{",
+    "[",
+    "lr(",
+    "lr{",
+    "lr[",
+    "lr|",
+    "lra",
+    "lr",
+    "lrb"
+   ]
+  },
+  "visual.lua": {
+   "title": "Visual",
+   "n": 10,
+   "triggers": [
+    "U",
+    "O",
+    "B",
+    "C",
+    "K",
+    "S",
+    "(",
+    "[",
+    "{",
+    "/"
+   ]
+  },
+  "subscripts.lua": {
+   "title": "Subscripts",
+   "n": 13,
+   "triggers": [
+    "(%a)(%d)",
+    "\\(%a+)(%d)",
+    "(%a)_{(%d+)}(%d)",
+    "\\(%a+)_{(%d+)}(%d)",
+    "\\(%a+){(\\?%a+)}(%d)",
+    "\\(%a+){(\\?%a+)}_{(%d+)}(%d)",
+    "\\(%a+){\\(%a+){(\\?%a+)}}(%d)",
+    "\\(%a+){\\(%a+){(\\?%a+)}}_{(%d+)}(%d)",
+    "xjj",
+    "xp1",
+    "ynn",
+    "yii",
+    "yjj"
+   ]
+  },
+  "text.lua": {
+   "title": "Text and structure",
+   "n": 16,
+   "triggers": [
+    "mk",
+    "dm",
+    "dm",
+    "dm",
+    "text",
+    "\"",
+    "table",
+    "fig",
+    "desc",
+    "pac",
+    "beg",
+    "enum",
+    "item",
+    "ali",
+    "plot",
+    "bigfun"
+   ]
+  },
+  "accents.lua": {
+   "title": "Accents",
+   "n": 20,
+   "triggers": [
+    "hat",
+    "bar",
+    "dot",
+    "ddot",
+    "tilde",
+    "und",
+    "vec",
+    ",.",
+    ".,",
+    "\\(%a+),%.",
+    "\\(%a+)%.,",
+    "hat",
+    "bar",
+    "dot",
+    "ddot",
+    "cdot",
+    "tilde",
+    "und",
+    "vec",
+    "pmod"
+   ]
+  },
+  "trig.lua": {
+   "title": "Trigonometry",
+   "n": 14,
+   "triggers": [
+    "sin",
+    "cos",
+    "tan",
+    "csc",
+    "sec",
+    "cot",
+    "arcsin",
+    "arccos",
+    "arctan",
+    "\\(%a+)(%a)",
+    "\\(%a+)(%a)",
+    "arccsc",
+    "arcsec",
+    "arccot"
+   ]
+  },
+  "symbols.lua": {
+   "title": "Symbols",
+   "n": 43,
+   "triggers": [
+    "ooo",
+    "sum",
+    "prod",
+    "\\sum",
+    "\\prod",
+    "lim",
+    "+-",
+    "-+",
+    "...",
+    "nabl",
+    "xx",
+    "**",
+    "para",
+    "===",
+    "!=",
+    ">=",
+    "geq",
+    "leq",
+    "<=",
+    ">>",
+    "<<",
+    "simm",
+    "sim=",
+    "prop",
+    "<->",
+    "->",
+    "!>",
+    "=>",
+    "=<",
+    "Nat",
+    "LL",
+    "HH",
+    "RR",
+    "QQ",
+    "ZZ",
+    "lll",
+    "mcal",
+    "star",
+    "perp",
+    "~~",
+    "<!",
+    "<>",
+    "DD"
+   ]
+  },
+  "operations.lua": {
+   "title": "Operations",
+   "n": 20,
+   "triggers": [
+    "sr",
+    "cb",
+    "rd",
+    "_",
+    "sts",
+    "sq",
+    "//",
+    "ee",
+    "invs",
+    "exp",
+    "log",
+    "ln",
+    "conj",
+    "Re",
+    "Im",
+    "bf",
+    "rm",
+    "compl",
+    "det",
+    "trace"
+   ]
+  },
+  "sets.lua": {
+   "title": "Set operations",
+   "n": 29,
+   "triggers": [
+    "CC",
+    "Nat",
+    "FF",
+    "disj",
+    "pow",
+    "uu",
+    "UU",
+    "NN",
+    "exx",
+    "fall",
+    "psub",
+    "diff",
+    "imp",
+    "qed",
+    "nn",
+    "iff",
+    "ninn",
+    "st.",
+    "odp",
+    "sub",
+    "neg",
+    "and",
+    "orr",
+    "inn",
+    "\\\\\\",
+    "sup=",
+    "eset",
+    "set",
+    "cset"
+   ]
+  },
+  "greek.lua": {
+   "title": "Greek",
+   "n": 4,
+   "triggers": [
+    "phi",
+    "lmd",
+    "pi",
+    "zeta"
+   ]
+  }
+ },
+ "parse_body": [
+  {
+   "input": "\\frac{<>}{<>}",
+   "pieces": [
+    {
+     "Text": "\\frac{"
+    },
+    {
+     "Tab": {
+      "n": 1,
+      "default": ""
+     }
+    },
+    {
+     "Text": "}{"
+    },
+    {
+     "Tab": {
+      "n": 2,
+      "default": ""
+     }
+    },
+    {
+     "Text": "}"
+    }
+   ]
+  },
+  {
+   "input": "\\frac{$1}{$2}$0",
+   "pieces": [
+    {
+     "Text": "\\frac{"
+    },
+    {
+     "Tab": {
+      "n": 1,
+      "default": ""
+     }
+    },
+    {
+     "Text": "}{"
+    },
+    {
+     "Tab": {
+      "n": 2,
+      "default": ""
+     }
+    },
+    {
+     "Text": "}"
+    },
+    "Exit"
+   ]
+  },
+  {
+   "input": "${1:x} + $1",
+   "pieces": [
+    {
+     "Tab": {
+      "n": 1,
+      "default": "x"
+     }
+    },
+    {
+     "Text": " + "
+    },
+    {
+     "Tab": {
+      "n": 1,
+      "default": ""
+     }
+    }
+   ]
+  },
+  {
+   "input": "\\sqrt{${VISUAL}}",
+   "pieces": [
+    {
+     "Text": "\\sqrt{"
+    },
+    "Selection",
+    {
+     "Text": "}"
+    }
+   ]
+  },
+  {
+   "input": "\\sqrt{$TM_SELECTED_TEXT}",
+   "pieces": [
+    {
+     "Text": "\\sqrt{"
+    },
+    "Selection",
+    {
+     "Text": "}"
+    }
+   ]
+  },
+  {
+   "input": "\\int_{<:0>}^{<:1>} <> \\, d<:x> ",
+   "pieces": [
+    {
+     "Text": "\\int_{"
+    },
+    {
+     "Tab": {
+      "n": 1,
+      "default": "0"
+     }
+    },
+    {
+     "Text": "}^{"
+    },
+    {
+     "Tab": {
+      "n": 2,
+      "default": "1"
+     }
+    },
+    {
+     "Text": "} "
+    },
+    {
+     "Tab": {
+      "n": 3,
+      "default": ""
+     }
+    },
+    {
+     "Text": " \\, d"
+    },
+    {
+     "Tab": {
+      "n": 4,
+      "default": "x"
+     }
+    },
+    {
+     "Text": " "
+    }
+   ]
+  },
+  {
+   "input": "\\begin{<1>}\n\t<2>\n\\end{<1>}",
+   "pieces": [
+    {
+     "Text": "\\begin{"
+    },
+    {
+     "Tab": {
+      "n": 1,
+      "default": ""
+     }
+    },
+    {
+     "Text": "}\n\t"
+    },
+    {
+     "Tab": {
+      "n": 2,
+      "default": ""
+     }
+    },
+    {
+     "Text": "\n\\end{"
+    },
+    {
+     "Tab": {
+      "n": 1,
+      "default": ""
+     }
+    },
+    {
+     "Text": "}"
+    }
+   ]
+  },
+  {
+   "input": "<2><>",
+   "pieces": [
+    {
+     "Tab": {
+      "n": 2,
+      "default": ""
+     }
+    },
+    {
+     "Tab": {
+      "n": 1,
+      "default": ""
+     }
+    }
+   ]
+  },
+  {
+   "input": "\\hat{%1}",
+   "pieces": [
+    {
+     "Text": "\\hat{"
+    },
+    {
+     "Capture": 1
+    },
+    {
+     "Text": "}"
+    }
+   ]
+  },
+  {
+   "input": "%1_{%2}",
+   "pieces": [
+    {
+     "Capture": 1
+    },
+    {
+     "Text": "_{"
+    },
+    {
+     "Capture": 2
+    },
+    {
+     "Text": "}"
+    }
+   ]
+  },
+  {
+   "input": "\\sqrt{ %V }",
+   "pieces": [
+    {
+     "Text": "\\sqrt{ "
+    },
+    "Selection",
+    {
+     "Text": " }"
+    }
+   ]
+  },
+  {
+   "input": "50\\%%",
+   "pieces": [
+    {
+     "Text": "50\\%"
+    }
+   ]
+  },
+  {
+   "input": "a%<%>b",
+   "pieces": [
+    {
+     "Text": "a<>b"
+    }
+   ]
+  },
+  {
+   "input": "a<b>c",
+   "pieces": [
+    {
+     "Text": "a<b>c"
+    }
+   ]
+  },
+  {
+   "input": "\\alpha + \\beta",
+   "pieces": [
+    {
+     "Text": "\\alpha + \\beta"
+    }
+   ]
+  },
+  {
+   "input": "<0>x",
+   "pieces": [
+    "Exit",
+    {
+     "Text": "x"
+    }
+   ]
+  }
+ ],
+ "renumber": [
+  {
+   "input": [
+    {
+     "Tab": {
+      "n": 2,
+      "default": ""
+     }
+    },
+    {
+     "Text": "+"
+    },
+    {
+     "Tab": {
+      "n": 1,
+      "default": "y"
+     }
+    },
+    {
+     "Text": "+"
+    },
+    {
+     "Tab": {
+      "n": 2,
+      "default": ""
+     }
+    }
+   ],
+   "output": [
+    {
+     "Tab": {
+      "n": 1,
+      "default": ""
+     }
+    },
+    {
+     "Text": "+"
+    },
+    {
+     "Tab": {
+      "n": 2,
+      "default": "y"
+     }
+    },
+    {
+     "Text": "+"
+    },
+    {
+     "Tab": {
+      "n": 1,
+      "default": ""
+     }
+    }
+   ]
+  },
+  {
+   "input": [
+    {
+     "Tab": {
+      "n": 3,
+      "default": ""
+     }
+    },
+    {
+     "Tab": {
+      "n": 7,
+      "default": ""
+     }
+    }
+   ],
+   "output": [
+    {
+     "Tab": {
+      "n": 1,
+      "default": ""
+     }
+    },
+    {
+     "Tab": {
+      "n": 2,
+      "default": ""
+     }
+    }
+   ]
+  },
+  {
+   "input": [
+    {
+     "Text": "a"
+    },
+    "Exit",
+    {
+     "Tab": {
+      "n": 5,
+      "default": "q"
+     }
+    }
+   ],
+   "output": [
+    {
+     "Text": "a"
+    },
+    "Exit",
+    {
+     "Tab": {
+      "n": 1,
+      "default": "q"
+     }
+    }
+   ]
+  }
+ ],
+ "lua_strings": [
+  "\\frac{<>}{<>}",
+  "a]]b",
+  "\\left[ x \\right]",
+  "]",
+  "a]=]b]]",
+  "\nfoo",
+  "\n",
+  "x\n",
+  "tab\there",
+  "",
+  "q\"\\",
+  "]==]]]"
+ ],
+ "guess": [
+  {
+   "why": "%V in the output → Visual",
+   "draft": {
+    "id": null,
+    "trigger": "D",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\bm{"
+     },
+     "Selection",
+     {
+      "Text": "}"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "place": null,
+   "expect": {
+    "kind": "Visual"
+   }
+  },
+  {
+   "why": "%1 + a letters trigger → Post",
+   "draft": {
+    "id": null,
+    "trigger": "bbm",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\mathbb{"
+     },
+     {
+      "Capture": 1
+     },
+     {
+      "Text": "}"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "place": null,
+   "expect": {
+    "kind": "Post"
+   }
+  },
+  {
+   "why": "\\section{ is text",
+   "draft": {
+    "id": null,
+    "trigger": "sec",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\section{"
+     },
+     {
+      "Tab": {
+       "n": 1,
+       "default": ""
+      }
+     },
+     {
+      "Text": "}"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "place": null,
+   "expect": {
+    "context": "Text"
+   }
+  },
+  {
+   "why": "\\frac is maths",
+   "draft": {
+    "id": null,
+    "trigger": "ff",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\frac{"
+     },
+     {
+      "Tab": {
+       "n": 1,
+       "default": ""
+      }
+     },
+     {
+      "Text": "}{"
+     },
+     {
+      "Tab": {
+       "n": 2,
+       "default": ""
+      }
+     },
+     {
+      "Text": "}"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "place": null,
+   "expect": {
+    "context": "Math"
+   }
+  },
+  {
+   "why": "text trigger that starts English words → Tab",
+   "draft": {
+    "id": null,
+    "trigger": "the",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\section{"
+     },
+     {
+      "Tab": {
+       "n": 1,
+       "default": ""
+      }
+     },
+     {
+      "Text": "}"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "place": "Text",
+   "expect": {
+    "context": "Text",
+    "fires": "Tab"
+   }
+  },
+  {
+   "why": "pinned fields are never re-guessed",
+   "draft": {
+    "id": null,
+    "trigger": "D",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\bm{"
+     },
+     "Selection",
+     {
+      "Text": "}"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": [
+     "kind"
+    ]
+   },
+   "place": null,
+   "expect": {
+    "kind": "Plain"
+   }
+  },
+  {
+   "why": "pinned context survives a text-looking output",
+   "draft": {
+    "id": null,
+    "trigger": "sec",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\section{"
+     },
+     {
+      "Tab": {
+       "n": 1,
+       "default": ""
+      }
+     },
+     {
+      "Text": "}"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": [
+     "context"
+    ]
+   },
+   "place": null,
+   "expect": {
+    "context": "Math"
+   }
+  }
+ ],
+ "check": [
+  {
+   "why": "empty trigger",
+   "draft": {
+    "id": null,
+    "trigger": "",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "x"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "codes": [
+    "empty-trigger"
+   ],
+   "errors": true
+  },
+  {
+   "why": "empty output",
+   "draft": {
+    "id": null,
+    "trigger": "zq",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "codes": [],
+   "errors": true
+  },
+  {
+   "why": "visual without %V",
+   "draft": {
+    "id": null,
+    "trigger": "D",
+    "kind": "Visual",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\bm{x}"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "codes": [
+    "no-selection"
+   ],
+   "errors": null
+  },
+  {
+   "why": "post without %1",
+   "draft": {
+    "id": null,
+    "trigger": "bbm",
+    "kind": "Post",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\mathbb{R}"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "codes": [
+    "no-capture"
+   ],
+   "errors": null
+  },
+  {
+   "why": "text + pattern",
+   "draft": {
+    "id": null,
+    "trigger": "(%a)q",
+    "kind": "Pattern",
+    "context": "Text",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "xq",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Capture": 1
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "codes": [],
+   "errors": true
+  },
+  {
+   "why": "a clean draft has no errors",
+   "draft": {
+    "id": null,
+    "trigger": "ff",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\frac{"
+     },
+     {
+      "Tab": {
+       "n": 1,
+       "default": ""
+      }
+     },
+     {
+      "Text": "}{"
+     },
+     {
+      "Tab": {
+       "n": 2,
+       "default": ""
+      }
+     },
+     {
+      "Text": "}"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "codes": [],
+   "errors": false
+  },
+  {
+   "why": "literal <> is noted (escaped)",
+   "draft": {
+    "id": null,
+    "trigger": "ltg",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "a<>b"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "codes": [
+    "literal-angle"
+   ],
+   "errors": false
+  },
+  {
+   "why": "tab-stop default holding > cannot be written (helpers.parse stops at >)",
+   "draft": {
+    "id": null,
+    "trigger": "gtd",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Tab": {
+       "n": 1,
+       "default": "a>b"
+      }
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "codes": [],
+   "errors": true,
+   "alt": "or codegen escapes it so ntex shows the default a>b"
+  },
+  {
+   "why": "trailing newline breaks LuaSnip (helpers trailing_ws) unless an exit follows",
+   "draft": {
+    "id": null,
+    "trigger": "nlz",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\quad\n"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "codes": [],
+   "errors": null,
+   "alt": "acceptable: an Error/Warning finding, or codegen appends <0> (then e2e must give \\quad\\n‸)"
+  }
+ ],
+ "try_plan": [
+  {
+   "draft": {
+    "id": null,
+    "trigger": "ff",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\frac{"
+     },
+     {
+      "Tab": {
+       "n": 1,
+       "default": ""
+      }
+     },
+     {
+      "Text": "}{"
+     },
+     {
+      "Tab": {
+       "n": 2,
+       "default": ""
+      }
+     },
+     {
+      "Text": "}"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "expect": {
+    "ft": "tex",
+    "place": "inline",
+    "keys": "ff",
+    "tab": false,
+    "nfills": 2
+   }
+  },
+  {
+   "draft": {
+    "id": null,
+    "trigger": "ip",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Tab",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "<"
+     },
+     {
+      "Tab": {
+       "n": 1,
+       "default": ""
+      }
+     },
+     {
+      "Text": ">"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "expect": {
+    "place": "inline",
+    "keys": "ip",
+    "tab": true,
+    "nfills": 1
+   }
+  },
+  {
+   "draft": {
+    "id": null,
+    "trigger": "bbm",
+    "kind": "Post",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\mathbb{"
+     },
+     {
+      "Capture": 1
+     },
+     {
+      "Text": "}"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "expect": {
+    "keys_endswith": "bbm",
+    "keys_len": 4,
+    "tab": false
+   }
+  },
+  {
+   "draft": {
+    "id": null,
+    "trigger": "tp",
+    "kind": "Suffix",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "^{\\top}"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "expect": {
+    "keys_endswith": "tp",
+    "keys_len": 3
+   }
+  },
+  {
+   "draft": {
+    "id": null,
+    "trigger": "(%a)vv(%d)",
+    "kind": "Pattern",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "xvv2",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Capture": 1
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "expect": {
+    "keys": "xvv2"
+   }
+  },
+  {
+   "draft": {
+    "id": null,
+    "trigger": "D",
+    "kind": "Visual",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "\\bm{"
+     },
+     "Selection",
+     {
+      "Text": "}"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "expect": {
+    "place": "visual",
+    "keys": "D"
+   }
+  },
+  {
+   "draft": {
+    "id": null,
+    "trigger": "thm",
+    "kind": "Plain",
+    "context": "Text",
+    "fires": "Tab",
+    "math_where": "Any",
+    "line": "Start",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "x"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "expect": {
+    "place": "text-start",
+    "tab": true
+   }
+  },
+  {
+   "draft": {
+    "id": null,
+    "trigger": "todo",
+    "kind": "Plain",
+    "context": "Text",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "ListItem",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "x"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "expect": {
+    "place": "list-item"
+   }
+  },
+  {
+   "draft": {
+    "id": null,
+    "trigger": "nrm",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Display",
+    "line": "Anywhere",
+    "ft": "Both",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "x"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "expect": {
+    "place": "display"
+   }
+  },
+  {
+   "draft": {
+    "id": null,
+    "trigger": "mdq",
+    "kind": "Plain",
+    "context": "Math",
+    "fires": "Auto",
+    "math_where": "Any",
+    "line": "Anywhere",
+    "ft": "Markdown",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "x"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "expect": {
+    "ft": "markdown"
+   }
+  },
+  {
+   "draft": {
+    "id": null,
+    "trigger": "sect",
+    "kind": "Plain",
+    "context": "Text",
+    "fires": "Tab",
+    "math_where": "Any",
+    "line": "Start",
+    "ft": "Tex",
+    "priority": 0,
+    "desc": "",
+    "eg": "",
+    "check": "",
+    "origin": "yours",
+    "output": [
+     {
+      "Text": "x"
+     }
+    ],
+    "raw_lua": "",
+    "pinned": []
+   },
+   "expect": {
+    "ft": "tex",
+    "place": "text-start"
+   }
+  }
+ ],
+ "blocks": [
+  {
+   "id": "BL1",
+   "why": "Fun fact like remark (unnumbered, upright, Green)",
+   "block": {
+    "title": "Fun fact",
+    "env": "funfact",
+    "base": "Remark",
+    "numbering": "None",
+    "body": "Upright",
+    "colour": {
+     "Palette": "Green"
+    },
+    "cref": [
+     "fun fact",
+     "fun facts"
+    ],
+    "trigger": "fun",
+    "with_title": true
+   },
+   "stanza_has": [
+    "% ── block: funfact ──",
+    "% ── end: funfact ──",
+    "\\newtheorem*{funfact}{Fun fact}",
+    "\\theoremstyle{ntexupright}",
+    "ntexbox=Green"
+   ],
+   "stanza_lacks": [
+    "\\definecolor",
+    "\\crefname"
+   ],
+   "doc": "\\begin{funfact}[Why] F. \\end{funfact}",
+   "pdf_has": [
+    "Fun fact (Why)."
+   ],
+   "snippet_entry": "  text(\"fun\", [[\\begin{funfact}[<>]\n\t<>\n\\end{funfact}]], \"yours\", { line = \"start\", tab = true, ft = \"tex\" }),",
+   "snippet_type": {
+    "keys": [
+     "fun<Tab>",
+     "Why<Tab>",
+     "body<Tab>"
+    ],
+    "buffers": [
+     "\\begin{funfact}[‸]\n\t\n\\end{funfact}",
+     "\\begin{funfact}[Why]\n\t‸\n\\end{funfact}",
+     "\\begin{funfact}[Why]\n\tbody\n\\end{funfact}‸"
+    ]
+   }
+  },
+  {
+   "id": "BL2",
+   "why": "numbered with theorems, italic, Blue; \\cref must read like 'Theorem 1.1'",
+   "block": {
+    "title": "Fun fact",
+    "env": "funfact",
+    "base": "Theorem",
+    "numbering": "WithTheorems",
+    "body": "Italic",
+    "colour": {
+     "Palette": "Blue"
+    },
+    "cref": [
+     "fun fact",
+     "fun facts"
+    ],
+    "trigger": "",
+    "with_title": false
+   },
+   "stanza_has": [
+    "\\newtheorem{funfact}[theorem]{Fun fact}",
+    "\\theoremstyle{ntexplain}",
+    "ntexbox=Blue"
+   ],
+   "stanza_lacks": [
+    "\\newtheorem*"
+   ],
+   "doc": "\\begin{funfact}\\label{ff:x} F. \\end{funfact} See \\cref{ff:x} and \\cref{thm:a}.",
+   "pdf_has": [
+    "See Fun fact 1.2 and Theorem 1.1."
+   ]
+  },
+  {
+   "id": "BL3",
+   "why": "own counter per section, new hue 145°",
+   "block": {
+    "title": "Aside",
+    "env": "aside",
+    "base": "Definition",
+    "numbering": "Own",
+    "body": "Upright",
+    "colour": {
+     "Hue": 145.0
+    },
+    "cref": [
+     "aside",
+     "asides"
+    ],
+    "trigger": "asd",
+    "with_title": false
+   },
+   "stanza_has": [
+    "\\definecolor{ntexAsideRule}",
+    "\\definecolor{ntexAsideBack}",
+    "\\definecolor{ntexAsideHead}",
+    "ntexbox=Aside",
+    "\\newtheorem{aside}{Aside}[section]"
+   ],
+   "stanza_lacks": [],
+   "doc": "\\begin{aside}\\label{as:y} A. \\end{aside} See \\cref{as:y}.",
+   "pdf_has": [
+    "Aside 1.1.",
+    "See Aside 1.1."
+   ]
+  },
+  {
+   "id": "BL4",
+   "why": "the neutral Proof palette: ntexProofHead does not exist in ntex-notes.sty",
+   "block": {
+    "title": "Note",
+    "env": "note",
+    "base": "Remark",
+    "numbering": "None",
+    "body": "Upright",
+    "colour": {
+     "Palette": "Proof"
+    },
+    "cref": [
+     "note",
+     "notes"
+    ],
+    "trigger": "",
+    "with_title": false
+   },
+   "stanza_has": [],
+   "stanza_lacks": [],
+   "doc": "\\begin{note} N. \\end{note}",
+   "pdf_has": [
+    "Note. N."
+   ]
+  },
+  {
+   "id": "BL5",
+   "why": "a title with TeX specials must be escaped",
+   "block": {
+    "title": "Q&A 50%",
+    "env": "qa",
+    "base": "Example",
+    "numbering": "None",
+    "body": "Upright",
+    "colour": {
+     "Palette": "Maroon"
+    },
+    "cref": [
+     "q&a",
+     "q&as"
+    ],
+    "trigger": "",
+    "with_title": false
+   },
+   "stanza_has": [],
+   "stanza_lacks": [],
+   "doc": "\\begin{qa} Q. \\end{qa}",
+   "pdf_has": [
+    "Q&A 50%. Q."
+   ]
+  }
+ ],
+ "block_checks": [
+  {
+   "why": "env taken by the theme",
+   "block": {
+    "title": "Remark",
+    "env": "remark",
+    "base": "Remark",
+    "numbering": "None",
+    "body": "Upright",
+    "colour": {
+     "Palette": "Green"
+    },
+    "cref": [
+     "fun fact",
+     "fun facts"
+    ],
+    "trigger": "fun",
+    "with_title": true
+   },
+   "has_error": true
+  },
+  {
+   "why": "env not letters",
+   "block": {
+    "title": "Fun fact",
+    "env": "fun-fact",
+    "base": "Remark",
+    "numbering": "None",
+    "body": "Upright",
+    "colour": {
+     "Palette": "Green"
+    },
+    "cref": [
+     "fun fact",
+     "fun facts"
+    ],
+    "trigger": "fun",
+    "with_title": true
+   },
+   "has_error": true
+  },
+  {
+   "why": "empty title",
+   "block": {
+    "title": "",
+    "env": "funfact",
+    "base": "Remark",
+    "numbering": "None",
+    "body": "Upright",
+    "colour": {
+     "Palette": "Green"
+    },
+    "cref": [
+     "fun fact",
+     "fun facts"
+    ],
+    "trigger": "fun",
+    "with_title": true
+   },
+   "has_error": true
+  },
+  {
+   "why": "standard LaTeX env",
+   "block": {
+    "title": "Fun fact",
+    "env": "itemize",
+    "base": "Remark",
+    "numbering": "None",
+    "body": "Upright",
+    "colour": {
+     "Palette": "Green"
+    },
+    "cref": [
+     "fun fact",
+     "fun facts"
+    ],
+    "trigger": "fun",
+    "with_title": true
+   },
+   "has_error": true
+  },
+  {
+   "why": "a fine block",
+   "block": {
+    "title": "Fun fact",
+    "env": "funfact",
+    "base": "Remark",
+    "numbering": "None",
+    "body": "Upright",
+    "colour": {
+     "Palette": "Green"
+    },
+    "cref": [
+     "fun fact",
+     "fun facts"
+    ],
+    "trigger": "fun",
+    "with_title": true
+   },
+   "has_error": false
+  }
+ ],
+ "env_from_title": [
+  [
+   "Fun fact",
+   "funfact"
+  ],
+  [
+   "Côté",
+   "cote"
+  ],
+  [
+   "Q&A 50%",
+   "qa"
+  ],
+  [
+   "Claim 2",
+   "claim"
+  ]
+ ],
+ "colour": {
+  "palette": {
+   "Blue": [
+    "1E47B8",
+    "E0E7FB",
+    "153079"
+   ],
+   "Violet": [
+    "661EB8",
+    "ECE0FB",
+    "441579"
+   ],
+   "Teal": [
+    "1C829C",
+    "E2F4F8",
+    "0F596B"
+   ],
+   "Maroon": [
+    "A92D4A",
+    "F8EAED",
+    "79152D"
+   ],
+   "Green": [
+    "238B45",
+    "E5F5EA",
+    "145D2C"
+   ]
+  },
+  "ink": "1E1E28",
+  "contrast": [
+   [
+    "1E1E28",
+    "E0E7FB",
+    13.36
+   ],
+   [
+    "153079",
+    "E0E7FB",
+    9.82
+   ],
+   [
+    "0F596B",
+    "E2F4F8",
+    6.96
+   ],
+   [
+    "FFFFFF",
+    "000000",
+    21.0
+   ],
+   [
+    "8A6A00",
+    "F8F1DC",
+    4.49
+   ]
+  ],
+  "hue_sweep": [
+   0,
+   30,
+   60,
+   90,
+   145,
+   200,
+   260,
+   300,
+   330
+  ],
+  "min_body": 7.0,
+  "min_head": 4.5
+ },
+ "apply": {
+  "inbox": "-- Snippets made in Ntex Studio, waiting to be sorted. Safe to edit by hand.\nlocal h = require(\"snips.helpers\")\nlocal math, math_tab, text, suffix, post, pat, vis = h.math, h.math_tab, h.text, h.suffix, h.post, h.pat, h.vis\n\nreturn h.group(\"Inbox\", {\n  -- studio: id=bbm-1 made=2026-10-07T14:30\n  post(\"bbm\", [[\\mathbb{%1}]], \"yours\"),\n  -- studio: id=thm-1 made=2026-10-07T14:31\n  text(\"thm\", [[\\begin{theorem}\n\t<>\n\\end{theorem}]], \"yours\", { tab = true, line = \"start\" }),\n  -- studio: id=pr-1 made=2026-10-07T14:32\n  math(\"prb\", [[\\Pr\\left( <> \\right)]], \"yours\"),\n  -- studio: id=lrs-1 made=2026-10-07T14:33\n  math(\"lrs\", [=[\\left[ <> \\right]]=], \"yours\"),\n  -- studio: id=tp-1 made=2026-10-07T14:34\n  suffix(\"tp\", [[^{\\top}]], \"yours\"),\n  -- studio: id=gqq-1 made=2026-10-07T14:35\n  math(\"gqq\", [[\\geqq]], \"yours\"),\n  -- studio: id=stay-1 made=2026-10-07T14:36\n  math(\"stq\", [[\\star]], \"yours\"),\n})\n",
+  "plan": {
+   "moves": [
+    {
+     "id": "bbm-1",
+     "file": "operations.lua",
+     "after_trigger": "ee",
+     "new_title": null,
+     "reason": "a post accent next to the powers"
+    },
+    {
+     "id": "thm-1",
+     "file": "text.lua",
+     "after_trigger": "beg",
+     "new_title": null,
+     "reason": "with the other Tab environments"
+    },
+    {
+     "id": "pr-1",
+     "file": "probability.lua",
+     "after_trigger": null,
+     "new_title": "Probability",
+     "reason": "new topic"
+    },
+    {
+     "id": "lrs-1",
+     "file": "brackets.lua",
+     "after_trigger": "no-such-trigger",
+     "new_title": null,
+     "reason": "brackets"
+    },
+    {
+     "id": "tp-1",
+     "file": "chemistry.lua",
+     "after_trigger": "pu",
+     "new_title": null,
+     "reason": "a file whose locals have only math"
+    },
+    {
+     "id": "gqq-1",
+     "file": "symbols.lua",
+     "after_trigger": "geq",
+     "new_title": null,
+     "reason": "her two-per-line edit"
+    },
+    {
+     "id": "ghost-9",
+     "file": "sets.lua",
+     "after_trigger": null,
+     "new_title": null,
+     "reason": "not in the inbox"
+    }
+   ],
+   "notes": ""
+  },
+  "expect": {
+   "moved": {
+    "bbm-1": "operations.lua",
+    "thm-1": "text.lua",
+    "pr-1": "probability.lua",
+    "lrs-1": "brackets.lua",
+    "tp-1": "chemistry.lua",
+    "gqq-1": "symbols.lua"
+   },
+   "inbox_keeps": [
+    "stq"
+   ],
+   "order": {
+    "operations.lua": [
+     "ee",
+     "bbm",
+     "invs"
+    ],
+    "text.lua": [
+     "beg",
+     "thm",
+     "enum"
+    ],
+    "chemistry.lua": [
+     "pu",
+     "tp",
+     "cee"
+    ],
+    "symbols.lua": [
+     "geq",
+     "gqq",
+     "leq"
+    ],
+    "brackets.lua": [
+     "lrs"
+    ]
+   },
+   "new_file_title": {
+    "probability.lua": "Probability"
+   },
+   "type": [
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "keys": "Rbbm",
+     "buffer": "$\\mathbb{R}‸$"
+    },
+    {
+     "ft": "tex",
+     "text": "‸",
+     "keys": "thm<Tab>",
+     "buffer": "\\begin{theorem}\n\t‸\n\\end{theorem}"
+    },
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "keys": "prb",
+     "buffer": "$\\Pr\\left( ‸ \\right)$"
+    },
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "keys": "lrs",
+     "buffer": "$\\left[ ‸ \\right]$"
+    },
+    {
+     "ft": "tex",
+     "text": "$‸$",
+     "keys": "Atp",
+     "buffer": "$A^{\\top}‸$"
+    },
+    {
+     "ft": "tex",
+     "text": "$a ‸$",
+     "keys": "gqq",
+     "buffer": "$a \\geqq‸$"
+    },
+    {
+     "ft": "tex",
+     "text": "$a ‸$",
+     "keys": "stq",
+     "buffer": "$a \\star‸$"
+    }
+   ]
+  }
+ }
+}

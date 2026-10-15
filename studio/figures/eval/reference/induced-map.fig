@@ -1,0 +1,7 @@
+% first isomorphism theorem
+G -π->> G/N
+G -φ-> H
+G/N --\bar\varphi--> H
+G at 0,0
+G/N at 1,0
+H at 0,1

@@ -1,0 +1,4 @@
+# cmux only. cmux 0.64.x swallows ⌘C when the terminal itself has nothing
+# selected; this lets ⌘C reach Neovim (ntex copies the selection to the Mac
+# clipboard). Not needed from cmux 0.65.1.
+keybind = super+c=unbind

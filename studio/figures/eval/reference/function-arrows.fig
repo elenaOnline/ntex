@@ -1,0 +1,7 @@
+% not injective
+blob A "A" {a, b, c}
+blob B "B" {1, 2, 3}
+A -f-> B
+a |-> 1
+b |-> 1
+c |-> 3

@@ -1,0 +1,4 @@
+% First isomorphism theorem: G ->> G/K, and phi factors through the quotient.
+G -π->> G/K
+G/K -"\bar\varphi"-> φ(G) iso
+G -φ-> φ(G) swap

@@ -1,0 +1,74 @@
+[workspace]
+resolver = "3"
+members = [".", "core", "io", "figures"]
+
+[package]
+name = "ntex-studio"
+description = "Ntex Studio: make snippets, Tab shortcuts and new theorem-like blocks for ntex, on the fly"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.98"
+publish = false
+license = "UNLICENSED"
+
+[lib]
+name = "ntex_studio"
+path = "src/lib.rs"
+
+[[bin]]
+name = "ntex-studio"
+path = "src/main.rs"
+
+[dependencies]
+ntex-studio-core = { path = "core" }
+ntex-studio-io = { path = "io" }
+ntex-figures = { path = "figures" }
+# A patched GPUI (iron-drawxide's vendored Zed copy, the same pin as
+# another project): it has a headless Metal renderer, so every screen can be rendered
+# and checked offscreen without a window ever appearing.
+gpui = { git = "https://github.com/elenaOnline/iron-drawxide", rev = "6ed3e1b77c8b268002bfa8114d86076d7e053bb4", default-features = false }
+gpui_platform = { git = "https://github.com/elenaOnline/iron-drawxide", rev = "6ed3e1b77c8b268002bfa8114d86076d7e053bb4", default-features = false, features = ["font-kit", "runtime_shaders"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+unicode-segmentation = "1"
+# SCREENS: decode rendered PNGs off the UI thread into GPUI images (same 0.25 as gpui)
+image = { version = "0.25", default-features = false, features = ["png"] }
+
+[dev-dependencies]
+gpui = { git = "https://github.com/elenaOnline/iron-drawxide", rev = "6ed3e1b77c8b268002bfa8114d86076d7e053bb4", default-features = false, features = ["test-support"] }
+gpui_platform = { git = "https://github.com/elenaOnline/iron-drawxide", rev = "6ed3e1b77c8b268002bfa8114d86076d7e053bb4", default-features = false, features = ["test-support"] }
+image = { version = "0.25", default-features = false, features = ["png"] }
+
+# Offscreen renders of every screen (AppKit wants the text system on the main
+# thread, which libtest's workers are not). No window, ever.
+[[test]]
+name = "renders"
+harness = false
+
+[profile.dev]
+debug = "line-tables-only"
+
+[profile.dev.package."*"]
+opt-level = 2
+
+[profile.release]
+lto = "thin"
+
+# WIDGETS: every widget in every state, offscreen, to evidence/widgets/, plus
+# the token editor / trigger field driven with synthetic keys.
+[[test]]
+name = "widgets_gallery"
+harness = false
+
+# FIG-UI: the figure window offscreen (evidence/figure/), driven with
+# synthetic mouse and keys; hand-made figures while CORE is still building.
+[[test]]
+name = "figure_renders"
+harness = false
+
+# USABILITY ADVERSARY: the author's 25 tasks in the figure window, offscreen,
+# synthetic mouse and keys only (figures/verification/usability.md,
+# evidence/usability/).
+[[test]]
+name = "usability"
+harness = false

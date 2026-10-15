@@ -1,0 +1,6 @@
+% my sequence
+A -f-> B
+B -g-> C
+C at 2,0
+A at 0,0
+B at 1,0

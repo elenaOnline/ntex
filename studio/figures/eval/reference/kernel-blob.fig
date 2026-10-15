@@ -1,0 +1,4 @@
+blob G "G" {g, g^3}
+blob K "\ker\varphi" in G shaded {e, g^2}
+blob H "H" {e', h}
+G -φ-> H

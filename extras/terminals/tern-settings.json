@@ -1,0 +1,7 @@
+{
+  "font_family": "JuliaMono",
+  "keymap": "cmux",
+  "keybinds": {
+    "cmd+c": ["edit.copy", "text:\u001b[99;9u"]
+  }
+}

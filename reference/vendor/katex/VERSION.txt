@@ -1,0 +1,6 @@
+KaTeX 0.18.10 (https://katex.org), vendored from `npm pack katex` on 2026-09-30.
+Licence: MIT, see LICENSE in this folder (Copyright (c) 2013-2020 Khan Academy and other contributors).
+Files kept: katex.min.css, katex.min.js (browser), katex.mjs (used by build.mjs to
+pre-render math), contrib/mhchem.mjs (\ce / \pu), fonts/*.woff2 only (every current
+browser loads woff2; the .woff/.ttf fallbacks in the CSS are simply never requested).
+Update: npm pack katex, then copy the same files over these.

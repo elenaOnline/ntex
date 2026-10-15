@@ -1,0 +1,105 @@
+% ntex-notes.sty — the notes theme we're workshopping (v3, 2026-10-02: classic
+% tcolorbox look — rounded corners, coloured title bar, darker colours).
+% v3: teal-blue definitions, maroon examples, green remarks, 1mm corners.
+% v1 (left-rule boxes) is kept as ntex-notes.v1.sty.
+% Everything tunable is near the top: palette, fonts, box shape.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{ntex-notes}[2026/10/02 v2 ntex notes theme]
+
+% ---------------------------------------------------------------- packages
+\RequirePackage[margin=1in]{geometry}
+\RequirePackage{amsmath, amssymb, amsthm, mathtools}
+\RequirePackage[dvipsnames]{xcolor}
+\RequirePackage[most]{tcolorbox}   % skins, breakable, theorems …
+\RequirePackage{enumitem}
+\RequirePackage{booktabs}
+\RequirePackage[hidelinks]{hyperref}
+\RequirePackage[capitalise,noabbrev]{cleveref}
+
+% ---------------------------------------------------------------- fonts
+% Palatino (Zapf, humanist) for text + matching maths.
+\RequirePackage{newpxtext, newpxmath}
+\linespread{1.08}
+
+% ---------------------------------------------------------------- palette
+% Modus-aligned: each kind of block gets one hue; tints are mixed with white.
+\definecolor{ntexInk}{HTML}{1E1E28}      % body text
+\definecolor{ntexBlue}{HTML}{1F3A8A}     % theorem, lemma, proposition, corollary
+\definecolor{ntexTeal}{HTML}{1D6D81}     % definition (teal-blue, same saturation as the navy)
+\definecolor{ntexMaroon}{HTML}{772237}   % example
+\definecolor{ntexGreen}{HTML}{1E5E2E}    % remark (forest green)
+\definecolor{ntexSlate}{HTML}{5A6378}    % proof rule, captions, rules
+\color{ntexInk}
+
+% ---------------------------------------------------------------- headings
+\RequirePackage{titlesec}
+\titleformat{\section}{\Large\bfseries}{\color{ntexBlue}\thesection}{0.75em}{}
+\titleformat{\subsection}{\large\bfseries}{\color{ntexBlue}\thesubsection}{0.75em}{}
+\titlespacing*{\section}{0pt}{2.2ex plus .5ex}{1.2ex}
+\titlespacing*{\subsection}{0pt}{1.8ex plus .4ex}{0.8ex}
+
+% ---------------------------------------------------------------- theorems
+% tcolorbox draws and numbers the boxes. Usage is the usual one:
+%   \begin{theorem}[Name] \label{thm:x} … \end{theorem}   → \cref{thm:x} = "Theorem 1.2"
+% All numbered kinds share one counter, numbered within the section.
+\tcbset{
+  ntextype/.code={\def\ntex@type{#1}},
+  ntexthm/.style n args={3}{%  #1 colour, #2 kind ("Theorem"), #3 optional name
+    enhanced, breakable,
+    arc=1mm, boxrule=0.9pt,
+    colframe=#1, colback=#1!6!white,
+    coltitle=white, colbacktitle=#1,
+    fonttitle=\bfseries,
+    title={#2~\thetcbcounter\ifx\relax#3\relax\else: #3\fi},
+    left=9pt, right=9pt, top=6pt, bottom=6pt, toptitle=2pt, bottomtitle=2pt,
+    before skip=12pt, after skip=12pt,
+    % \label inside the box: tcolorbox steps its counter outside the box body,
+    % so set the label state (number + cleveref type) at the top of the body.
+    before upper={%
+      \protected@edef\@currentlabel{\thetcbcounter}%
+      \protected@edef\cref@currentlabel{[\ntex@type][\arabic{tcb@cnt@theorem}][]\thetcbcounter}},
+  },
+  ntexnonum/.style n args={3}{%  unnumbered (remark)
+    ntexthm={#1}{#2}{#3},
+    title={#2\ifx\relax#3\relax\else: #3\fi},
+  },
+}
+\NewTColorBox[auto counter, number within=section, crefname={Theorem}{Theorems}]
+  {theorem}{O{}}{ntexthm={ntexBlue}{Theorem}{#1}, fontupper=\itshape, ntextype=theorem}
+\NewTColorBox[use counter from=theorem]
+  {lemma}{O{}}{ntexthm={ntexBlue}{Lemma}{#1}, fontupper=\itshape, ntextype=lemma}
+\NewTColorBox[use counter from=theorem]
+  {proposition}{O{}}{ntexthm={ntexBlue}{Proposition}{#1}, fontupper=\itshape, ntextype=proposition}
+\NewTColorBox[use counter from=theorem]
+  {corollary}{O{}}{ntexthm={ntexBlue}{Corollary}{#1}, fontupper=\itshape, ntextype=corollary}
+\NewTColorBox[use counter from=theorem]
+  {definition}{O{}}{ntexthm={ntexTeal}{Definition}{#1}, ntextype=definition}
+\NewTColorBox[use counter from=theorem]
+  {example}{O{}}{ntexthm={ntexMaroon}{Example}{#1}, ntextype=example}
+\NewTColorBox{remark}{O{}}{ntexnonum={ntexGreen}{Remark}{#1}, ntextype=remark}
+
+\crefname{lemma}{Lemma}{Lemmas}
+\crefname{proposition}{Proposition}{Propositions}
+\crefname{corollary}{Corollary}{Corollaries}
+\crefname{definition}{Definition}{Definitions}
+\crefname{example}{Example}{Examples}
+
+% proof: plain amsthm, open box at the end
+\renewcommand{\qedsymbol}{$\square$}
+
+% ---------------------------------------------------------------- lists, captions
+\setlist{itemsep=2pt, topsep=4pt}
+\setlist[itemize,1]{label=\textcolor{ntexBlue}{\textbullet}}
+\setlist[enumerate,1]{label=\textcolor{ntexBlue}{\arabic*.}}
+\RequirePackage[font={small,color=ntexSlate}, labelfont=bf]{caption}
+
+% ---------------------------------------------------------------- title
+\RequirePackage{titling}
+\pretitle{\begin{flushleft}\LARGE\bfseries\color{ntexInk}}
+\posttitle{\par\end{flushleft}\vspace{-0.6em}}
+\preauthor{\begin{flushleft}\color{ntexSlate}}
+\postauthor{\par\end{flushleft}}
+\predate{\begin{flushleft}\small\color{ntexSlate}}
+\postdate{\par\end{flushleft}\vspace{0.4em}{\color{ntexBlue}\rule{\linewidth}{1.2pt}}\vspace{0.6em}}
+
+\endinput

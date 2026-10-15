@@ -1,0 +1,18 @@
+[package]
+name = "ntex-figures"
+description = "Ntex Figures: the .fig shorthand → model → Scene → TikZ (commutative diagrams, blobs, n-gons, Cayley graphs). See FIGURES.md."
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[lib]
+name = "ntex_figures"
+path = "src/lib.rs"
+
+[[bin]]
+name = "ntex-fig"
+path = "src/bin/ntex-fig.rs"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
