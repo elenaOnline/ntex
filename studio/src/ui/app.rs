@@ -14,7 +14,7 @@
 //! themselves.
 use crate::model::*;
 use crate::model::Context as SnipContext;
-use crate::ui::screens::{block::BlockPage, inbox::InboxPage, shell, snippet::SnippetPage};
+use crate::ui::screens::{block::BlockPage, inbox::InboxPage, library::LibraryPage, shell, snippet::SnippetPage};
 use gpui::{
     App, AppContext as _, Bounds, Context, FocusHandle, Focusable, Global, InteractiveElement as _, IntoElement,
     KeyBinding, ParentElement as _, Pixels, Render, RenderImage, ScrollHandle, SharedString, Styled as _, Subscription,
@@ -36,6 +36,16 @@ actions!(
         PageBlock,
         /// ⌘3
         PageInbox,
+        /// ⌘4
+        PageLibrary,
+        /// ⌘F: search the library
+        LibSearch,
+        /// ↑ in the library (its list or its search field)
+        LibUp,
+        /// ↓ in the library
+        LibDown,
+        /// Return in the library: edit the selected snippet
+        LibOpen,
         /// ⌘↵
         Save,
         /// ⌘N
@@ -65,6 +75,7 @@ actions!(
 
 pub const KEY_CONTEXT: &str = "Studio";
 pub const INBOX_CONTEXT: &str = "InboxTable";
+pub const LIBRARY_CONTEXT: &str = "LibraryList";
 
 /// How often the poll loop drains the receivers.
 const POLL: Duration = Duration::from_millis(16);
@@ -103,6 +114,15 @@ pub fn init(cx: &mut gpui::App) {
         // ⌘↵ is the page's save everywhere, also inside the kit's fields
         // (bound after the kit, so it wins over their Submit at the same depth)
         KeyBinding::new("cmd-enter", Save, Some("NtexEdit")),
+        KeyBinding::new("cmd-4", PageLibrary, s),
+        KeyBinding::new("cmd-f", LibSearch, s),
+        KeyBinding::new("up", LibUp, Some(LIBRARY_CONTEXT)),
+        KeyBinding::new("down", LibDown, Some(LIBRARY_CONTEXT)),
+        KeyBinding::new("enter", LibOpen, Some(LIBRARY_CONTEXT)),
+        // in the search field (bound after the kit, so they win over its ↑/↓/Return)
+        KeyBinding::new("up", LibUp, Some("LibrarySearch > TextField")),
+        KeyBinding::new("down", LibDown, Some("LibrarySearch > TextField")),
+        KeyBinding::new("enter", LibOpen, Some("LibrarySearch > TextField")),
     ]);
 }
 
@@ -129,6 +149,7 @@ pub enum Page {
     Snippet,
     Block,
     Inbox,
+    Library,
 }
 
 impl Page {
@@ -137,6 +158,7 @@ impl Page {
             "snippet" => Some(Page::Snippet),
             "block" => Some(Page::Block),
             "inbox" => Some(Page::Inbox),
+            "library" => Some(Page::Library),
             _ => None,
         }
     }
@@ -435,6 +457,7 @@ pub struct Studio {
     pub snippet: SnippetPage,
     pub block: BlockPage,
     pub inbox_page: InboxPage,
+    pub library: LibraryPage,
     pub open_rx: Option<Receiver<OpenRequest>>,
     /// Hide requests (quiet mode counts them instead of hiding).
     pub hides: u32,
@@ -457,6 +480,7 @@ impl Studio {
         let snippet = SnippetPage::new(window, cx, &mut subs);
         let block = BlockPage::new(window, cx, &mut subs);
         let inbox_page = InboxPage::new(cx);
+        let library = LibraryPage::new(window, cx, &mut subs);
         let renderer = safe("Renderer::new", || Renderer::new(&paths));
         let mut studio = Studio {
             paths,
@@ -482,6 +506,7 @@ impl Studio {
             snippet,
             block,
             inbox_page,
+            library,
             open_rx: None,
             hides: 0,
             bounds_dirty: None,
@@ -651,6 +676,7 @@ impl Studio {
         changed |= self.pump_snippet(now, window, cx);
         changed |= self.pump_block(now, cx);
         changed |= self.pump_inbox(now, cx);
+        changed |= self.pump_library(now, cx);
 
         if let Some(t) = &self.toast {
             let age = now.saturating_duration_since(t.at);
@@ -713,6 +739,12 @@ impl Studio {
             Page::Snippet => self.snippet.trigger.read(cx).focus.clone().focus(window, cx),
             Page::Block => self.block.title.read(cx).focus.clone().focus(window, cx),
             Page::Inbox => self.inbox_page.focus.clone().focus(window, cx),
+            Page::Library => {
+                if self.library.lib.entries.is_empty() || self.library.seen.is_empty() {
+                    self.reload_library(cx);
+                }
+                self.library.search.read(cx).focus.clone().focus(window, cx);
+            }
         }
         cx.notify();
     }
@@ -722,9 +754,9 @@ impl Studio {
         // FIG-UI: `--figure PATH` opens (or focuses) that figure's own window;
         // a request with nothing else leaves the studio's window alone
         if let Some(fig) = req.figure.take().filter(|f| !f.is_empty()) {
-            let quiet = self.quiet;
+            let mode = crate::ui::launch::Mode::of(self.quiet, req.background);
             cx.defer(move |cx| {
-                crate::ui::figure::open(std::path::Path::new(&fig), quiet, cx);
+                crate::ui::figure::open_mode(std::path::Path::new(&fig), mode, cx);
             });
             if req.page.is_none() && req.output.is_none() && req.context.is_none() && req.ft.is_none() {
                 return;
@@ -751,7 +783,10 @@ impl Studio {
             self.snippet_changed(cx);
         }
         self.set_page(page.unwrap_or(if prefill { Page::Snippet } else { self.page }), window, cx);
-        if !self.quiet {
+        let plan = crate::ui::launch::plan(crate::ui::launch::Mode::of(self.quiet, req.background), true);
+        if plan.activate {
+            // a studio launched in the background becomes a normal app now
+            crate::ui::launch::release_background();
             cx.activate(true);
             window.activate_window();
         }
@@ -814,6 +849,9 @@ impl Studio {
         self.reload_inbox();
         self.reload_blocks();
         self.files_changed();
+        if self.page == Page::Library || !self.library.lib.entries.is_empty() {
+            self.reload_library(cx);
+        }
         self.snippet_rechecked(cx);
         cx.notify();
     }
@@ -824,6 +862,7 @@ impl Studio {
             Page::Snippet => self.snippet_hints(window, cx),
             Page::Block => self.block_hints(window, cx),
             Page::Inbox => self.inbox_hints(window, cx),
+            Page::Library => self.library_hints(window, cx),
         }
     }
 
@@ -855,6 +894,7 @@ impl Render for Studio {
             Page::Snippet => self.render_snippet(window, cx).into_any_element(),
             Page::Block => self.render_block(window, cx).into_any_element(),
             Page::Inbox => self.render_inbox(window, cx).into_any_element(),
+            Page::Library => self.render_library(window, cx).into_any_element(),
         };
         let page = shell::frame(self, body, window, cx);
         div()
@@ -864,15 +904,20 @@ impl Render for Studio {
             .on_action(cx.listener(|s, _: &PageSnippet, w, cx| s.set_page(Page::Snippet, w, cx)))
             .on_action(cx.listener(|s, _: &PageBlock, w, cx| s.set_page(Page::Block, w, cx)))
             .on_action(cx.listener(|s, _: &PageInbox, w, cx| s.set_page(Page::Inbox, w, cx)))
+            .on_action(cx.listener(|s, _: &PageLibrary, w, cx| s.set_page(Page::Library, w, cx)))
+            .on_action(cx.listener(|s, _: &LibSearch, w, cx| {
+                s.set_page(Page::Library, w, cx);
+                s.library.search.update(cx, |f, cx| f.select_all(cx));
+            }))
             .on_action(cx.listener(|s, _: &Save, w, cx| match s.page {
                 Page::Snippet => s.save_snippet(w, cx),
                 Page::Block => s.save_block(w, cx),
-                Page::Inbox => {}
+                Page::Inbox | Page::Library => {}
             }))
             .on_action(cx.listener(|s, _: &Clear, w, cx| match s.page {
                 Page::Snippet => s.clear_snippet(w, cx),
                 Page::Block => s.clear_block(w, cx),
-                Page::Inbox => {}
+                Page::Inbox | Page::Library => {}
             }))
             .on_action(cx.listener(|s, _: &Undo, w, cx| s.undo_last(w, cx)))
             .on_action(cx.listener(|s, _: &Redo, _, cx| s.redo_last(cx)))
@@ -901,9 +946,26 @@ impl Studio {
         let empty = match self.page {
             Page::Snippet => self.snippet_is_empty(),
             Page::Block => self.block_is_empty(),
-            Page::Inbox => true,
+            Page::Inbox | Page::Library => true,
         };
         let in_field = !self.focus.is_focused(window);
+        // editing a Library snippet: Esc leaves the field it is in, then goes
+        // back to the list (a field that isn't drawn doesn't count)
+        if self.page == Page::Snippet && self.snippet.home.is_some() {
+            let p = &self.snippet;
+            let raw = p.draft.kind == Kind::RawLua;
+            let mut fields = vec![p.trigger.read(cx).focus.clone(), p.priority.read(cx).focus.clone(), p.desc.read(cx).focus.clone()];
+            fields.push(p.eg.read(cx).focus.clone());
+            fields.push(p.check.read(cx).focus.clone());
+            fields.push(if raw { p.raw.read(cx).focus.clone() } else { p.output.read(cx).focus.clone() });
+            if fields.iter().any(|f| f.is_focused(window)) {
+                self.focus.clone().focus(window, cx);
+                cx.notify();
+            } else {
+                self.cancel_home(window, cx);
+            }
+            return;
+        }
         if empty || !in_field {
             self.hide(cx);
         } else {
@@ -968,6 +1030,7 @@ pub fn open_window_with(
     // FIG-UI: launched for a figure only, the studio's own window starts
     // hidden (the next Space n shows it)
     let figure_only = first.figure.is_some() && first.page.is_none() && first.output.is_none();
+    let plan = crate::ui::launch::plan(crate::ui::launch::Mode::of(quiet, first.background), !figure_only);
     let paths = Paths::from_env();
     let bounds = load_frame(&paths).unwrap_or_else(|| Bounds::centered(None, size(px(860.), px(960.)), cx));
     let options = WindowOptions {
@@ -978,8 +1041,8 @@ pub fn open_window_with(
             traffic_light_position: Some(point(px(14.), px(14.))),
         }),
         window_min_size: Some(size(px(620.), px(560.))),
-        focus: !quiet && !figure_only,
-        show: !quiet && !figure_only,
+        focus: plan.focus,
+        show: plan.show,
         ..Default::default()
     };
     let handle = cx
@@ -992,6 +1055,7 @@ pub fn open_window_with(
                 }
                 s.open_rx = requests;
                 s.watch_frame(window, cx);
+                crate::ui::launch::release_on_activation(window, cx);
                 s
             })
         })
@@ -1006,6 +1070,9 @@ pub fn open_window_with(
             s.open_request(first, window, cx);
         })
         .ok();
+    if plan.order_back {
+        crate::ui::launch::order_back_if_inactive();
+    }
     cx.set_global(StudioWindow(handle));
     cx.on_app_quit(|cx| {
         if let Some(w) = cx.try_global::<StudioWindow>().map(|w| w.0) {

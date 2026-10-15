@@ -6,7 +6,7 @@
 --   Space n          (normal) open the studio on its snippet page
 --   Space n          (visual) the same, with the selection as the output
 --   Space N          the inbox (snippets waiting to be sorted into your files)
---   :SnippetStudio [snippet|block|inbox]
+--   :SnippetStudio [snippet|block|inbox|library]
 --
 -- The studio runs detached: it keeps running when ntex quits, and the next
 -- Space n just brings it forward. Build it once with
@@ -16,7 +16,7 @@ local M = {}
 
 local studio_dir = vim.fs.joinpath(vim.fn.stdpath("config"), "studio")
 M.binary = vim.fs.joinpath(studio_dir, "target", "release", "ntex-studio")
-M.PAGES = { "snippet", "block", "inbox" }
+M.PAGES = { "snippet", "block", "inbox", "library" }
 
 M.launched = {} -- argv of every launch (and would-be launch), newest last; tests read it
 
@@ -68,7 +68,7 @@ local function write_temp(text)
   return path
 end
 
---- The command line for a launch. opts: page = "snippet"|"block"|"inbox",
+--- The command line for a launch. opts: page = "snippet"|"block"|"inbox"|"library",
 --- output_file = path, context = "math"|"text", ft = "tex"|"markdown".
 function M.command(opts)
   opts = opts or {}
@@ -137,7 +137,7 @@ function M.setup()
   vim.api.nvim_create_user_command("SnippetStudio", function(o)
     local page = o.args ~= "" and o.args or "snippet"
     if not vim.tbl_contains(M.PAGES, page) then
-      vim.notify("SnippetStudio: the pages are snippet, block and inbox", vim.log.levels.ERROR)
+      vim.notify("SnippetStudio: the pages are snippet, block, inbox and library", vim.log.levels.ERROR)
       return
     end
     M.open(page)

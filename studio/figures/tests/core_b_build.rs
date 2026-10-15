@@ -56,7 +56,7 @@ fn every_kind_compiles_in_her_theme() {
         Item::Blob(blob("K", "\\ker\\varphi", &["k"], Some("G"), true)),
         Item::NGon(NGon { all_axes: true, rotation: 2, ..ngon("P", 6) }),
         cayley("C", GroupSpec::Named("S3".into()), &["a", "b"], true),
-        Item::Text(Text { text: "kernel $\\mapsto$ identity".into(), pos: Pos::Abs(0.0, -3.0), span: sp() }),
+        Item::Text(Text { text: "kernel $\\mapsto$ identity".into(), pos: Pos::Abs(0.0, -3.0), span: sp(), color: None, size: None }),
     ]);
     let dir = tmp("kinds");
     let out = dir.join("all.pdf");

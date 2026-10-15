@@ -151,7 +151,28 @@ fn char_width(c: char, upright: bool) -> f32 {
     }
 }
 
+thread_local! {
+    static MEASURE_DEPTH: std::cell::Cell<usize> = const { std::cell::Cell::new(0) };
+}
+
+/// Nesting deeper than this (braces, scripts) is measured flat: real labels
+/// never come near it, and pasted text may.
+const MEASURE_MAX_DEPTH: usize = 40;
+
 fn measure(t: &[char], i: &mut usize, s: f32, m: &mut Metrics, upright: bool) {
+    let d = MEASURE_DEPTH.with(|c| c.get());
+    if d >= MEASURE_MAX_DEPTH {
+        // too deep: count what is left as plain characters
+        m.w += t[(*i).min(t.len())..].iter().filter(|c| !matches!(c, '{' | '}')).map(|&c| char_width(c, upright) * s).sum::<f32>();
+        *i = t.len();
+        return;
+    }
+    MEASURE_DEPTH.with(|c| c.set(d + 1));
+    measure_inner(t, i, s, m, upright);
+    MEASURE_DEPTH.with(|c| c.set(d));
+}
+
+fn measure_inner(t: &[char], i: &mut usize, s: f32, m: &mut Metrics, upright: bool) {
     while *i < t.len() {
         let c = t[*i];
         match c {
@@ -713,7 +734,14 @@ pub fn layout(fig: &Figure) -> Scene {
     for (i, it) in fig.items.iter().enumerate() {
         if let Item::Text(t) = it {
             let at = b.pos_to_pt(t.pos);
-            let r = b.label(ObjRef::Text(i), at, &t.text, "ink", size, false);
+            let k = match t.size.as_deref() {
+                Some("tiny") => 0.75,
+                Some("small") => 0.85,
+                Some("large") => 1.2,
+                Some("huge") => 1.44,
+                _ => 1.0,
+            };
+            let r = b.label(ObjRef::Text(i), at, &t.text, t.color.as_deref().unwrap_or("ink"), size * k, false);
             b.anchors.push((ObjRef::Text(i), at, r));
         }
     }

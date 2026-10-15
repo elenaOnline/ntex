@@ -1,7 +1,26 @@
-//! `ntex-studio [--page snippet|block|inbox] [--output-file PATH] [--context math|text] [--ft tex|markdown] [--figure PATH]`
+//! `ntex-studio [--page snippet|block|inbox|library] [--output-file PATH] [--context math|text] [--ft tex|markdown] [--figure PATH] [--background]`
 //!
 //! `--figure PATH` opens (or focuses) the figure window for that `.fig`
 //! (FIGURES.md "The figure window"); a missing file starts from the template.
+//!
+//! `--background` (or `NTEX_STUDIO_BACKGROUND=1`) is the waiting launch: the
+//! windows (the Studio window, and/or the `--figure` window) are created
+//! visible but never key, `cx.activate` is never called, the activation
+//! policy is held at Accessory instead of Regular (so macOS does not bring a
+//! fresh process to the front), and the windows are ordered behind the other
+//! apps' (`orderBack:`) while the app is inactive. The flag travels in the
+//! request, so a running studio opens that window the same way, and it
+//! governs only that request: the next normal launch / Space n activates and
+//! focuses as ever (and turns the app back into a Regular one). The first
+//! real activation (she clicks a waiting window, so it becomes active) also
+//! releases the hold: the app turns Regular (Dock icon, menu bar, ⌘-Tab) once.
+//! Quiet wins over background. See `ui::launch`.
+//!
+//! Trade-off: Accessory is held because a Regular process started from a shell
+//! may be brought forward by macOS on launch (not checkable headlessly), at
+//! the price of no Dock icon / ⌘-Tab entry until activated.
+//! `NTEX_STUDIO_BACKGROUND_REGULAR=1` skips the hold (Regular from the start,
+//! still never activated, windows still ordered back) to try that instead.
 //!
 //! One studio at a time: a second invocation (ntex's Space n) hands its
 //! request to the running one over the socket and exits; the first becomes
@@ -29,10 +48,15 @@ fn main() {
             std::process::exit(2);
         }
     }
+    let args: Vec<String> = std::env::args().skip(1).collect();
+    let background = !quiet && ntex_studio::ui::launch::background_requested(&args, std::env::var("NTEX_STUDIO_BACKGROUND").ok().as_deref());
+    if background && !std::env::var("NTEX_STUDIO_BACKGROUND_REGULAR").is_ok_and(|v| !v.is_empty() && v != "0") && !ntex_studio::ui::launch::hold_background() {
+        eprintln!("ntex-studio: background mode could not hold the activation policy; starting anyway (windows are still never activated)");
+    }
     let quit_after = std::env::var("NTEX_STUDIO_QUIT_AFTER_MS").ok().and_then(|v| v.trim().parse::<u64>().ok());
 
-    let args: Vec<String> = std::env::args().skip(1).collect();
     let mut first = instance::parse_args(&args);
+    first.background = background;
     // FIG-UI: `--figure PATH` (or `--figure=PATH`): that figure's window
     first.figure = figure_arg(&args);
     let has_figure = first.figure.is_some();
@@ -81,7 +105,7 @@ fn main() {
                 t_window.elapsed().as_secs_f64() * 1000.0,
                 quiet::policy(),
             );
-        } else if !figure_only {
+        } else if !figure_only && !background {
             // (a figure window activates itself when it opens)
             cx.activate(true);
         }

@@ -70,14 +70,15 @@ fn new_ngon_options_round_trip() {
     assert_eq!(g.angle, 45.0);
     assert!(!g.show_labels);
     assert_eq!(g.labels, ["1", "2", "3", "4"], "hidden labels are remembered");
-    assert_eq!(fmt("ngon P 4 angle=45 labels=none"), "ngon P 4 labels=none angle=45\n");
+    // (review U14) her option order is kept
+    assert_eq!(fmt("ngon P 4 angle=45 labels=none"), "ngon P 4 angle=45 labels=none\n");
 
     let f = fig("ngon Q 6 plain color=teal labels a,b,,d,e,f");
     let g = ngon_of(&f, "Q");
     assert!(!g.shaded);
     assert_eq!(g.color.as_deref(), Some("teal"));
     assert_eq!(g.labels, ["a", "b", "", "d", "e", "f"]);
-    assert_eq!(format(&f), "ngon Q 6 labels a,b,,d,e,f plain color=teal\n");
+    assert_eq!(format(&f), "ngon Q 6 plain color=teal labels a,b,,d,e,f\n");
 
     // a hidden last label is written `""`, so nothing after it joins the list
     let f = fig("ngon R 4 labels 1,2,3,\"\" axes");
@@ -104,7 +105,7 @@ fn angle_on_blobs_and_cayley_graphs() {
     let f = fig("blob G {e, g} shaded angle=20\ncayley D4 <r, s> angle=-15 legend");
     assert_eq!(blobs(&f)[0].angle, 20.0);
     assert_eq!(cayleys(&f)[0].angle, -15.0);
-    assert_eq!(format(&f), "blob G {e, g} shaded angle=20\ncayley D4 <r, s> legend angle=-15\n");
+    assert_eq!(format(&f), "blob G {e, g} shaded angle=20\ncayley D4 <r, s> angle=-15 legend\n");
 }
 
 #[test]
@@ -326,7 +327,7 @@ fn set_item_node_and_text() {
     assert_eq!(node(&f, "A").label, "\\mathbb{Z}");
     assert!(out.contains("\"ℤ\""), "{out}");
     let t = index_of(&f, |it| matches!(it, Item::Text(_)));
-    let (_, out) = ed(&mut f, Edit::SetItem { index: t, item: Item::Text(Text { text: "kernel ↦ e".into(), pos: Pos::Abs(1.0, -1.0), span: Span::default() }) });
+    let (_, out) = ed(&mut f, Edit::SetItem { index: t, item: Item::Text(Text { text: "kernel ↦ e".into(), pos: Pos::Abs(1.0, -1.0), span: Span::default(), color: None, size: None }) });
     assert!(out.ends_with("text \"kernel ↦ e\" at (1,-1)\n"), "{out}");
     // a rename follows into the arrows
     n.name = "X".into();
@@ -348,7 +349,7 @@ fn set_item_blob_elements() {
     b.size = Some((2.5, 2.0));
     let (r, out) = ed(&mut f, Edit::SetItem { index: i, item: Item::Blob(b) });
     r.unwrap();
-    assert_eq!(out, "blob G {e \"ε\", g, k} size=2.5,2 angle=25\nblob H {h}\ng |-> h\n");
+    assert_eq!(out, "blob G \"G\" {e \"ε\", g, k} size=2.5,2 angle=25\nblob H {h}\ng |-> h\n");
     // a name that's taken is refused, and nothing changes
     let mut b = blobs(&f)[0].clone();
     b.elements.push(Element { name: "h".into(), label: "h".into(), pos: None });
@@ -390,8 +391,8 @@ fn set_item_cayley_and_arrow() {
     a.head = Head::TwoHeads;
     let (_, out) = ed(&mut f, Edit::SetItem { index: k, item: Item::Arrow(a) });
     assert!(out.ends_with("A -φ->> B\n"), "{out}");
-    assert!(ed(&mut f, Edit::SetItem { index: k, item: Item::Text(Text { text: "x".into(), pos: Pos::Abs(0.0, 0.0), span: Span::default() }) }).0.is_err());
-    assert!(ed(&mut f, Edit::SetItem { index: 99, item: Item::Text(Text { text: "x".into(), pos: Pos::Abs(0.0, 0.0), span: Span::default() }) }).0.is_err());
+    assert!(ed(&mut f, Edit::SetItem { index: k, item: Item::Text(Text { text: "x".into(), pos: Pos::Abs(0.0, 0.0), span: Span::default(), color: None, size: None }) }).0.is_err());
+    assert!(ed(&mut f, Edit::SetItem { index: 99, item: Item::Text(Text { text: "x".into(), pos: Pos::Abs(0.0, 0.0), span: Span::default(), color: None, size: None }) }).0.is_err());
 }
 
 #[test]

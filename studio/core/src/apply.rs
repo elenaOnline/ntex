@@ -121,7 +121,7 @@ fn add_local(text: &str, (a, b): (usize, usize), name: &str) -> String {
 /// Make every helper the entry calls bare available in `target`: added to
 /// its locals line, or (no such line) the call rewritten as `h.name(…)`.
 /// Returns (target, entry).
-fn fix_helpers(target: &str, entry: &str) -> (String, String) {
+pub(crate) fn fix_helpers(target: &str, entry: &str) -> (String, String) {
     let mut target = target.to_string();
     let mut entry = entry.to_string();
     let calls = luaparse::calls_in(&entry);

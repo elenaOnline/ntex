@@ -374,11 +374,17 @@ impl RenderOnce for Table {
 #[derive(IntoElement)]
 pub struct Footnotes {
     pub notes: Vec<SharedString>,
+    /// Told each note's laid-out bounds (tests measure that none wraps).
+    pub on_bounds: Option<std::rc::Rc<dyn Fn(usize, gpui::Bounds<Pixels>)>>,
 }
 
 impl Footnotes {
     pub fn new(notes: Vec<SharedString>) -> Footnotes {
-        Footnotes { notes }
+        Footnotes { notes, on_bounds: None }
+    }
+    pub fn on_bounds(mut self, f: impl Fn(usize, gpui::Bounds<Pixels>) + 'static) -> Footnotes {
+        self.on_bounds = Some(std::rc::Rc::new(f));
+        self
     }
 }
 
@@ -397,7 +403,22 @@ impl RenderOnce for Footnotes {
             .text_color(t.ink)
             .child(div().w(relative(1. / 3.)).h(px(1.)).mb(px(4.)).bg(t.head_rule))
             .children(self.notes.into_iter().enumerate().map(|(i, note)| {
-                div().flex().flex_row().items_start().child(sup(&t, superscript_number(i + 1))).child(prose(&t, &note, t.serif(), t.ink))
+                let rec = self.on_bounds.clone();
+                let rec2 = self.on_bounds.clone();
+                div()
+                    .relative()
+                    .flex()
+                    .flex_row()
+                    .items_start()
+                    .child(sup(&t, superscript_number(i + 1)))
+                    .child(
+                        div()
+                            .relative()
+                            .flex_none()
+                            .child(prose(&t, &note, t.serif(), t.ink))
+                            .children(rec2.map(|f| gpui::canvas(move |b, _, _| f(i + 1000, b), |_, _, _, _| {}).absolute().top_0().left_0().size_full())),
+                    )
+                    .children(rec.map(|f| gpui::canvas(move |b, _, _| f(i, b), |_, _, _, _| {}).absolute().top_0().left_0().size_full()))
             }))
     }
 }

@@ -18,6 +18,7 @@
 //!   right-click menu), `reference` (⌘/)
 pub mod ask;
 pub mod canvas;
+pub mod display;
 pub mod doc;
 pub mod exact;
 pub mod geom;
@@ -57,6 +58,15 @@ pub fn normalize(path: &Path) -> PathBuf {
 /// Open (or focus) the window for this `.fig`. `quiet`: hidden, unfocused,
 /// never activates (NTEX_STUDIO_QUIET).
 pub fn open(path: &Path, quiet: bool, cx: &mut App) -> Option<WindowHandle<FigureView>> {
+    open_mode(path, crate::ui::launch::Mode::of(quiet, false), cx)
+}
+
+/// As `open`, with the launch mode: `Background` shows the window without
+/// making it key, never activates the app and orders it behind the others.
+pub fn open_mode(path: &Path, mode: crate::ui::launch::Mode, cx: &mut App) -> Option<WindowHandle<FigureView>> {
+    use crate::ui::launch;
+    let quiet = mode == launch::Mode::Quiet;
+    let plan = launch::plan(mode, true);
     let path = normalize(path);
     if let Some(dir) = path.parent()
         && !dir.exists()
@@ -66,13 +76,14 @@ pub fn open(path: &Path, quiet: bool, cx: &mut App) -> Option<WindowHandle<Figur
     if let Some(h) = cx.try_global::<FigureWindows>().and_then(|w| w.0.get(&path).copied()) {
         let alive = h
             .update(cx, |_, window, _| {
-                if !quiet {
+                if plan.activate {
                     window.activate_window();
                 }
             })
             .is_ok();
         if alive {
-            if !quiet {
+            if plan.activate {
+                launch::release_background();
                 cx.activate(true);
             }
             return Some(h);
@@ -89,14 +100,17 @@ pub fn open(path: &Path, quiet: bool, cx: &mut App) -> Option<WindowHandle<Figur
             traffic_light_position: Some(point(px(14.), px(14.))),
         }),
         window_min_size: Some(size(px(620.), px(560.))),
-        focus: !quiet,
-        show: !quiet,
+        focus: plan.focus,
+        show: plan.show,
         ..Default::default()
     };
     let p2 = path.clone();
     let handle = cx
         .open_window(options, move |window, cx| {
-            cx.new(|cx| FigureView::new(FigureOptions { path: p2, quiet, render: true, build: true }, window, cx))
+            cx.new(|cx| {
+                launch::release_on_activation(window, cx);
+                FigureView::new(FigureOptions { path: p2, quiet, render: true, build: true }, window, cx)
+            })
         })
         .ok()?;
     let _ = handle.update(cx, |_, window, cx| {
@@ -143,8 +157,12 @@ pub fn open(path: &Path, quiet: bool, cx: &mut App) -> Option<WindowHandle<Figur
         .detach();
     }
     cx.global_mut::<FigureWindows>().0.insert(path, handle);
-    if !quiet {
+    if plan.activate {
+        launch::release_background();
         cx.activate(true);
+    }
+    if plan.order_back {
+        launch::order_back_if_inactive();
     }
     Some(handle)
 }

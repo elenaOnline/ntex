@@ -63,6 +63,10 @@ pub enum Cmd {
     InsertBlob,
     InsertCayley,
     InsertText,
+    /// (figure-qol E) clear the written position: layout places it again
+    AutoPlace,
+    /// (figure-qol E) a node: add an arrow from it to itself
+    Loop,
 }
 
 pub const MENU_W: f32 = 236.0;
@@ -103,8 +107,9 @@ impl FigureView {
                 _ => false,
             }
         });
-        let colourable = sel.iter().any(|o| matches!(super::interact::owner(o), ObjRef::Node(_) | ObjRef::Arrow(_) | ObjRef::Blob(_) | ObjRef::NGon(_)));
+        let colourable = sel.iter().any(|o| matches!(super::interact::owner(o), ObjRef::Node(_) | ObjRef::Arrow(_) | ObjRef::Blob(_) | ObjRef::NGon(_) | ObjRef::Text(_)));
         let dup = sel.iter().any(|o| !matches!(o, ObjRef::CayleyVertex(..) | ObjRef::CayleyEdge(..) | ObjRef::NGonVertex(..)));
+        let placed = self.autoplace_targets() > 0;
         let mut v = vec![
             Some((Cmd::EditLabel, "Edit label".into(), "↵", has_label)),
             Some((Cmd::Duplicate, "Duplicate".into(), "⌘D", dup)),
@@ -116,6 +121,7 @@ impl FigureView {
             Some((Cmd::Labels, if labels_on { "Hide labels".into() } else { "Show labels".into() }, "L", labelled)),
             Some((Cmd::Colour, "Colour".into(), "▸", colourable)),
             None,
+            Some((Cmd::AutoPlace, "Auto-place".into(), "", placed)),
             Some((Cmd::Forward, "Bring forward".into(), "", one)),
             Some((Cmd::Back, "Send back".into(), "", one)),
             None,
@@ -137,6 +143,10 @@ impl FigureView {
             let at = v.iter().position(|e| matches!(e, Some((Cmd::Rotate90, ..)))).map(|k| k + 1).unwrap_or(v.len());
             v.insert(at, Some((Cmd::DistributeV, "Distribute vertically".into(), "", spreadable >= 3)));
             v.insert(at, Some((Cmd::DistributeH, "Distribute horizontally".into(), "", spreadable >= 3)));
+        }
+        if matches!(sel.as_slice(), [ObjRef::Node(_)]) {
+            let at = v.iter().position(|e| matches!(e, Some((Cmd::Duplicate, ..)))).map(|k| k + 1).unwrap_or(1);
+            v.insert(at, Some((Cmd::Loop, "Add loop arrow".into(), "", true)));
         }
         if let Some(has) = arrow_label {
             // an arrow's label: hide it (or add one) right here
@@ -178,6 +188,16 @@ impl FigureView {
             }
             Cmd::Rotate90 => {
                 self.rotate_by(90.0, cx);
+            }
+            Cmd::AutoPlace => {
+                self.auto_place(cx);
+            }
+            Cmd::Loop => {
+                if let Some(ObjRef::Node(n)) = self.selection.first().cloned() {
+                    self.add_arrow(n.clone(), n, window, cx);
+                    cx.notify();
+                    return;
+                }
             }
             Cmd::Reverse => {
                 self.reverse_selection(cx);
@@ -384,6 +404,7 @@ impl FigureView {
                 Some(Item::Arrow(a)) => a.color.clone(),
                 Some(Item::Blob(b)) => b.color.clone(),
                 Some(Item::NGon(g)) => g.color.clone(),
+                Some(Item::Text(x)) => x.color.clone(),
                 _ => continue,
             };
             match &out {

@@ -10,3 +10,4 @@ pub mod blocks;
 pub mod colour;
 pub mod apply;
 pub mod prefs;
+pub mod library;

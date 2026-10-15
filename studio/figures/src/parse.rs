@@ -578,6 +578,9 @@ fn angle_value(v: &str) -> Option<f32> {
     num(v)
 }
 
+/// (class E) The sizes `text … size=…` knows (`normal` is the default).
+pub const TEXT_SIZES: &[&str] = &["tiny", "small", "normal", "large", "huge"];
+
 fn color_name(v: &str) -> Option<String> {
     let v = v.trim().to_lowercase();
     let v = if v == "gray" { "grey".to_string() } else { v };
@@ -1363,7 +1366,8 @@ impl Phase1 {
                         g.turn_neg = false;
                     }
                     Some(k) => {
-                        let r = (-k) as u64 % n as u64;
+                        // (review C10b) `unsigned_abs`: i64::MIN has no positive twin
+                        let r = k.unsigned_abs() % n as u64;
                         g.turn = ((n as u64 - r) % n as u64) as u32;
                         g.turn_neg = r != 0;
                     }
@@ -1608,10 +1612,31 @@ impl Phase1 {
             } else if t == "vertex" {
                 // (figure-qol class C) `vertex r^2s "ρ²s"`: her name for that vertex
                 i += 1;
-                let word = cs.get(i).filter(|w| !w.text.starts_with('"')).map(|w| w.text.clone());
-                if word.is_some() {
-                    i += 1;
+                // (review C2) the vertex word is one chunk (`r^2s`, `ρσ`), several
+                // (`ρ σ`), or quoted (`"\rho \sigma"`, how the formatter writes a word
+                // with a space in it); it's matched to the vertex after the options
+                let mut word = String::new();
+                let mut quoted_word = false;
+                let before = i;
+                if let Some(q) = take_quoted(&cs, &mut i) {
+                    // a quoted word followed by another quoted chunk is word + name
+                    if cs.get(i).is_some_and(|n| n.text.starts_with('"')) {
+                        word = q;
+                        quoted_word = true;
+                    } else {
+                        i = before;
+                    }
                 }
+                if !quoted_word {
+                    while i < cs.len() && !cs[i].text.starts_with('"') {
+                        word.push_str(&cs[i].text);
+                        if cs.get(i + 1).is_some_and(|n| !n.text.starts_with('"')) {
+                            word.push(' ');
+                        }
+                        i += 1;
+                    }
+                }
+                let word = (!word.is_empty()).then_some(word);
                 match (word, take_quoted(&cs, &mut i)) {
                     (Some(w), Some(l)) => {
                         let l = self.tl(&l);
@@ -1654,6 +1679,21 @@ impl Phase1 {
             } else {
                 self.warn(line, ccol, format!("`{t}` isn't a Cayley-graph option; ignored."));
                 i += 1;
+            }
+        }
+        // (review C2) a vertex word as she spelled it (`ρσ`, `r²s`) → the vertex's own word
+        if !c.vertex_names.is_empty() {
+            if let Ok(g) = crate::cayley::group(&c.group, &c.gens) {
+                let key = |w: &str| -> String { unicode::to_latex(w).chars().filter(|ch| !ch.is_whitespace() && !"{}".contains(*ch)).collect() };
+                for (w, _) in c.vertex_names.iter_mut() {
+                    if g.elements.contains(w) {
+                        continue;
+                    }
+                    let k = key(w);
+                    if let Some(e) = g.elements.iter().find(|e| key(e) == k) {
+                        *w = e.clone();
+                    }
+                }
             }
         }
         let named = explicit_name.is_some();
@@ -1704,10 +1744,27 @@ impl Phase1 {
         let cs = Self::line_chunks(&text["text".len()..], col + 4);
         let mut words: Vec<String> = Vec::new();
         let mut pos = None;
+        let (mut color, mut size) = (None, None);
         let mut i = 0;
         while i < cs.len() {
             let c = &cs[i];
-            if c.text == "at" {
+            // (class E) `color=teal`, `size=large` after the text: only when they say something valid
+            let opt = |key: &str| -> Option<String> { if c.is_quoted() { None } else { c.text.strip_prefix(key).and_then(|r| r.strip_prefix('=')).map(|v| v.to_string()) } };
+            if let Some(v) = opt("color") {
+                match color_name(&v) {
+                    Some(cn) => color = Some(cn),
+                    None => self.warn(line, c.col + 1, format!("`{}`: colours are {}; ignored.", c.text, PALETTE.join(" "))),
+                }
+                i += 1;
+            } else if let Some(v) = opt("size") {
+                let v = v.to_lowercase();
+                if TEXT_SIZES.contains(&v.as_str()) {
+                    size = if v == "normal" { None } else { Some(v) };
+                } else {
+                    self.warn(line, c.col + 1, format!("`{}`: sizes are {}; ignored.", c.text, TEXT_SIZES.join(" ")));
+                }
+                i += 1;
+            } else if c.text == "at" {
                 let ccol = c.col + 1;
                 i += 1;
                 match take_pos(&cs, &mut i) {
@@ -1733,7 +1790,7 @@ impl Phase1 {
         let raw = words.join(" ");
         let text = unicode::to_latex_text(&raw);
         self.spell.push((text.clone(), raw));
-        Some(SK::Text(Text { text, pos, span: Span { line, col } }))
+        Some(SK::Text(Text { text, pos, span: Span { line, col }, color, size }))
     }
 
     fn global(&mut self, line: usize, col: usize, text: &str) -> Option<SK> {
@@ -2977,6 +3034,35 @@ fn phase2(p: Phase1) -> (Figure, Vec<Diagnostic>) {
     // (FIG-POLISH) her spelling, and where the globals were written
     let pools: Vec<Vec<(String, String)>> = stmts.iter().map(|s| s.spell.clone()).collect();
     fig.hints.spelling = crate::spelling::assign(&fig, &pools, &origin);
+    // (review U14) what she wrote that the formatter would otherwise change:
+    // a label equal to the default, and the order of a statement's options
+    for i in 0..fig.items.len() {
+        let Some(st) = origin.get(i).and_then(|&si| stmts.get(si)) else { continue };
+        let (kind, name) = match &fig.items[i] {
+            Item::Blob(b) => ("blob", b.name.clone()),
+            Item::NGon(g) => ("ngon", g.name.clone()),
+            Item::Cayley(c) => ("cayley", c.name.clone()),
+            _ => continue,
+        };
+        let key = format!("{kind}:{name}");
+        if let Item::Blob(b) = &fig.items[i] {
+            let cs = Phase1::line_chunks(&st.raw, 1);
+            if b.label == default_label(&b.name) && cs.get(2).is_some_and(|c| c.is_quoted()) {
+                fig.hints.explicit_labels.push(key.clone());
+            }
+        }
+        // (review C11) `turn=-9`: what she wrote, when it isn't the canonical `-(n - turn)`
+        if let Item::NGon(g) = &fig.items[i] {
+            let k = Phase1::line_chunks(&st.raw, 1).iter().rev().find_map(|c| c.text.strip_prefix("turn=").and_then(|v| v.parse::<i64>().ok()));
+            if let Some(k) = k.filter(|k| *k < 0 && g.turn_neg && k.unsigned_abs() != u64::from(g.n.max(1) - g.turn % g.n.max(1))) {
+                fig.hints.turn_spelled.push((g.name.clone(), k));
+            }
+        }
+        let written = crate::format::option_heads(&st.raw);
+        if written.len() > 1 && written != crate::format::option_heads(&crate::format::item(&fig, i)) {
+            fig.hints.option_order.push((key, written));
+        }
+    }
     let d = Globals::default();
     let g = fig.globals.clone();
     fig.hints.globals_at.retain(|(k, _)| match k.as_str() {

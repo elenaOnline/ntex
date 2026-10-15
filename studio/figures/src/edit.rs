@@ -280,7 +280,7 @@ fn apply_inner(fig: &mut Figure, edit: &Edit) -> Result<Option<String>, String> 
             if raw != t && !fig.hints.spelling.iter().any(|s| s.key == "text" && s.latex == t) {
                 fig.hints.spelling.push(Spelling { key: "text".into(), latex: t.clone(), raw });
             }
-            fig.items.push(Item::Text(Text { text: t, pos: *pos, span: Span::default() }));
+            fig.items.push(Item::Text(Text { text: t, pos: *pos, span: Span::default(), color: None, size: None }));
             Ok(Some((fig.items.len() - 1).to_string()))
         }
     }
@@ -464,6 +464,12 @@ fn set_item(fig: &mut Figure, index: usize, item: &Item) -> Result<Option<String
         (Item::Text(o), Item::Text(t)) => {
             let mut t = t.clone();
             valid_pos(&Some(t.pos))?;
+            t.color = valid_color(&t.color)?;
+            if let Some(z) = &t.size {
+                if !parse::TEXT_SIZES.contains(&z.as_str()) {
+                    return Err(format!("`{z}` isn't a text size ({})", parse::TEXT_SIZES.join(", ")));
+                }
+            }
             if t.text.trim().is_empty() {
                 return Err("the text is empty".into());
             }
@@ -611,6 +617,7 @@ fn set_ngon(fig: &mut Figure, index: usize, o: &NGon, g: &NGon) -> Result<Option
     if g.turn % n == 0 {
         g.turn_neg = false;
     }
+
     if g.name != o.name {
         rename_refs(fig, &o.name, &g.name.clone());
     }
@@ -851,7 +858,7 @@ fn duplicate(fig: &mut Figure, obj: &ObjRef) -> Result<Option<String>, String> {
         }
         ObjRef::Text(i) => match fig.items.get(*i).cloned() {
             Some(Item::Text(t)) => {
-                fig.items.push(Item::Text(Text { text: t.text, pos: point_offset(t.pos), span: Span::default() }));
+                fig.items.push(Item::Text(Text { text: t.text, pos: point_offset(t.pos), span: Span::default(), color: t.color, size: t.size }));
                 Ok(Some((fig.items.len() - 1).to_string()))
             }
             _ => Err(format!("item {i} isn't a text")),

@@ -626,9 +626,19 @@ impl Bridge {
 
     /// Type the draft in a real ntex buffer beside all her snippets.
     pub fn try_draft(&self, req: TryRequest) -> Receiver<Result<TryResult, String>> {
+        self.try_draft_hiding(req, None)
+    }
+
+    /// `try_draft`, with one of her files swapped for `(name, text)` while it
+    /// runs: the file without the entry being edited, so the old version
+    /// doesn't shadow the draft. The bridge's copy is put back afterwards.
+    pub fn try_draft_hiding(&self, req: TryRequest, hide: Option<(String, String)>) -> Receiver<Result<TryResult, String>> {
         let (tx, rx) = mpsc::channel();
         let mut v = serde_json::to_value(&req).unwrap_or_else(|_| json!({}));
         v["op"] = json!("try");
+        if let Some((file, text)) = hide {
+            v["hide"] = json!({ "file": file, "text": text });
+        }
         self.shared.request(
             v,
             Box::new(move |res| {

@@ -21,6 +21,7 @@ pub fn running_head(studio: &Studio, cx: &mut Context<Studio>) -> impl IntoEleme
         Page::Snippet => 0,
         Page::Block => 1,
         Page::Inbox => 2,
+        Page::Library => 3,
     };
     let this = cx.weak_entity();
     div().pt(px(TITLEBAR)).px(px(MARGIN)).child(
@@ -28,9 +29,10 @@ pub fn running_head(studio: &Studio, cx: &mut Context<Studio>) -> impl IntoEleme
             .page("Snippet", None)
             .page("Block", None)
             .page("Inbox", (count > 0).then_some(count))
+            .page("Library", None)
             .current(current)
             .on_select(move |i, window, cx| {
-                let page = [Page::Snippet, Page::Block, Page::Inbox][i.min(2)];
+                let page = [Page::Snippet, Page::Block, Page::Inbox, Page::Library][i.min(3)];
                 this.update(cx, |s, cx| s.set_page(page, window, cx)).ok();
             }),
     )

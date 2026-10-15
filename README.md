@@ -13,14 +13,15 @@ Two companion apps (macOS, Rust + GPUI) cover what a terminal can't:
 
 - **Ntex Studio** makes new snippets, Tab shortcuts and theorem-like blocks
   mid-lecture. Type a trigger and an output, press ⌘↵, and the snippet is live
-  in every open ntex.
+  in every open ntex. Its Library page lists every snippet you have,
+  searchable and editable in place.
 - **Ntex Figures** draws commutative diagrams, Cayley graphs, blob diagrams
   and polygons. A figure is a short text file (`figures/x.fig`) that compiles
   to TikZ and PDF; you can edit it as text, on a canvas, or by asking a model.
 
 | Ntex Figures | Ntex Studio |
 | --- | --- |
-| ![The figure editor: a blob diagram of a homomorphism with its kernel shaded, and a pentagon with its symmetry axes, above the shorthand that defines them](docs/img/figures.png) | ![Ntex Studio's snippet page: trigger, output with tab stops, a live try-it box, conflict checks, and the generated Lua](docs/img/studio-snippet.png) |
+| ![The figure editor: a commutative square, a square with a symmetry axis and rotation, and a blob with two elements, above the shorthand that defines them](docs/img/figures.png) | ![Ntex Studio's snippet page: trigger, output with tab stops, a live try-it box, conflict checks, and the generated Lua](docs/img/studio-snippet.png) |
 
 <details>
 <summary>More renderings</summary>
@@ -30,15 +31,23 @@ kernel blob, D4 symmetries, Cayley graphs of D4, Q8 and A4, an equaliser):
 
 ![A grid of nine figures produced by Ntex Figures](docs/img/figures-gallery.png)
 
+Everything selected: one panel colours, aligns, distributes and restyles all
+the arrows at once. Holding ⌘ shows the frame the figure will take on the page:
+
+![The figure editor with ten objects selected and the multi-selection panel](docs/img/figures-select.png)
+![The figure editor with the page frame shown around the figure](docs/img/figures-page-frame.png)
+
 A Cayley graph selected in the figure editor, with its properties panel:
 
 ![The figure editor showing the Cayley graph of D4 with generators r and s and the properties panel](docs/img/figures-cayley.png)
 
-Ntex Studio's block page (a new theorem-like environment with a live preview)
-and the inbox of snippets waiting to be sorted:
+Ntex Studio's block page (a new theorem-like environment with a live preview),
+the inbox of snippets waiting to be sorted, and the Library, where every
+snippet is searchable and editable in place:
 
 ![Ntex Studio's block page](docs/img/studio-block.png)
 ![Ntex Studio's inbox page](docs/img/studio-inbox.png)
+![Ntex Studio's Library page, searching for an integral snippet](docs/img/studio-library.png)
 
 All renderings are produced by the apps' own offscreen render tests; no window
 was opened to make them.

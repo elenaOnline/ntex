@@ -5,7 +5,7 @@
 //! widgets on every change, guessed (`infer::guess`), checked
 //! (`infer::check`) and turned into Lua (`codegen::entry`); Try it (250 ms)
 //! and the render (600 ms) are debounced and run off the UI thread.
-use crate::core::{codegen, infer, inbox};
+use crate::core::{codegen, infer, inbox, library};
 use crate::model::*;
 use crate::model::Context as SnipContext;
 use crate::ui::app::{Page, Preview, Studio, UndoItem, local_now, safe};
@@ -60,8 +60,23 @@ impl TryState {
 
 pub struct Saving {
     pub draft: Draft,
+    /// Saving back into one of her files (the Library page's Edit).
+    pub home: Option<Home>,
     rx: Option<Receiver<Result<(), String>>>,
     started: Instant,
+}
+
+/// The snippet being edited lives in one of her files (opened from the
+/// Library page): ⌘↵ writes it back there, in place.
+#[derive(Clone, Debug, PartialEq)]
+pub struct Home {
+    pub loc: library::Loc,
+    /// Its group title, for messages ("Calculus").
+    pub category: String,
+    /// 1-based line in the file when it was opened.
+    pub line: usize,
+    /// The trigger as it was (so the checks don't flag it as its own clash).
+    pub trigger: String,
 }
 
 pub struct SnippetPage {
@@ -95,6 +110,8 @@ pub struct SnippetPage {
     last_submit: Option<Instant>,
     /// ⌘⇧V / ⌥1 pressed where the kind does not allow it: offer this kind.
     pub offer: Option<Kind>,
+    /// Editing a snippet in place in one of her files (None: a new or inbox one).
+    pub home: Option<Home>,
 }
 
 fn field(cx: &mut Context<Studio>, f: impl FnOnce(TextField) -> TextField) -> Entity<TextField> {
@@ -168,6 +185,7 @@ impl SnippetPage {
             flashes: 0,
             saving: None,
             last_submit: None,
+            home: None,
         }
     }
 }
@@ -374,7 +392,22 @@ impl Studio {
         self.snippet.findings = if self.snippet_pristine() {
             Vec::new()
         } else {
-            safe("infer::check", || infer::check(&d, &self.known)).unwrap_or_default()
+            match &self.snippet.home {
+                // the version being edited is not a clash with itself
+                Some(h) => {
+                    let others: Vec<KnownSnippet> = self
+                        .known
+                        .iter()
+                        .filter(|k| {
+                            let same_file = k.file.rsplit('/').next() == Some(h.loc.file.as_str());
+                            !(same_file && (k.trigger == h.trigger || k.pattern.as_deref() == Some(h.trigger.as_str())))
+                        })
+                        .cloned()
+                        .collect();
+                    safe("infer::check", || infer::check(&d, &others)).unwrap_or_default()
+                }
+                None => safe("infer::check", || infer::check(&d, &self.known)).unwrap_or_default(),
+            }
         };
         self.snippet.lua = safe("codegen::entry", || codegen::entry(&d)).unwrap_or_default();
         if was_ready_try && self.bridge_ready() && self.snippet.try_.due.is_none() && !self.snippet_pristine() {
@@ -418,6 +451,7 @@ impl Studio {
         p.preview.clear();
         p.draft = d;
         p.flash = None;
+        p.home = None;
         self.snippet_changed(cx);
     }
 
@@ -471,6 +505,30 @@ impl Studio {
             return;
         }
         let draft = self.snippet.draft.clone();
+        if let Some(home) = self.snippet.home.clone() {
+            let path = library::path_of(&self.paths, &home.loc.file);
+            let text = std::fs::read_to_string(&path)
+                .map_err(|e| e.to_string())
+                .and_then(|cur| safe("library::replace", || library::replace(&cur, &home.loc, &draft)).unwrap_or(Err("could not edit the file".into())));
+            let text = match text {
+                Ok(t) => t,
+                Err(e) => {
+                    self.snippet.save_error = Some(format!("{}: {e}", home.loc.file));
+                    self.toast(format!("! Could not save into {}: {e}", home.loc.file), cx);
+                    return;
+                }
+            };
+            if self.bridge_ready() {
+                let rx = self.bridge.as_ref().and_then(|b| safe("Bridge::check_file", || b.check_file(&home.loc.file, &text)));
+                if rx.is_some() {
+                    self.snippet.saving = Some(Saving { draft, home: Some(home), rx, started: now });
+                    cx.notify();
+                    return;
+                }
+            }
+            self.commit_home(draft, home, false, window, cx);
+            return;
+        }
         if self.bridge_ready() {
             let current = std::fs::read_to_string(self.paths.inbox())
                 .ok()
@@ -480,7 +538,7 @@ impl Studio {
             if let Some((text, _)) = safe("inbox::with_draft", || inbox::with_draft(&current, &draft, &minute)) {
                 let rx = self.bridge.as_ref().and_then(|b| safe("Bridge::check_file", || b.check_file("inbox.lua", &text)));
                 if rx.is_some() {
-                    self.snippet.saving = Some(Saving { draft, rx, started: now });
+                    self.snippet.saving = Some(Saving { draft, home: None, rx, started: now });
                     cx.notify();
                     return;
                 }
@@ -492,13 +550,59 @@ impl Studio {
     fn flash_box(&mut self, which: &'static str, window: &mut Window, cx: &mut Context<Studio>) {
         self.snippet.flash = Some((self.now(cx), which));
         self.snippet.flashes += 1;
-        let f = if which == "output" {
+        let f = if which == "output" && self.snippet.draft.kind == Kind::RawLua {
+            // the Lua field stands where the output editor would
+            self.snippet.raw.read(cx).focus.clone()
+        } else if which == "output" {
             self.snippet.output.read(cx).focus.clone()
         } else {
             self.snippet.trigger.read(cx).focus.clone()
         };
         f.focus(window, cx);
         cx.notify();
+    }
+
+    /// Back up, write into her file in place, refresh, toast, back to the
+    /// Library page on the edited row.
+    fn commit_home(&mut self, draft: Draft, home: Home, checked: bool, window: &mut Window, cx: &mut Context<Studio>) {
+        let name = if draft.kind == Kind::RawLua { format!("‘{}’", home.trigger) } else { format!("‘{}’", draft.trigger) };
+        let path = library::path_of(&self.paths, &home.loc.file);
+        let backed = self.backup(&format!("the edit of {name}"), vec![path]);
+        match safe("library::save", || library::save(&self.paths, &home.loc, &draft)) {
+            Some(Ok(_)) => {}
+            other => {
+                if backed.is_ok() {
+                    self.undo.pop();
+                }
+                let why = match other {
+                    Some(Err(e)) => e.to_string(),
+                    _ => "the writer failed".into(),
+                };
+                self.toast(format!("! Could not save into {}: {why}", home.loc.file), cx);
+                return;
+            }
+        }
+        self.after_files_changed(cx);
+        let mut msg = if checked {
+            format!("Updated {name} in {} — live in ntex now.", home.category)
+        } else {
+            format!("Updated {name} in {}. The hidden ntex wasn't ready, so it was not checked first; a broken file leaves the old one active.", home.category)
+        };
+        if backed.is_ok() {
+            msg.push_str(" ⌘Z undoes.");
+        }
+        self.snippet.place = None;
+        self.snippet.open_ft = None;
+        self.load_draft(Draft::default(), false, window, cx);
+        self.library_after_edit(&home, window, cx);
+        self.toast(msg, cx);
+    }
+
+    /// Esc / Cancel while editing a Library snippet: drop the edit, back to the list.
+    pub fn cancel_home(&mut self, window: &mut Window, cx: &mut Context<Studio>) {
+        let Some(home) = self.snippet.home.clone() else { return };
+        self.load_draft(Draft::default(), false, window, cx);
+        self.library_after_edit(&home, window, cx);
     }
 
     /// Back up, write, refresh, toast, clear, hide.
@@ -563,7 +667,10 @@ impl Studio {
             if let Some(res) = res {
                 let saving = self.snippet.saving.take().unwrap();
                 match res {
-                    Ok(checked) => self.commit_snippet(saving.draft, checked, window, cx),
+                    Ok(checked) => match saving.home {
+                        Some(home) => self.commit_home(saving.draft, home, checked, window, cx),
+                        None => self.commit_snippet(saving.draft, checked, window, cx),
+                    },
                     Err(e) => {
                         self.snippet.save_error = Some(e);
                         self.flash_box("output", window, cx);
@@ -606,7 +713,12 @@ impl Studio {
                     {
                         req.place = o.clone();
                     }
-                    let rx = self.bridge.as_ref().and_then(|b| safe("Bridge::try_draft", || b.try_draft(req.clone())));
+                    let hide = self.snippet.home.as_ref().and_then(|h| {
+                        let text = std::fs::read_to_string(library::path_of(&self.paths, &h.loc.file)).ok()?;
+                        let without = library::without(&text, &h.loc).ok()?;
+                        Some((h.loc.file.clone(), without))
+                    });
+                    let rx = self.bridge.as_ref().and_then(|b| safe("Bridge::try_draft", || b.try_draft_hiding(req.clone(), hide)));
                     let t = &mut self.snippet.try_;
                     t.rx = rx;
                     t.pending_gen = t.generation;
@@ -692,7 +804,11 @@ impl Studio {
             if set.captures > 0 {
                 v.push("⌥1 … ⌥9 insert what the trigger captured.".into());
             }
-            v.push("⌘↵ saves to the inbox · Esc leaves the editor (on an empty draft, hides the studio).".into());
+            if self.snippet.home.is_some() {
+                v.push("⌘↵ saves it back into its file · Esc leaves the editor.".into());
+            } else {
+                v.push("⌘↵ saves to the inbox · Esc leaves the editor (on an empty draft, hides the studio).".into());
+            }
             return v;
         }
         if focused(&p.raw.read(cx).focus) {
@@ -704,7 +820,13 @@ impl Studio {
         if focused(&p.eg.read(cx).focus) {
             return vec!["What to type to see it work (patterns need one): Try it types these keys.".into()];
         }
-        vec!["⌘↵ saves to the inbox · ⌘N clears · ⌘Z undoes the last save.".into(), "⌘1 ⌘2 ⌘3 switch pages · ⌘W hides the studio.".into()]
+        if let Some(h) = &self.snippet.home {
+            return vec![
+                format!("⌘↵ saves it back into {} · Esc goes back to the library · ⌘Z undoes the last save.", h.loc.file).into(),
+                "⌘1 ⌘2 ⌘3 ⌘4 switch pages · ⌘W hides the studio.".into(),
+            ];
+        }
+        vec!["⌘↵ saves to the inbox · ⌘N clears · ⌘Z undoes the last save.".into(), "⌘1 ⌘2 ⌘3 ⌘4 switch pages · ⌘W hides the studio.".into()]
     }
 
     // -- render ----------------------------------------------------------------
@@ -732,7 +854,10 @@ impl Studio {
             }
         };
 
-        let title = if d.id.is_some() { "Edit snippet" } else { "New snippet" };
+        let title = if d.id.is_some() || self.snippet.home.is_some() { "Edit snippet" } else { "New snippet" };
+        let home_line = self.snippet.home.as_ref().map(|h| {
+            shell::slate(format!("In {} ({}, line {}). ⌘↵ saves it there, in place; Esc goes back to the library.", h.category, h.loc.file, h.line), cx)
+        });
 
         // Definition 1.1 (Trigger)
         let fires = Radio::new("fires", "Fires", vec!["by itself".into(), "on Tab".into()], (d.fires == Fires::Tab) as usize)
@@ -816,7 +941,10 @@ impl Studio {
                 .when_some(fix, |el, (label, fixed)| {
                     el.child(Button::new(SharedString::from(format!("fix.{i}")), label).small().on_click(cx.listener(
                         move |s, _, window, cx| {
+                            let home = s.snippet.home.clone();
                             s.load_draft(fixed.clone(), false, window, cx);
+                            s.snippet.home = home;
+                            s.snippet_rechecked(cx);
                         },
                     )))
                 });
@@ -873,9 +1001,14 @@ impl Studio {
             .gap(px(14.))
             .pt(px(4.))
             .when(saving, |d| d.child(shell::slate("checking…", cx)))
-            .child(Button::new("clear", "Clear").keys("⌘N").on_click(cx.listener(|s, _, w, cx| s.clear_snippet(w, cx))))
+            .when(self.snippet.home.is_some(), |el| {
+                el.child(Button::new("cancel-edit", "Cancel").keys("Esc").on_click(cx.listener(|s, _, w, cx| s.cancel_home(w, cx))))
+            })
+            .when(self.snippet.home.is_none(), |el| {
+                el.child(Button::new("clear", "Clear").keys("⌘N").on_click(cx.listener(|s, _, w, cx| s.clear_snippet(w, cx))))
+            })
             .child(
-                Button::new("save", if d.id.is_some() { "Save changes" } else { "Save to inbox" })
+                Button::new("save", if d.id.is_some() || self.snippet.home.is_some() { "Save changes" } else { "Save to inbox" })
                     .keys("⌘↵")
                     .primary()
                     .disabled(saving)
@@ -887,6 +1020,7 @@ impl Studio {
             .flex_col()
             .gap(px(GAP))
             .child(Section { number: "1".into(), title: title.into() })
+            .children(home_line)
             .child(self.flash_box_el("trigger", trigger_box))
             .child(self.flash_box_el("output", output_box))
             .child(example)

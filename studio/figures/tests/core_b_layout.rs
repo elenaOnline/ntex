@@ -335,7 +335,7 @@ fn grids_and_cubes_for_products() {
 fn text_and_bounds() {
     let f = fig(vec![
         a("A", "B", Some("f")),
-        Item::Text(Text { text: "kernel \\(\\mapsto\\) identity".into(), pos: Pos::Abs(1.0, -2.0), span: sp() }),
+        Item::Text(Text { text: "kernel \\(\\mapsto\\) identity".into(), pos: Pos::Abs(1.0, -2.0), span: sp(), color: None, size: None }),
         Item::Blob(blob("G", "G", &["x"], None, false)),
         Item::NGon(ngon("P", 3)),
         cayley("C", GroupSpec::Named("Z3".into()), &["a"], false),

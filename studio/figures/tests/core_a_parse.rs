@@ -431,7 +431,7 @@ fn blob_example_from_the_spec() {
     assert!(nodes(&f).is_empty());
     // the parent's list is remembered as written
     assert_eq!(f.hints.listed, [("G".to_string(), vec!["e".to_string(), "g".into(), "g^2".into(), "g^3".into()])]);
-    assert!(format(&f).contains("blob G {e, g, g^2, g^3}"));
+    assert!(format(&f).contains("blob G \"G\" {e, g, g^2, g^3}"));
 }
 
 #[test]

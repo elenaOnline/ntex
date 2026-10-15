@@ -246,11 +246,42 @@ Your blocks
 - An empty inbox shows *Nothing waiting. New snippets land here first; sort
   them into your files when you have a minute.*
 
+## Page 4: Library (⌘4, ⌘F)
+
+```
+4  Library — 234 snippets in 15 files
+Search  ________________________________________   6 found
+All²³⁴ · Accents²⁰ · Brackets¹⁶ · Calculus¹² · …        ← small caps, superscript counts; click narrows
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  (booktabs)
+   You type      You get (rendered)                Fires   (In, while searching)
+Calculus  calculus.lua                                   ← blue bold head, mono slate file
+ ▸ dint          ∫₀¹ □ dx                         maths, by itself
+     \int_{0}^{1} □ \, dx                                 [Edit ↵]
+     Definite integral · calculus.lua, line 18 · origin: changed
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+- The search field has focus on arrival; typing filters at once (fuzzy, words
+  ANDed, best first; without a query the list is in file order under category
+  heads). ↑/↓ move the ▸ even while typing; Return edits; Esc clears the
+  search, then hides.
+- The selected row opens: its LaTeX in mono, then description, example keys,
+  file and line, origin, and Edit (Edit the Lua for entries page 1 can't
+  represent).
+- "You get" is the rendered output (10 pt at 1.5×, at most 64 px tall in a
+  row); its LaTeX shows until a render exists. The list scrolls by itself so
+  the search stays in view.
+- Edit opens page 1 titled *Edit snippet*, with a slate line *In Calculus
+  (calculus.lua, line 18). ⌘↵ saves it there, in place; Esc goes back to the
+  library.* Buttons: Cancel (Esc) and Save changes (⌘↵). After the save the
+  library comes back on the same row, with the toast *Updated ‘dint’ in
+  Calculus — live in ntex now. ⌘Z undoes.*
+
 ## Global keys
 
 | Key | Does |
 | --- | --- |
-| ⌘1 ⌘2 ⌘3 | pages |
+| ⌘1 ⌘2 ⌘3 | pages (in a figure window ⌘1 is *actual size*, ⌘0 fits) |
 | ⌘↵ | save (snippet / block) |
 | ⌘N | clear |
 | ⌘Z / ⌘⇧Z | in a field: text undo; elsewhere: undo the last save, delete or sort |
@@ -282,11 +313,16 @@ shortcuts" in hints.
 - One grammar for a drag of the selection: plain = the whole selection moves,
   each object snapping as before; **⌥** (held as the drag starts) leaves the
   originals and drags copies, arrows between the copies included, one undo
-  step; **⇧** locks to horizontal or vertical; **⌘** turns snapping off (it
+  step; **⇧** locks to horizontal or vertical (⇧ decides on release: a ⇧-drag
+  moves the selection plus the object pressed, axis-locked; a ⇧-click without
+  movement toggles it in the selection); **⌘** turns snapping off (it
   replaces the old ⌥ half-cell and ⇧ free-placement / free-angle meanings).
 - ⌘C / ⌘X / ⌘V copy, cut and paste objects as `.fig` shorthand on the system
   clipboard (it pastes into Neovim, or another figure window); pasting text
-  that is not shorthand says so and changes nothing. ⌘D repeats the last
-  ⌥-drag's offset (else one cell). Distribute (three or more) sits beside
+  that is not shorthand says so and changes nothing. A paste never lands
+  exactly on the originals: one cell right and down for nodes, half a cell for
+  shapes, each further paste another step. ⌘D repeats the last ⌥-drag's
+  offset (else one cell). Every footnote is one line at the default window
+  width (1180 px); QH1 measures them. Distribute (three or more) sits beside
   Align in the panel and in the right-click menu. A turned shape's selection
   box turns with it.

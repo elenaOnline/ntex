@@ -59,6 +59,8 @@ fn font(size: f32, base: f32) -> &'static str {
         "\\footnotesize"
     } else if r < 0.95 {
         "\\small"
+    } else if r > 1.35 {
+        "\\Large"
     } else if r > 1.15 {
         "\\large"
     } else {

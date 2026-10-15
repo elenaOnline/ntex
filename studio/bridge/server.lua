@@ -662,6 +662,28 @@ local function try(req)
   local entry = req.entry or ""
   local t0 = uv.hrtime()
 
+  -- editing a snippet in one of her files: load that file without it while
+  -- trying, so the old version doesn't shadow the draft (put back below)
+  local hidden = nil
+  if type(req.hide) == "table" and type(req.hide.file) == "string" and req.hide.file:match("^[%w_%-%.]+%.lua$")
+    and type(req.hide.text) == "string" then
+    hidden = COPY .. "/tex/" .. req.hide.file
+    write_file(hidden, req.hide.text)
+    local herr = lua("return _G.ntex_bridge.load_try(...)", hidden)
+    if herr and herr ~= vim.NIL then
+      write_file(hidden, read_file(SOURCE .. "/tex/" .. req.hide.file) or "return {}\n")
+      lua("return _G.ntex_bridge.load_try(...)", hidden)
+      hidden = nil
+    end
+  end
+  local function unhide()
+    if hidden then
+      write_file(hidden, read_file(SOURCE .. "/tex/" .. req.hide.file) or "return {}\n")
+      pcall(lua, "return _G.ntex_bridge.load_try(...)", hidden)
+      hidden = nil
+    end
+  end
+
   write_file(TRY_FILE, table.concat({
     "-- Ntex Studio: a draft being tried (deleted right after)",
     'local h = require("snips.helpers")',
@@ -674,6 +696,7 @@ local function try(req)
   local err = lua("return _G.ntex_bridge.load_try(...)", TRY_FILE)
   if err and err ~= vim.NIL then
     lua("_G.ntex_bridge.unload_try(...)", TRY_FILE)
+    unhide()
     err = tostring(err):gsub("^.-" .. vim.pesc(TRY_NAME) .. ":", "line ")
     return { expanded = false, steps = {}, error = "the entry doesn't load: " .. err }
   end
@@ -744,6 +767,7 @@ local function try(req)
   pcall(rpc, "nvim_input", "<Esc>")
   pcall(sync)
   pcall(lua, "_G.ntex_bridge.unload_try(...)", TRY_FILE)
+  unhide()
   -- a Lua error in the child while typing (or the try itself failing): the
   -- child may be corrupt (LuaSnip's state half-updated), so report it and
   -- restart before the next request

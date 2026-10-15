@@ -312,7 +312,8 @@ fn delete_a_grid_node_converts_the_block() {
 fn delete_a_blob_takes_its_elements_and_arrows() {
     let mut f = fig("blob G \"G\" {e, g, g^2, g^3}\nblob K \"\\ker\\varphi\" in G shaded {e, g^2}\nblob L in K {z}\nblob H {h}\nG -> H\ng |-> h\ne |-> h\nz |-> h");
     let (_, out) = ed(&mut f, Edit::Delete { obj: ObjRef::Blob("K".into()) });
-    assert_eq!(out, "blob G {g, g^3}\nblob L {z} in G\nblob H {h}\nG -> H\ng |-> h\nz |-> h\n");
+    // (review U14) her explicit `"G"` stays
+    assert_eq!(out, "blob G \"G\" {g, g^3}\nblob L {z} in G\nblob H {h}\nG -> H\ng |-> h\nz |-> h\n");
     assert!(f.hints.listed.is_empty());
 }
 

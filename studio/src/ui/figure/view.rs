@@ -63,6 +63,8 @@ actions!(
         ZoomIn,
         ZoomOut,
         ZoomFit,
+        /// ⌘1: actual size (1 cm on screen is 1 cm on paper)
+        ZoomActual,
         /// Esc on the canvas
         CanvasEscape,
         /// ⌘A on the canvas
@@ -138,6 +140,7 @@ pub fn bind_keys(cx: &mut App) {
         KeyBinding::new("cmd-shift-=", ZoomIn, f),
         KeyBinding::new("cmd--", ZoomOut, f),
         KeyBinding::new("cmd-0", ZoomFit, f),
+        KeyBinding::new("cmd-1", ZoomActual, f),
     ]);
 }
 
@@ -162,6 +165,9 @@ pub struct LabelEdit {
     pub before_math: bool,
     /// An arrow's label: the middle of its line, the field goes across it.
     pub away: Option<Pt>,
+    /// (review U6) Everything the object draws, the label included (cm): the
+    /// field sits clear of it, above (below when there is no room).
+    pub bounds: Option<Rect>,
 }
 
 #[derive(Clone, Debug)]
@@ -285,6 +291,10 @@ pub struct FigureView {
     pub ui_bounds: Rc<std::cell::RefCell<std::collections::HashMap<String, Bounds<Pixels>>>>,
     /// The shorthand box's scroll (opening scrolls to the first line that isn't a comment).
     pub shorthand_scroll: gpui::ScrollHandle,
+    /// The properties panel's scroll (long panels scroll; the Figure head is pinned).
+    pub panel_scroll: gpui::ScrollHandle,
+    /// (review U13) Why the width she typed changed nothing ("labels alone are 0.9 cm wide").
+    pub width_note: Option<String>,
     pub scroll_to_code: bool,
     /// The live readout of a handle drag: (where, "45°").
     pub readout: Option<(Pt, String)>,
@@ -300,6 +310,16 @@ pub struct FigureView {
     /// Fit the figure to the canvas (capped at 200 %) as soon as the canvas
     /// has bounds: set on open and on a reload, never by her own zooming.
     pub fit_pending: bool,
+    /// (figure-qol B) Logical px per cm of the display, when known better than
+    /// the platform says (the offscreen tests inject one); None = ask the display.
+    pub px_per_cm_override: Option<f32>,
+    /// (figure-qol B) ⌘ is down: the page frame shows round the figure.
+    pub cmd_held: bool,
+    /// (figure-qol B) The display's px per cm as of the last frame (the corner's "actual size").
+    pub last_px_per_cm: Cell<f32>,
+    /// (figure-qol B) The panel's Figure section: Some(open) once she has
+    /// toggled it; None = open when nothing is selected, folded otherwise.
+    pub figure_section: Option<bool>,
     /// Set when the window closes or the studio quits: a PDF build in flight
     /// kills its tectonic (no tectonic outlives the studio).
     pub build_cancel: Arc<AtomicBool>,
@@ -457,6 +477,8 @@ impl FigureView {
             fields: Default::default(),
             ui_bounds: Default::default(),
             shorthand_scroll: gpui::ScrollHandle::new(),
+            panel_scroll: gpui::ScrollHandle::new(),
+            width_note: None,
             scroll_to_code: true,
             readout: None,
             hover_handle: None,
@@ -464,6 +486,10 @@ impl FigureView {
             zn_field,
             fresh_elements: Vec::new(),
             fit_pending: true,
+            px_per_cm_override: None,
+            cmd_held: false,
+            last_px_per_cm: Cell::new(0.0),
+            figure_section: None,
             build_cancel: Arc::new(AtomicBool::new(false)),
             _poll: None,
             _subs: subs,
@@ -696,12 +722,25 @@ impl FigureView {
                 _ => geom::center_of(&scene, &obj),
             })
             .unwrap_or_default();
+        let mut bounds = geom::extent_of(&scene, &obj).map(|mut r| {
+            // the label (about a line of text high) is part of what the field must clear
+            r.min.x = r.min.x.min(at.x - 0.3);
+            r.max.x = r.max.x.max(at.x + 0.3);
+            r.min.y = r.min.y.min(at.y - 0.25);
+            r.max.y = r.max.y.max(at.y + 0.25);
+            r
+        });
         if matches!(obj, ObjRef::Arrow(_)) {
-            away = geom::path_mid(&scene, &obj);
+            let is_loop = super::handles::item_index(&self.doc.figure, &obj).is_some_and(|i| matches!(&self.doc.figure.items[i], Item::Arrow(a) if a.is_loop));
+            // a loop's field goes clear of the whole loop, not across its line
+            if !is_loop {
+                away = geom::path_mid(&scene, &obj);
+                bounds = None;
+            }
         }
         let (current, math) = self.label_start(&obj, &current);
         self.label_preview = None;
-        self.label_edit = Some(LabelEdit { obj, at, before: current.clone(), before_math: math, away });
+        self.label_edit = Some(LabelEdit { obj, at, before: current.clone(), before_math: math, away, bounds });
         self.label_field.update(cx, |f, cx| {
             f.set_math(math, cx);
             f.set_text(current, cx);
@@ -1080,7 +1119,10 @@ impl FigureView {
         let scene = self.doc.scene.clone();
         match self.canvas_bounds.get() {
             Some(b) => {
-                self.view.fit_to(&scene, b);
+                match self.fit_handles() {
+                    Some(h) => self.view.fit_to_with(&scene, b, &*h),
+                    None => self.view.fit_to(&scene, b),
+                }
                 self.fit_pending = false;
                 self.last_canvas = Some(b);
             }
@@ -1088,6 +1130,34 @@ impl FigureView {
             None => self.fit_pending = true,
         }
         cx.notify();
+    }
+
+    /// (figure-qol B) The display's logical px per cm.
+    pub fn display_px_per_cm(&self, window: &Window, cx: &App) -> f32 {
+        self.px_per_cm_override.unwrap_or_else(|| super::display::px_per_cm(window, cx))
+    }
+
+    /// (figure-qol B) ⌘1: 1 cm on screen is 1 cm on paper, the figure centred.
+    pub fn zoom_actual(&mut self, window: &Window, cx: &mut Context<Self>) {
+        let per_cm = self.display_px_per_cm(window, cx);
+        let scene = self.doc.scene.clone();
+        if let Some(b) = self.canvas_bounds.get() {
+            self.view.actual_size(&scene, b, per_cm);
+            self.fit_pending = false;
+            self.last_canvas = Some(b);
+        }
+        cx.notify();
+    }
+
+    /// (figure-qol B) The figure's size on the page, live: "6.4 × 3.1 cm on the
+    /// page" (the Scene's bounds and the standalone class's 3 pt border).
+    pub fn page_readout(&self) -> Option<String> {
+        let scene = self.drag_scene.as_ref().unwrap_or(&self.doc.scene);
+        if geom::is_empty_rect(&scene.bounds) || ntex_figures::build::is_empty(self.drag_figure.as_ref().unwrap_or(&self.doc.figure)) {
+            return None;
+        }
+        let (w, h) = ntex_figures::pagesize::page_size(scene);
+        Some(format!("{} on the page", ntex_figures::pagesize::fmt_size(w, h)))
     }
 
     /// The canvas was drawn at new bounds: keep the figure where it was on
@@ -1116,10 +1186,24 @@ impl FigureView {
             return false;
         }
         let scene = self.doc.scene.clone();
-        self.view.fit_to(&scene, b);
+        match self.fit_handles() {
+            Some(h) => self.view.fit_to_with(&scene, b, &*h),
+            None => self.view.fit_to(&scene, b),
+        }
         self.fit_pending = false;
         self.last_canvas = Some(b);
         true
+    }
+
+    /// (review U15a) Where the selection's handles are, as a function of px per
+    /// cm, for a fit that keeps them (the rotate stem) on the canvas.
+    fn fit_handles(&self) -> Option<Arc<dyn Fn(f32) -> Vec<Pt>>> {
+        let [obj] = self.selection.as_slice() else { return None };
+        if self.label_edit.is_some() || self.tool != Tool::Select {
+            return None;
+        }
+        let (fig, scene, obj) = (self.doc.figure.clone(), self.doc.scene.clone(), obj.clone());
+        Some(Arc::new(move |per_cm| super::handles::handles(&fig, &scene, &obj, per_cm).into_iter().map(|h| h.at).collect()))
     }
 
     // -- what the canvas shows -------------------------------------------------------
@@ -1177,6 +1261,7 @@ impl FigureView {
             editing: None,
             empty_hint: Some("An empty figure. N places a node; or type the shorthand below.".into()),
             fit: self.fit_pending,
+            fit_handles: if self.fit_pending { self.fit_handles() } else { None },
             prev_bounds: self.last_canvas,
             ring: match self.selection.as_slice() {
                 [o @ ObjRef::NGon(_)] if self.tool == Tool::Select => {
@@ -1189,13 +1274,28 @@ impl FigureView {
             handles,
             readout: self.readout.clone(),
             cursor,
+            page: self.page_frame(),
             drop_target: matches!(&self.gesture, Some(Gesture::Handle { start, .. }) if matches!(start.handle.kind, super::handles::HKind::ArrowEnd(_))),
         }
     }
 
+    /// (figure-qol B) The page frame (cm): round the figure while ⌘ is down
+    /// and nothing is being dragged (and while its corner is).
+    pub fn page_frame(&self) -> Option<Rect> {
+        let dragging_corner = matches!(self.gesture, Some(Gesture::PageScale { .. }));
+        if !(dragging_corner || (self.cmd_held && self.gesture.is_none() && self.label_edit.is_none())) {
+            return None;
+        }
+        let scene = self.drag_scene.as_ref().unwrap_or(&self.doc.scene);
+        if geom::is_empty_rect(&scene.bounds) || self.doc.is_empty() {
+            return None;
+        }
+        Some(geom::page_rect(scene))
+    }
+
     /// Footnotes for whatever has the keyboard.
     pub fn hints(&self, window: &Window, cx: &App) -> Vec<SharedString> {
-        let keys: SharedString = "⌘S saves and builds the PDF · ⌘Z / ⌘⇧Z undo, redo · ⌘= ⌘- zoom, ⌘0 fits · ⌘T tidies · ⌘W saves and closes".into();
+        let keys: SharedString = "⌘S saves and builds the PDF · ⌘Z / ⌘⇧Z undo, redo · ⌘= ⌘- zoom, ⌘0 fits, ⌘1 actual size · hold ⌘ for the page frame · ⌘T tidies · ⌘W saves and closes".into();
         if self.label_field.read(cx).focus.is_focused(window) {
             return vec![self.label_field.read(cx).hint().into()];
         }
@@ -1228,10 +1328,10 @@ impl FigureView {
     fn selection_hint(&self) -> String {
         let shape = self.selection.iter().any(|o| matches!(super::interact::owner(o), ObjRef::NGon(_) | ObjRef::Blob(_) | ObjRef::Cayley(_)));
         match self.selection.as_slice() {
-            [ObjRef::NGonVertex(..)] => "↵ edits the vertex's label · ⌫ hides it · the polygon's handles are a click inside it".into(),
-            [ObjRef::Arrow(_)] => "drag the middle handle to bend (snaps at 0, 30°, 45°) · drag the label across to swap sides · drag an end dot onto another object to reattach it · ⌘R reverses · click the label again or ↵ edits it · ⌫ deletes".into(),
+            [ObjRef::NGonVertex(..)] => "↵ or click the label again edits the vertex's label · ⌫ hides it · the polygon's handles are a click inside it".into(),
+            [ObjRef::Arrow(_)] => "drag the middle handle to bend (snaps at 0, 30°, 45°) · the label across to swap sides · an end dot onto another object to reattach · ⌘R reverses · ↵ edits the label · ⌫ deletes".into(),
             [ObjRef::NGonRotation(_)] => "drag the arrow round to another edge · ⌘R runs it the other way (↺ ↻) · ↵ names it · ⌫ removes it".into(),
-            [ObjRef::CayleyVertex(..)] => "a vertex of the graph · esc, then a click, takes the whole graph".into(),
+            [ObjRef::CayleyVertex(..)] => "a vertex of the graph · ↵ or a double-click names it · esc, then a click, takes the whole graph".into(),
             _ if shape => "drag to move (⌥ copies, ⇧ keeps a line, ⌘ goes free) · drag ↻ to turn (15° steps, ⌘ free) and the dots to resize · [ ] turn 15° · − = size · arrows nudge (⌥ finer) · ⌫ deletes".into(),
             _ => "drag to move (⌥ copies, ⇧ keeps a line, ⌘ goes free) · arrows nudge (⌥ finer) · click the label again or ↵ edits it · ⌫ deletes".into(),
         }
@@ -1379,6 +1479,9 @@ impl FigureView {
                         .flex_row()
                         .items_end()
                         .gap(px(8.))
+                        .children(self.page_readout().map(|r| {
+                            div().flex().flex_row().items_end().gap(px(8.)).child(div().font(t.serif_italic()).text_size(t.body_size).text_color(t.slate).child(r)).child(div().font(t.serif()).text_color(t.slate).child("·"))
+                        }))
                         .child(div().font(t.mono()).text_size(t.mono_size).text_color(t.ink).child(self.file_name()))
                         .child(div().font(t.serif()).text_color(t.slate).child("·"))
                         .child(div().font(t.serif_italic()).text_size(t.body_size).text_color(t.slate).child(status)),
@@ -1406,6 +1509,10 @@ impl FigureView {
     }
 
     /// What the canvas shows, in its corner: *exact* / *draft* / *rendering…*, and the zoom.
+    pub fn canvas_state_text(&self) -> String {
+        self.canvas_state()
+    }
+
     fn canvas_state(&self) -> String {
         let state = if self.gesture.is_some() || self.drag_scene.is_some() {
             "draft"
@@ -1416,7 +1523,13 @@ impl FigureView {
         } else {
             "draft"
         };
-        format!("{state} · {:.0} %", self.view.zoom * 100.0)
+        // (figure-qol B) at the display's real size it says so, rather than a percentage
+        let actual = self.px_per_cm_override.unwrap_or_else(|| self.last_px_per_cm.get());
+        let at = self.canvas_bounds.get().map(|b| self.view.px_per_cm(b));
+        match at {
+            Some(a) if actual > 0.0 && (a / actual - 1.0).abs() < 0.005 => format!("{state} · actual size"),
+            _ => format!("{state} · {:.0} %", self.view.zoom * 100.0),
+        }
     }
 
     fn render_canvas(&self, t: &Theme, window: &mut Window, cx: &mut Context<Self>) -> AnyElement {
@@ -1462,14 +1575,21 @@ impl FigureView {
             let max_w = (f32::from(b.size.width) - 12.).max(72.);
             let (fw, h) = ((chars * 8.0 + 26.0).clamp(72.0, max_w - chip_w), 28.0);
             let w = fw + chip_w;
-            let c = self.field_centre(le.at, le.away, &xf, h);
+            let mut c = self.field_centre(le.at, le.away, &xf, h);
+            if le.away.is_none()
+                && let Some(r) = &le.bounds
+            {
+                // clear of the object's full bounds, plus a gap
+                c.y = xf.to_px(Pt { x: le.at.x, y: r.max.y }).y - px(h * 0.5 + 8.0);
+            }
             let c = gpui::point(c.x - b.origin.x, c.y - b.origin.y);
             let left = (c.x - px(w / 2.)).max(px(6.)).min(b.size.width - px(w + 6.));
             let mut top = c.y - px(h / 2.);
             // no room above the label: below it
             if top < px(6.) && le.away.is_none() {
-                let p = xf.to_px(le.at);
-                top = p.y - b.origin.y + px(h * 0.5 + 6.);
+                let low = le.bounds.as_ref().map(|r| r.min.y).unwrap_or(le.at.y);
+                let p = xf.to_px(Pt { x: le.at.x, y: low });
+                top = p.y - b.origin.y + px(if le.bounds.is_some() { 8.0 } else { h * 0.5 + 6.0 });
             }
             let top = top.max(px(6.)).min(b.size.height - px(h + 6.));
             let chip = (!is_text).then(|| {
@@ -1496,7 +1616,8 @@ impl FigureView {
                     .border_color(Theme::alpha(t.blue, 0.5))
                     .px(px(4.))
                     .child(div().flex_1().min_w_0().child(self.label_field.clone()))
-                    .children(chip),
+                    .children(chip)
+                    .child(super::menu::record_bounds(self.ui_bounds.clone(), "label.field".to_string())),
             )
         });
         let focused = self.canvas_focus.is_focused(window);
@@ -1519,6 +1640,9 @@ impl FigureView {
             .on_action(cx.listener(|v, _: &ToolRough, _, cx| v.set_tool(Tool::Rough, cx)))
             .on_action(cx.listener(|v, _: &DeleteSelection, window, cx| v.delete_selected(window, cx)))
             .on_action(cx.listener(|v, _: &CanvasEscape, _, cx| {
+                if let Some(Gesture::PageScale { base_target, .. }) = &v.gesture {
+                    v.view.target = base_target.clone();
+                }
                 v.drag_scene = None;
                 v.drag_figure = None;
                 v.readout = None;
@@ -1797,7 +1921,12 @@ impl FigureView {
             .pb(px(14.))
             .bg(t.paper)
             .child(div().w_full().h(t.line(t.small_size)).mb(px(6.)).flex().flex_row().justify_end().children(toast.map(|note| div().max_w(px(640.)).child(note))))
-            .child(Footnotes::new(notes))
+            .child(Footnotes::new(notes).on_bounds({
+                let rec = self.ui_bounds.clone();
+                move |i, b| {
+                    rec.borrow_mut().insert(if i >= 1000 { format!("footnote-text.{}", i - 1000) } else { format!("footnote.{i}") }, b);
+                }
+            }))
     }
 }
 
@@ -1806,6 +1935,8 @@ impl Render for FigureView {
         let t = cx.theme().clone();
         self.apply_pending_fit();
         self.sync_view();
+        let per_cm = self.display_px_per_cm(window, cx);
+        self.last_px_per_cm.set(per_cm);
         if self.ghost.is_some() || self.ask.busy() {
             window.request_animation_frame();
         }
@@ -1863,6 +1994,14 @@ impl Render for FigureView {
             .on_action(cx.listener(|v, _: &ZoomIn, _, cx| v.zoom_by(1.25, cx)))
             .on_action(cx.listener(|v, _: &ZoomOut, _, cx| v.zoom_by(0.8, cx)))
             .on_action(cx.listener(|v, _: &ZoomFit, _, cx| v.zoom_fit(cx)))
+            .on_action(cx.listener(|v, _: &ZoomActual, window, cx| v.zoom_actual(window, cx)))
+            // (figure-qol B) ⌘ down: the page frame shows round the figure
+            .on_modifiers_changed(cx.listener(|v, ev: &gpui::ModifiersChangedEvent, _, cx| {
+                if v.cmd_held != ev.modifiers.platform {
+                    v.cmd_held = ev.modifiers.platform;
+                    cx.notify();
+                }
+            }))
             .on_action(cx.listener(|v, _: &TogglePanel, window, cx| {
                 let shown = v.panel_shown(window);
                 v.panel_open = Some(!shown);

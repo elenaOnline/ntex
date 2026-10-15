@@ -566,4 +566,8 @@ pub struct OpenRequest {
     /// Open (or focus) the figure window for this .fig file (absolute path).
     #[serde(default)]
     pub figure: Option<String>,
+    /// Open windows without activating the app or making them key
+    /// (`--background`); governs this request only.
+    #[serde(default)]
+    pub background: bool,
 }

@@ -29,6 +29,7 @@ itself: it backs up first, checks the result, and lets you undo.
 | Folder | Owner | What |
 | --- | --- | --- |
 | `core/src/model.rs` | architect | shared shapes. **Add-only.** |
+| `core/src/library.rs` | LIBRARY | every topic file read as rows (category = group title), fuzzy search, in-place `replace` (literal swap keeping columns, else one call regenerated + helper bound), `without` (for Try it) |
 | `core/` (crate ntex-studio-core; `cargo test -p ntex-studio-core`) | CORE | pure logic: codegen, Lua reading, inbox file, guesses + checks, English words, blocks (.sty), colour, applying a sort plan, prefs. No GPUI, no processes. |
 | `io/` (crate ntex-studio-io; `cargo test -p ntex-studio-io`) | BRIDGE | processes: headless ntex bridge, tectonic renders, the claude sorter, single instance |
 | `bridge/` (Lua) | BRIDGE | `server.lua`, the headless ntex side of the bridge |
@@ -41,6 +42,41 @@ A builder edits only its own folders. The public signatures in the stubs are
 the contract: keep them and add to them freely. If one must change, say so in
 your report and leave the old one working.
 `Cargo.toml`: add the dependencies you need and list them in your report.
+
+## Background launch mode
+
+`ntex-studio --background` (or `NTEX_STUDIO_BACKGROUND=1`) opens windows
+"waiting": visible, never key, the app never activated, so it does not steal
+focus from what you are doing. It combines with `--figure PATH` and with
+`--page ...` / the plain Studio window.
+
+- `ui/launch.rs` holds the decision (`Mode` Normal / Background / Quiet, and
+  `plan(mode, visible)` giving `focus`, `show`, `activate`, `order_back`; unit
+  tested) and the AppKit calls (libobjc, like main.rs's quiet module).
+- Background: windows get `focus: false, show: true` (GPUI then only
+  `orderFront:`s them, no `makeKeyAndOrderFront:`); `cx.activate` and
+  `activate_window` are skipped; before the NSApplication exists
+  `-[NSApplication setActivationPolicy:]` is swizzled so GPUI's Regular
+  becomes Accessory (a freshly started Regular process is brought forward by
+  macOS); after opening, if `[NSApp isActive]` is false every visible, non-key
+  window gets `orderBack:`.
+- The mode belongs to the request: `OpenRequest.background` (add-only,
+  `#[serde(default)]`) travels over the instance socket, so a running studio
+  opens that window the same way. A later normal launch / Space n has
+  `background: false`: it activates and focuses as ever, and
+  `release_background()` sets the policy back to Regular (Dock icon, menu).
+- The first real activation releases the hold too: each window's view
+  observes window activation (`launch::release_on_activation`), and
+  `should_release(held, window_active)` (pure, tested) calls
+  `release_background()` once, so after she clicks a waiting window the app
+  is Regular (Dock icon, menu bar, ⌘-Tab).
+- Why Accessory and not Regular + no activate: a Regular process started
+  from a shell may be brought forward by macOS when launching finishes, and
+  that can't be checked headlessly; Accessory is the safe choice, at the
+  cost of no Dock icon / ⌘-Tab entry while waiting. To try Regular from the
+  start, set `NTEX_STUDIO_BACKGROUND_REGULAR=1` (no hold; still no activate,
+  windows still ordered back).
+- Quiet (tests) wins over background: nothing is shown at all.
 
 ## Workspace
 
@@ -129,6 +165,11 @@ Requests and responses (one JSON object per line):
                                           child may be corrupt; the server exits
                                           and the client starts a fresh one,
                                           retrying any request in flight once)
+
+`try` may carry `"hide": {"file": "calculus.lua", "text": "…"}` (the Library's
+edits): that file of the copy is replaced by `text` (the file without the
+entry being edited) for the try, then put back from the source, so the old
+version can't shadow the draft.
 
 `try`: write the entry to `<copy>/tex/zz_studio_try.lua` and reload it, so it
 sits beside all her real snippets and shadowing is real. Open a scratch buffer

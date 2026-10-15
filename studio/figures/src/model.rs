@@ -303,6 +303,13 @@ pub struct Text {
     pub text: String,
     pub pos: Pos,
     pub span: Span,
+    /// (figure-qol class E) `color=teal`; None = ink.
+    #[serde(default)]
+    pub color: Option<String>,
+    /// (figure-qol class E) `size=small`: "tiny" | "small" | "large" | "huge";
+    /// None = the figure's label size.
+    #[serde(default)]
+    pub size: Option<String>,
 }
 
 /// One statement, in file order.
@@ -381,6 +388,18 @@ pub struct Hints {
     /// back there; a global with no entry goes at the top.
     #[serde(default)]
     pub globals_at: Vec<(String, usize)>,
+    /// (review U14) Labels she wrote out that equal the default (`blob G "G"`),
+    /// by site (`blob:G`): `format` keeps them instead of dropping them.
+    #[serde(default)]
+    pub explicit_labels: Vec<String>,
+    /// (review C11) A negative turn as she wrote it (`ngon:P` → -9) when it isn't
+    /// the canonical `-(n - turn)`; used only while it still means the same turn.
+    /// (review U14) The order she wrote a statement's options in, when it isn't
+    /// the formatter's own (`ngon:P` → ["at", "labels"]); `format` keeps it.
+    #[serde(default)]
+    pub turn_spelled: Vec<(String, i64)>,
+    #[serde(default)]
+    pub option_order: Vec<(String, Vec<String>)>,
 }
 
 /// (FIG-POLISH) One label as she typed it. `key` names the label's site:

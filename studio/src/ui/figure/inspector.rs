@@ -7,6 +7,8 @@
 //! The text fields are kept in a pool keyed by what they edit, so a field
 //! keeps its caret while the figure changes under it; a field she isn't in
 //! follows the model.
+mod page_panel;
+
 use super::doc;
 use super::handles;
 use super::interact::{Align, PALETTE};
@@ -25,6 +27,8 @@ use gpui::{
 use ntex_figures::model::*;
 use std::cell::Cell;
 use std::rc::Rc;
+
+mod multi;
 
 /// The column's width, px.
 pub const PANEL_W: f32 = 268.0;
@@ -49,7 +53,7 @@ pub struct PanelField {
     _sub: Subscription,
 }
 
-fn fmt_num(v: f32) -> String {
+pub(super) fn fmt_num(v: f32) -> String {
     let s = format!("{v:.2}");
     let s = s.trim_end_matches('0').trim_end_matches('.').to_string();
     if s.is_empty() || s == "-0" { "0".into() } else { s }
@@ -156,6 +160,25 @@ fn group_text(g: &GroupSpec) -> String {
 
 // ---------------------------------------------------------------------------
 // small controls
+
+/// (review U9) A free text item's stored text → the field's text and whether it
+/// is maths: `$x^2$` all in one island is maths mode; a `\text{…}` wrapper (older
+/// panel edits) is dropped; anything else is text.
+fn text_item_form(v: &str) -> (String, bool) {
+    let v = v.trim();
+    if let Some(inner) = v.strip_prefix(r"\text{").and_then(|r| r.strip_suffix('}')).filter(|i| i.matches('{').count() == i.matches('}').count()) {
+        return (inner.to_string(), false);
+    }
+    if v.len() >= 2 && v.starts_with('$') && v.ends_with('$') && v[1..v.len() - 1].find('$').is_none() {
+        return (v[1..v.len() - 1].to_string(), true);
+    }
+    (v.to_string(), false)
+}
+
+/// The inverse: the field's text and mode → what the text item stores.
+fn text_item_model(text: &str, math: bool) -> String {
+    if math && !text.is_empty() { format!("${text}$") } else { text.to_string() }
+}
 
 fn row(t: &Theme, label: &str, content: impl IntoElement) -> gpui::Div {
     div()
@@ -371,9 +394,10 @@ impl FigureView {
         // Free text items already store text-mode TeX, including $math$
         // islands. Other labels are maths by default (no `$` shown) with a
         // `text` chip; they are stored inside TikZ's math delimiters.
+        // (review U9) a text item is shown as its text, with the same chip
         let text_item = key.starts_with("text.");
-        let converts = is_label && !text_item;
-        let (value, value_math) = if converts { edit_form(value) } else { (value.to_string(), false) };
+        let converts = is_label;
+        let (value, value_math) = if text_item { text_item_form(value) } else if converts { edit_form(value) } else { (value.to_string(), false) };
         let apply: Apply = Rc::new(move |v, text, w, cx| apply(v, text, w, cx));
         if !self.fields.contains_key(key) {
             let ph = placeholder.to_string();
@@ -395,7 +419,7 @@ impl FigureView {
                 SnippetFieldEvent::Cancel => {
                     let restore = v.fields.get_mut(&k).and_then(|f| f.before.take().filter(|_| f.is_label).map(|b| (f.apply.clone(), f.converts, b)));
                     if let Some((apply, converts, (text, math))) = restore {
-                        let model = if converts { label_from_edit_spelling(text.trim(), math) } else { text };
+                        let model = if k.starts_with("text.") { text_item_model(text.trim(), math) } else if converts { label_from_edit_spelling(text.trim(), math) } else { text };
                         apply(v, &model, window, cx);
                     }
                     v.undo_group = None;
@@ -421,6 +445,14 @@ impl FigureView {
         pf.apply = apply;
         pf.used = true;
         let entity = pf.entity.clone();
+        // the placeholder follows the model (r → r⁻¹ when the arrow turns round)
+        if entity.read(cx).placeholder.as_ref() != placeholder {
+            let ph = placeholder.to_string();
+            entity.update(cx, |f, cx| {
+                f.placeholder = ph.into();
+                cx.notify();
+            });
+        }
         let focused = entity.read(cx).focus.is_focused(window);
         if focused && pf.before.is_none() { pf.before = Some((pf.idle_text.clone(), pf.idle_math)); }
         if !focused { pf.idle_text = value.clone(); pf.idle_math = value_math; }
@@ -457,7 +489,7 @@ impl FigureView {
         let Some(pf) = self.fields.get_mut(k) else { return };
         if pf.before.is_none() { pf.before = Some((pf.idle_text.clone(), pf.idle_math)); }
         let (text, math) = { let e = pf.entity.read(cx); (e.text().to_string(), e.math()) };
-        let model = if pf.converts { label_from_edit_spelling(text.trim(), math) } else { text };
+        let model = if k.starts_with("text.") { text_item_model(text.trim(), math) } else if pf.converts { label_from_edit_spelling(text.trim(), math) } else { text };
         let f = pf.apply.clone();
         f(self, &model, window, cx);
     }
@@ -596,66 +628,60 @@ impl FigureView {
         }
         self.tab_order.clear();
         let sel = self.selection.clone();
-        let (what, body): (String, Vec<AnyElement>) = match sel.as_slice() {
-            [] => ("the figure".into(), self.panel_figure(t, window, cx)),
+        let (what, mut body): (String, Vec<AnyElement>) = match sel.as_slice() {
+            [] => ("the figure".into(), vec![note(t, "Click an object to see its properties; drag on empty canvas to select several.").into_any_element()]),
             [one] => self.panel_one(t, one, window, cx),
             many => (format!("{} objects", many.len()), self.panel_many(t, cx)),
         };
+        // (figure-qol B) the figure's own section is always there, under the selection's
+        // (review U4) folded, its head is pinned under the scrolling part so it
+        // stays reachable however long the selection's section is; open, the
+        // whole section scrolls (its fields are the point)
+        let mut section = self.panel_figure_section(t, window, cx);
+        let pinned = (!self.figure_section_open()).then(|| section.remove(0));
+        body.extend(section);
         // a field she is still in stays; the rest of the unused go
         self.fields.retain(|_, f| f.used || f.entity.read(cx).focus.is_focused(window));
         let head = div().font(t.serif_italic()).text_color(t.slate).child(what);
         let boxed = TBox::new(BoxKind::Definition, "Definition").name("Properties").own_line().child(head).children(body);
+        let more = {
+            let m = self.panel_scroll.max_offset();
+            let off = self.panel_scroll.offset();
+            f32::from(m.y) > 1.0 && f32::from(off.y) > -f32::from(m.y) + 1.0
+        };
+        let tones = t.tones(BoxKind::Definition);
         div()
-            .id("panel")
+            .relative()
             .flex_none()
             .w(px(PANEL_W))
-            .h_full()
-            .overflow_y_scroll()
-            .child(boxed)
+            .flex()
+            .flex_col()
+            .min_h_0()
+            .overflow_hidden()
+            .child(super::menu::record_bounds(self.ui_bounds.clone(), "panel.box".to_string()))
+            .child(
+                div()
+                    .id("panel")
+                    .flex_1()
+                    .min_h_0()
+                    .overflow_y_scroll()
+                    .track_scroll(&self.panel_scroll)
+                    .child(boxed),
+            )
+            // a rule where the panel is cut: there is more below
+            .when(more, |d| d.child(div().flex_none().h(px(1.)).bg(Theme::alpha(t.slate, 0.55))))
+            .children(pinned.map(|p| {
+                div()
+                    .flex_none()
+                    .bg(tones.back)
+                    .border_l(px(3.))
+                    .border_color(tones.rule)
+                    .pl(px(11.))
+                    .pr(px(10.))
+                    .pb(px(7.))
+                    .child(p)
+            }))
             .into_any_element()
-    }
-
-    fn panel_figure(&mut self, t: &Theme, window: &mut Window, cx: &mut Context<Self>) -> Vec<AnyElement> {
-        let g = self.doc.figure.globals.clone();
-        let scale = self.field("fig.scale", &fmt_num(g.scale), true, Some(52.), "1", window, cx, |v, s, _, cx| {
-            if let Some(x) = parse_num(s).filter(|x| *x > 0.05) {
-                v.set_globals(Some("field:fig.scale".into()), cx, |g| {
-                    g.scale = x;
-                    true
-                });
-            }
-        });
-        let sx = self.field("fig.spacing.x", &fmt_num(g.spacing.0), true, Some(44.), "1.9", window, cx, |v, s, _, cx| {
-            if let Some(x) = parse_num(s).filter(|x| *x > 0.1) {
-                v.set_globals(Some("field:fig.spacing".into()), cx, |g| {
-                    g.spacing.0 = x;
-                    true
-                });
-            }
-        });
-        let sy = self.field("fig.spacing.y", &fmt_num(g.spacing.1), true, Some(44.), "1.35", window, cx, |v, s, _, cx| {
-            if let Some(y) = parse_num(s).filter(|y| *y > 0.1) {
-                v.set_globals(Some("field:fig.spacing".into()), cx, |g| {
-                    g.spacing.1 = y;
-                    true
-                });
-            }
-        });
-        let sizes = ["small", "normal", "large"];
-        let cur = sizes.iter().position(|s| *s == g.size);
-        let go = self.on2(cx, move |v, i, cx| {
-            let s = sizes[i].to_string();
-            v.set_globals(None, cx, |g| {
-                g.size = s;
-                true
-            });
-        });
-        vec![
-            row(t, "Scale", div().flex().flex_row().items_center().gap(px(6.)).child(scale).child(unit(t, "×"))).into_any_element(),
-            row(t, "Spacing", div().flex().flex_row().items_center().gap(px(4.)).child(sx).child(unit(t, "×")).child(sy).child(unit(t, "cm"))).into_any_element(),
-            row(t, "Labels", choice(t, "panel.size", &sizes, cur, &self.ui_bounds, go)).into_any_element(),
-            note(t, "Click an object to see its properties; drag on empty canvas to select several.").into_any_element(),
-        ]
     }
 
     /// `on` for a callback that also takes an index.
@@ -697,6 +723,7 @@ impl FigureView {
         ];
         out.extend(spread);
         out.push(row(t, "", del).into_any_element());
+        out.extend(self.shared_sections(t, cx));
         out
     }
 
@@ -749,7 +776,9 @@ impl FigureView {
                     v.selection = vec![ObjRef::Blob(bn.clone())];
                     cx.notify();
                 });
-                (format!("element {e} of {}", b.name), vec![row(t, "Label", f).into_any_element(), row(t, "In", up).into_any_element()])
+                let mut rows = vec![row(t, "Label", f).into_any_element(), row(t, "In", up).into_any_element()];
+                rows.extend(self.pos_rows(t, &format!("epos.{e}"), obj, window, cx));
+                (format!("element {e} of {}", b.name), rows)
             }
             (ObjRef::Cayley(_), Item::Cayley(c)) => (format!("Cayley graph {}", c.name), self.panel_cayley(t, obj, i, c, window, cx)),
             (ObjRef::CayleyVertex(_, w), Item::Cayley(c)) => {
@@ -767,19 +796,21 @@ impl FigureView {
                     format!("vertex {} of {}", doc::preview(w), c.name),
                     vec![
                         row(t, "Name", f).into_any_element(),
-                        note(t, "The element's word by default; empty puts it back. ↵ or a click on the name edits it on the canvas.").into_any_element(),
+                        note(t, "The element's word by default; empty puts it back. ↵ or a double-click on the vertex edits it on the canvas.").into_any_element(),
                         row(t, "", up).into_any_element(),
                     ],
                 )
             }
             (ObjRef::Text(_), Item::Text(x)) => {
                 let typed = ntex_figures::spelling::raw(&fig, "text", &x.text);
-                let typed = if typed.starts_with(r"\text{") { typed } else { format!(r"\text{{{typed}}}") };
                 let o = obj.clone();
                 let f = self.field(&format!("text.{i}"), &typed, false, None, "text", window, cx, move |v, s, _, cx| {
                     v.set_label(&o, s, Some(format!("field:text:{o:?}")), cx);
                 });
-                ("text".into(), vec![row(t, "Text", f).into_any_element()])
+                let mut rows = vec![row(t, "Text", f).into_any_element()];
+                rows.extend(self.text_rows(t, i, &x, cx));
+                rows.extend(self.pos_rows(t, &format!("txtpos.{i}"), obj, window, cx));
+                ("text".into(), rows)
             }
             _ => ("—".into(), vec![]),
         }
@@ -955,8 +986,10 @@ impl FigureView {
         if g.rotation > 0 {
             // (class C) the arrow's own name (r, r², ρ, …)
             let o = ObjRef::NGonRotationLabel(name.clone());
-            let typed = ntex_figures::spelling::as_typed(&fig, &o).unwrap_or_default();
-            let f = self.field(&format!("{key}.label.rot"), &typed, true, None, "r", window, cx, move |v, s, _, cx| {
+            // (review U12) the default is a placeholder (r⁻¹), not text to edit
+            let typed = if g.rotation_label.is_none() { String::new() } else { ntex_figures::spelling::as_typed(&fig, &o).unwrap_or_default() };
+            let ph = doc::preview(&ntex_figures::layout::ngon_rotation_default(&g));
+            let f = self.field(&format!("{key}.label.rot"), &typed, true, None, &ph, window, cx, move |v, s, _, cx| {
                 v.set_label(&o, s, Some(format!("field:rotlabel:{o:?}")), cx);
             });
             out.push(row(t, "Name", f).into_any_element());
@@ -969,7 +1002,8 @@ impl FigureView {
         let tp = self.glyph(t, &format!("{key}.turn+"), "⟲", cx, move |v, _, cx| {
             v.set_item(i, Item::NGon(step_turn(&gtp, 1)), "turn", None, vec![], cx);
         });
-        out.push(row(t, "Turn", div().flex().flex_row().items_center().gap(px(8.)).child(tm).child(div().font(t.mono()).child(signed_turn(&g).to_string())).child(tp).child(note(t, "relabels"))).into_any_element());
+        out.push(row(t, "Turn", div().flex().flex_row().items_center().gap(px(8.))// (review U10) counter-clockwise left, clockwise right, like Angle and Rotation
+            .child(tp).child(div().font(t.mono()).child(signed_turn(&g).to_string())).child(tm).child(note(t, "relabels"))).into_any_element());
         let mut flips = div().flex().flex_row().flex_wrap().gap(px(4.));
         let gn = g.clone();
         let go_none = self.on(cx, move |v, _, cx| {
@@ -999,6 +1033,7 @@ impl FigureView {
         out.push(row(t, "", fill).into_any_element());
         let colours = self.colours(t, cx);
         out.push(stack(t, "Colour", colours).into_any_element());
+        out.extend(self.pos_rows(t, &key, obj, window, cx));
         out
     }
 
@@ -1138,8 +1173,9 @@ impl FigureView {
         });
         // (class C) the arrow's own name (r, r⁻¹, ρ, …)
         let ol = ObjRef::NGonRotationLabel(g.name.clone());
-        let typed = ntex_figures::spelling::as_typed(fig, &ol).unwrap_or_default();
-        let name_field = self.field(&format!("{key}.rot.label"), &typed, true, None, "r", window, cx, move |v, s, _, cx| {
+        let typed = if g.rotation_label.is_none() { String::new() } else { ntex_figures::spelling::as_typed(fig, &ol).unwrap_or_default() };
+        let ph = doc::preview(&ntex_figures::layout::ngon_rotation_default(&g));
+        let name_field = self.field(&format!("{key}.rot.label"), &typed, true, None, &ph, window, cx, move |v, s, _, cx| {
             v.set_label(&ol, s, Some(format!("field:rotlabel:{ol:?}")), cx);
         });
         vec![
@@ -1175,34 +1211,16 @@ impl FigureView {
         });
         let preview = doc::preview(&n.label);
         let colours = self.colours(t, cx);
-        let (c, r, abs) = match n.pos {
-            Some(Pos::Cell(c, r)) => (fmt_num(c), fmt_num(r), false),
-            Some(Pos::Abs(x, y)) => (fmt_num(x), fmt_num(y), true),
-            None => (String::new(), String::new(), false),
-        };
-        let mk = |v: &mut FigureView, which: usize, s: &str, o: &ObjRef, abs: bool, cx: &mut Context<FigureView>| {
-            let Some(x) = parse_num(s) else { return };
-            let cur = super::tools::item_pos(&v.doc.figure, o).or_else(|| {
-                let p = super::geom::center_of(&v.doc.scene, o)?;
-                Some(super::geom::snap(p, v.cell(), true))
-            });
-            let pos = match (cur, abs) {
-                (Some(Pos::Abs(a, b)), _) => if which == 0 { Pos::Abs(x, b) } else { Pos::Abs(a, x) },
-                (Some(Pos::Cell(a, b)), _) => if which == 0 { Pos::Cell(x, b) } else { Pos::Cell(a, x) },
-                (None, _) => if which == 0 { Pos::Cell(x, 0.0) } else { Pos::Cell(0.0, x) },
-            };
-            let mut fig = v.doc.figure.clone();
-            super::tools::move_obj(&mut fig, o, pos);
-            v.commit_grouped(fig, "position", Some(format!("field:npos:{o:?}")), cx);
-        };
-        let (o1, o2) = (obj.clone(), obj.clone());
-        let fc = self.field(&format!("node.{}.col", n.name), &c, true, Some(40.), "auto", window, cx, move |v, s, _, cx| mk(v, 0, s, &o1, abs, cx));
-        let fr = self.field(&format!("node.{}.row", n.name), &r, true, Some(40.), "auto", window, cx, move |v, s, _, cx| mk(v, 1, s, &o2, abs, cx));
+        let at = self.pos_rows(t, &format!("node.{}", n.name), obj, window, cx);
+        let lp = self.loop_row(t, &n.name, cx);
         vec![
             row(t, "Label", div().w_full().flex().flex_row().items_center().gap(px(8.)).child(f).child(div().flex_none().font(super::canvas::charter(true)).text_size(px(17.)).child(preview))).into_any_element(),
             stack(t, "Colour", colours).into_any_element(),
-            row(t, if abs { "At (cm)" } else { "Cell" }, div().flex().flex_row().items_center().gap(px(4.)).child(fc).child(unit(t, ",")).child(fr).child(note(t, if abs { "x, y" } else { "col, row" }))).into_any_element(),
         ]
+        .into_iter()
+        .chain(at)
+        .chain(std::iter::once(lp))
+        .collect()
     }
 
     fn panel_arrow(&mut self, t: &Theme, obj: &ObjRef, i: usize, a: Arrow, window: &mut Window, cx: &mut Context<Self>) -> Vec<AnyElement> {
@@ -1276,16 +1294,22 @@ impl FigureView {
         let rev = self.glyph(t, &format!("arrow.{i}.reverse"), "⇄", cx, |v, _, cx| {
             v.reverse_selection(cx);
         });
-        let ends = row(t, "Ends", div().flex().flex_row().items_center().gap(px(8.)).child(div().font(t.serif_italic()).child(format!("{} → {}", a.from, a.to))).when(can_reverse, |d| d.child(rev)).child(note(t, "⌘R")));
+        let ends = row(t, "Ends", div().flex().flex_row().items_center().gap(px(8.)).child(div().font(t.serif_italic()).child(format!("{} → {}", a.from, a.to))).when(can_reverse, |d| d.child(rev)).child(note(t, if can_reverse { "⌘R" } else { "a loop: no reverse" })));
+        let lpos = self.label_pos_row(t, i, &a, cx);
+        let iso_note = a.iso.then(|| note(t, if a.label.is_some() { "≅ sits across the line from the label; Swap side moves both." } else { "≅ sits on the label's side; Swap side moves it." }).into_any_element());
         vec![
             row(t, "Label", f).into_any_element(),
             ends.into_any_element(),
             row(t, "Head", heads).into_any_element(),
             row(t, "Line", choice(t, "panel.line", &lines, Some(cur), &self.ui_bounds, go_line)).into_any_element(),
             row(t, "Bend", div().w_full().flex().flex_row().items_center().gap(px(8.)).child(div().relative().flex_1().child(slider).child(record_bounds(self.ui_bounds.clone(), format!("slider.arrow.{i}.bend")))).child(div().flex_none().w(px(38.)).font(t.mono()).text_size(t.small_size).child(bend_s))).into_any_element(),
+            lpos,
             row(t, "", div().flex().flex_row().flex_wrap().gap_x(px(12.)).child(swap).child(iso).child(thick)).into_any_element(),
             stack(t, "Colour", colours).into_any_element(),
         ]
+        .into_iter()
+        .chain(iso_note)
+        .collect()
     }
 
     fn panel_blob(&mut self, t: &Theme, obj: &ObjRef, i: usize, b: Blob, window: &mut Window, cx: &mut Context<Self>) -> Vec<AnyElement> {
@@ -1399,6 +1423,8 @@ impl FigureView {
         });
         list = list.child(div().pt(px(2.)).child(add));
         out.push(stack(t, "Elements", list).into_any_element());
+        out.extend(self.parent_row(t, i, &b, cx));
+        out.extend(self.pos_rows(t, &format!("blob.{}", b.name), obj, window, cx));
         out
     }
 
@@ -1491,6 +1517,7 @@ impl FigureView {
             out.push(note(t, format!("A set size draws {} as a plain circle; leave it empty to keep this layout.", group_text(&c.group))).into_any_element());
         }
         out.extend(self.angle_rows(t, &format!("cayley.{}", c.name), obj, c.angle, window, cx));
+        out.extend(self.pos_rows(t, &format!("cayley.{}", c.name), obj, window, cx));
         out
     }
 }
@@ -1523,7 +1550,10 @@ fn signed_turn(g: &NGon) -> i32 {
 /// The turn one step (+1 counter-clockwise ⟲, −1 ⟳) on, keeping its sign as shown.
 fn step_turn(g: &NGon, by: i32) -> NGon {
     let n = g.n.max(1) as i32;
-    let mut s = signed_turn(g) + by;
+    // (review C7) a turn written ≥ n (`turn=7`) or ≤ -n counts mod n first
+    let cur = signed_turn(g);
+    let cur = cur % n;
+    let mut s = cur + by;
     if s >= n || s <= -n {
         s = 0;
     }

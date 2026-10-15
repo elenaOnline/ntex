@@ -110,7 +110,8 @@ fn under_tmpdir(p: &Path) -> bool {
 }
 
 /// Parse the command line: `ntex-studio [--page snippet|block|inbox]
-/// [--output-file PATH] [--context math|text] [--ft tex|markdown]`.
+/// [--output-file PATH] [--context math|text] [--ft tex|markdown] [--background]`.
+/// `--background` sets `OpenRequest.background` (open without activating).
 ///
 /// `--output-file`: the file is read into `output`, then deleted, but only
 /// if it lives under $TMPDIR (ntex writes the selection there); anything
@@ -128,6 +129,11 @@ pub fn parse_args(args: &[String]) -> OpenRequest {
             Some((f, v)) if f.starts_with("--") => (f.to_string(), Some(v.to_string())),
             _ => (a.clone(), None),
         };
+        if flag == "--background" && inline.is_none() {
+            req.background = true;
+            i += 1;
+            continue;
+        }
         let takes = matches!(flag.as_str(), "--page" | "--output-file" | "--context" | "--ft");
         let value = if !takes {
             None

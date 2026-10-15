@@ -5,3 +5,5 @@ pub mod screens;
 pub mod app;
 /// FIG-UI: the figure window (Ntex Figures).
 pub mod figure;
+/// Background launch mode (never takes focus).
+pub mod launch;

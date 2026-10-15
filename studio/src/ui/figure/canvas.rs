@@ -64,6 +64,8 @@ pub struct Frame {
     /// A fit is due (the figure just opened or reloaded): paint it fitted to
     /// these bounds already; the window adopts the same fit on its next pump.
     pub fit: bool,
+    /// The selection's handles (cm) at a given px per cm, so the fit keeps them in view.
+    pub fit_handles: Option<Arc<dyn Fn(f32) -> Vec<Pt>>>,
     /// The bounds the view was set for: if the canvas is now another size,
     /// paint the figure where it was on screen (the view adopts it next).
     pub prev_bounds: Option<Bounds<Pixels>>,
@@ -78,6 +80,8 @@ pub struct Frame {
     pub cursor: Option<CursorStyle>,
     /// (figure-qol D) `hover` is a drop target for a dragged arrow end: outlined firmly.
     pub drop_target: bool,
+    /// (figure-qol B) The page frame (cm): shown while ⌘ is held; its corners scale the figure.
+    pub page: Option<Rect>,
 }
 
 /// The mouse, routed to the view (window px; the view converts with `xf`).
@@ -99,7 +103,10 @@ pub fn element(frame: Frame, handlers: Handlers, bounds_out: Rc<Cell<Option<Boun
             bounds_out.set(Some(bounds));
             let xf = if frame.fit {
                 let mut view = frame.view.clone();
-                view.fit_to(&frame.scene, bounds);
+                match &frame.fit_handles {
+                    Some(h) => view.fit_to_with(&frame.scene, bounds, &**h),
+                    None => view.fit_to(&frame.scene, bounds),
+                }
                 view.xf(bounds)
             } else if let Some(prev) = frame.prev_bounds
                 && prev != bounds
@@ -211,6 +218,15 @@ pub fn paint(frame: &Frame, xf: Xf, bounds: Bounds<Pixels>, window: &mut Window,
         stroke_poly(&pts, px(1.), with_alpha(blue(), 0.45), Some(&[px(3.), px(3.)]), window);
     }
     paint_handles(&frame.handles, &frame.scene, &xf, window, cx);
+    if let Some(page) = &frame.page {
+        // the sheet the figure is cut from: a faint rule and a grip at each corner
+        let r = xf.rect_px(page);
+        window.paint_quad(quad(r, px(0.), with_alpha(slate(), 0.03), px(1.), with_alpha(slate(), 0.55), Default::default()));
+        for (x, y) in [(r.left(), r.top()), (r.right(), r.top()), (r.left(), r.bottom()), (r.right(), r.bottom())] {
+            let g = Bounds::new(point(x - px(4.5), y - px(4.5)), size(px(9.), px(9.)));
+            window.paint_quad(quad(g, px(1.5), gpui::rgb(0xFFFFFF), px(1.2), blue(), Default::default()));
+        }
+    }
     match &frame.overlay {
         Overlay::None => {}
         Overlay::Line(a, b) => {
@@ -242,7 +258,17 @@ pub fn paint(frame: &Frame, xf: Xf, bounds: Bounds<Pixels>, window: &mut Window,
         }
     }
     if let Some((at, text)) = &frame.readout {
-        paint_readout(text, xf.to_px(*at), bounds, window, cx);
+        // (review U15b) the readout keeps clear of the figure's labels
+        let labels: Vec<Bounds<Pixels>> = frame
+            .scene
+            .draws
+            .iter()
+            .filter_map(|d| match d {
+                Draw::Label { at, latex, size, math, .. } => Some(xf.rect_px(&super::handles::label_rect(*at, latex, *size, *math))),
+                _ => None,
+            })
+            .collect();
+        paint_readout(text, xf.to_px(*at), bounds, &labels, window, cx);
     }
     if let Some((outlines, a)) = &frame.ghost {
         for o in outlines {
@@ -709,7 +735,7 @@ fn paint_handles(handles: &[Handle], scene: &Scene, xf: &Xf, window: &mut Window
 }
 
 /// The live readout by the pointer: a small boxed mono note ("45°").
-fn paint_readout(text: &str, at: Point<Pixels>, bounds: Bounds<Pixels>, window: &mut Window, cx: &mut App) {
+fn paint_readout(text: &str, at: Point<Pixels>, bounds: Bounds<Pixels>, avoid: &[Bounds<Pixels>], window: &mut Window, cx: &mut App) {
     let t = cx.global::<crate::ui::widgets::theme::Theme>().clone();
     let fs = t.keycap_size;
     let run = TextRun { len: text.len(), font: t.mono(), color: t.ink, background_color: None, underline: None, strikethrough: None };
@@ -717,14 +743,31 @@ fn paint_readout(text: &str, at: Point<Pixels>, bounds: Bounds<Pixels>, window: 
     let lh = fs * 1.3;
     let (w, h) = (line.width() + px(10.), lh + px(4.));
     // below right of the pointer, inside the canvas
-    let mut x = at.x + px(16.);
-    let mut y = at.y + px(14.);
-    if x + w > bounds.right() - px(4.) {
-        x = at.x - w - px(12.);
-    }
-    if y + h > bounds.bottom() - px(4.) {
-        y = at.y - h - px(12.);
-    }
+    let fit = |x: Pixels, y: Pixels| -> (Pixels, Pixels) {
+        let x = if x + w > bounds.right() - px(4.) { at.x - w - px(12.) } else { x };
+        let y = if y + h > bounds.bottom() - px(4.) { at.y - h - px(12.) } else { y };
+        (x, y)
+    };
+    let clear = |(x, y): (Pixels, Pixels)| {
+        let b = Bounds::new(point(x - px(3.), y - px(3.)), size(w + px(6.), h + px(6.)));
+        !avoid.iter().any(|a| a.intersects(&b))
+    };
+    // below right of the pointer; else the other corners, then further down
+    let (dx, dy) = (px(16.), px(14.));
+    let tries = [
+        (at.x + dx, at.y + dy),
+        (at.x + dx, at.y - h - px(12.)),
+        (at.x - w - px(12.), at.y + dy),
+        (at.x - w - px(12.), at.y - h - px(12.)),
+        (at.x + dx, at.y + dy + h + px(8.)),
+        (at.x + dx, at.y - h * 2.0 - px(20.)),
+        (at.x + dx + px(40.), at.y + dy),
+    ];
+    let (mut x, mut y) = tries.iter().map(|&(x, y)| fit(x, y)).find(|&p| clear(p)).unwrap_or_else(|| fit(at.x + dx, at.y + dy));
+    // whatever the pointer does, the note stays inside the canvas
+    x = x.min(bounds.right() - w - px(4.)).max(bounds.left() + px(4.));
+    // (clear of the zoom note in the lower right corner)
+    y = y.min(bounds.bottom() - h - px(26.)).max(bounds.top() + px(4.));
     let b = Bounds::new(point(x, y), size(w, h));
     window.paint_quad(quad(b, px(2.), gpui::rgb(0xFFFFFF), px(1.), slate(), Default::default()));
     let _ = line.paint(point(x + px(5.), y + px(2.)), lh, TextAlign::Left, None, window, cx);

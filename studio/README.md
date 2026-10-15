@@ -11,7 +11,8 @@ already working.
 | Space n in ntex | a new snippet |
 | Space n on a selection (visual mode) | a new snippet whose output is the selection |
 | Space N in ntex | the inbox |
-| `:SnippetStudio [snippet\|block\|inbox]` | that page |
+| `:SnippetStudio [snippet\|block\|inbox\|library]` | that page |
+| ⌘4 or ⌘F in the studio | the library: every snippet you have, searchable |
 | `ntex-studio` in a shell | the studio (`--page`, `--output-file`, `--context math\|text`) |
 
 It stays running after ⌘W / Esc, so the next Space n is instant. ⌘Q quits it.
@@ -67,6 +68,29 @@ moves the snippets itself. It backs up first, checks every file loads, and
 puts everything back if anything fails. One ⌘Z undoes the whole sort. A sort
 takes a few seconds and costs a fraction of a cent. Backups are kept in
 `~/.local/state/ntex-studio/backups/`.
+
+## The library (page 4, ⌘4)
+
+Every snippet in `snippets/tex/`, as **you type → you get**, grouped by file
+(each file's group title, e.g. *Calculus*). "You get" is the output rendered
+like page 1's preview; the first visit renders them one at a time in the
+background (a few minutes for all of them), after that they're cached.
+
+- **Search** as you type (⌘F from any page): fuzzy over the trigger (`dnt`
+  finds `dint`), the LaTeX, the description and the file. Several words must
+  all match. The categories under it narrow the list to one file.
+- ↑/↓ choose, **Return** (or a double click, or Edit) opens the snippet on
+  page 1 with everything page 1 has: Try it (in a hidden ntex that has the
+  old version taken out), the render, the checks, More options.
+- **⌘↵ there saves it back into its own file, in place**, and you land back
+  on the library. Only that snippet changes: if you changed just the trigger
+  or the output, only those two strings are swapped and the columns of the
+  line stay aligned; any other change rewrites that one call (and adds the
+  helper to the file's `local` line if it now needs one). The file is
+  checked by the hidden ntex first; one that would not load is not written.
+  ⌘Z undoes the save. Esc goes back without saving.
+- Snippets the editor can't represent (an `env(…)`, a pattern with a `name`,
+  a computed output like `dm`) open as their Lua, with the same in-place save.
 
 ## Settings
 

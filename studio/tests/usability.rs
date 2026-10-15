@@ -17,7 +17,7 @@ use std::sync::Arc;
 use std::time::{Duration, Instant};
 
 use gpui::{
-    AppContext as _, Bounds, HeadlessAppContext, Keystroke, Modifiers, MouseButton, MouseDownEvent, MouseMoveEvent, MouseUpEvent, PlatformInput, Pixels,
+    AppContext as _, Bounds, HeadlessAppContext, Keystroke, Modifiers, ModifiersChangedEvent, MouseButton, MouseDownEvent, MouseMoveEvent, MouseUpEvent, PlatformInput, Pixels,
     Point, WindowHandle, point, px, size,
 };
 use ntex_figures::model::*;
@@ -285,7 +285,26 @@ impl Win {
         self.step(format!("type “{text}”"));
     }
     /// Click a panel/menu control by its laid-out bounds; flags small targets.
+    /// Scroll the properties panel the way a user would (the wheel over it)
+    /// until the control is inside its visible part.
+    fn panel_into_view(&mut self, key: &str) {
+        for _ in 0..30 {
+            let (Some(b), Some(p)) = (self.ui(key), self.ui("panel.box")) else { return };
+            let pinned = self.ui("panel.figure.toggle");
+            // the pinned Figure head sits at the bottom of the panel: it is already reachable
+            if key == "panel.figure.toggle" && b.top() >= p.top() && b.bottom() <= p.bottom() {
+                return;
+            }
+            let pinned_top = pinned.filter(|h| h.bottom() <= p.bottom() + px(1.) && h.top() > p.top() + px(100.)).map(|h| h.top()).unwrap_or(p.bottom());
+            let (c, top, bottom) = (b.center().y, p.top() + px(30.), pinned_top - px(12.));
+            let dy = if c < top { 120.0 } else if c > bottom { -120.0 } else { return };
+            let at = point(p.center().x, p.top() + px(40.));
+            self.event(PlatformInput::ScrollWheel(gpui::ScrollWheelEvent { position: at, delta: gpui::ScrollDelta::Pixels(point(px(0.), px(dy))), modifiers: Modifiers::default(), touch_phase: gpui::TouchPhase::Moved }));
+            self.draw();
+        }
+    }
     fn click_ui(&mut self, key: &str, what: &str) -> bool {
+        self.panel_into_view(key);
         match self.ui(key) {
             Some(b) => {
                 let (w, h) = (f32::from(b.size.width), f32::from(b.size.height));
@@ -2310,9 +2329,9 @@ fn main() {
         let p2 = (node_pos(w, &second[0]), node_pos(w, &second[1]));
         note!(w, "first paste {p1:?}, second {p2:?}; undo steps {}", undo_n(w) - u0);
         let steps = undo_n(w) - u0;
-        // A at (0,0) → a half cell right and down, then a whole cell
+        // A at (0,0) → a cell right and down (nodes stay on the grid: review U3), then another
         let pa = |p: (Option<Pos>, Option<Pos>), c: f32, r: f32| near(p.0, c, r) || near(p.1, c, r);
-        shorthand_ok && steps == 2 && nodes_n(w) == 7 && arrows_n(w) == 4 && pa(p1, 0.5, 0.5) && pa(p1, 2.5, 0.5) && pa(p2, 1.0, 1.0) && pa(p2, 3.0, 1.0)
+        shorthand_ok && steps == 2 && nodes_n(w) == 7 && arrows_n(w) == 4 && pa(p1, 1.0, 1.0) && pa(p1, 3.0, 1.0) && pa(p2, 2.0, 2.0) && pa(p2, 4.0, 2.0)
     });
 
     run.task("QA6", "paste shorthand from another window or Neovim, and refuse text that isn't", 3, "A at 0,0\nB at 2,0\nA -f-> B\n", |w| {
@@ -2536,6 +2555,1123 @@ fn main() {
         h.contains('⌥') && h.contains('⇧') && h.contains('⌘') && h.contains("⌘C")
     });
 
+    // ============================================ figure-qol B: how big the figure is on the page
+    fn cmd_key(w: &mut Win, on: bool) {
+        let modifiers = if on { Modifiers::command() } else { Modifiers::default() };
+        w.event(PlatformInput::ModifiersChanged(ModifiersChangedEvent { modifiers, capslock: Default::default() }));
+        w.draw();
+    }
+    fn set_dpi(w: &mut Win, px_per_cm: f32) {
+        let _ = w.window.update(&mut w.cx, |v, _, _| v.px_per_cm_override = Some(px_per_cm));
+        w.draw();
+    }
+    fn readout(w: &mut Win) -> Option<String> {
+        w.read(|v| v.page_readout())
+    }
+    fn page_cm(w: &mut Win) -> (f32, f32) {
+        w.read(|v| ntex_figures::pagesize::page_size(&v.doc.scene))
+    }
+    fn scale_of(w: &mut Win) -> f32 {
+        w.read(|v| v.doc.figure.globals.scale)
+    }
+    fn state_text(w: &mut Win) -> String {
+        w.read(|v| v.canvas_state_text())
+    }
+    const QB_SRC: &str = "A at 0,0\nB at 3,0\nA -f-> B\n";
+
+    run.task("QB1", "see how big the figure is on the page, live, and find the Figure section", 3, QB_SRC, |w| {
+        let r0 = readout(w).unwrap_or_default();
+        let (pw, ph) = page_cm(w);
+        let want = format!("{pw:.1} × {ph:.1} cm on the page");
+        note!(w, "header reads {r0:?}");
+        if r0 != want {
+            issue!(w, "the header says {r0:?}; the page is {want:?}");
+        }
+        w.shot("header-readout");
+        // nothing selected: the Figure section is open, with its fields
+        for k in ["panel.figure.toggle", "field.fig.width", "field.fig.scale", "field.fig.spacing.x", "field.fig.spacing.y", "slider.fig.scale", "panel.size.small"] {
+            if w.ui(k).is_none() {
+                issue!(w, "nothing selected, but `{k}` isn't drawn");
+            }
+        }
+        // select a node: the Figure section folds under its section
+        let a = w.centre(&ObjRef::Node("A".into())).unwrap();
+        w.click(a, "node A");
+        if w.ui("field.fig.width").is_some() {
+            w.issue("the Figure section stays open under a selection");
+        }
+        if w.ui("panel.figure.toggle").is_none() {
+            w.issue("no Figure section head beneath the node's properties");
+        }
+        w.shot("folded-under-node");
+        // opening it from the head
+        w.click_ui("panel.figure.toggle", "the Figure head");
+        let open = w.ui("field.fig.width").is_some();
+        if !open {
+            w.issue("the Figure head doesn't open the section");
+        }
+        w.shot("opened-under-node");
+        // the readout is live: dragging B further away widens it, before the mouse is up
+        let b = w.centre(&ObjRef::Node("B".into())).unwrap();
+        let to = point(b.x + px(120.), b.y);
+        w.hover(b);
+        w.event(PlatformInput::MouseDown(MouseDownEvent { button: MouseButton::Left, position: b, modifiers: Modifiers::default(), click_count: 1, first_mouse: false, pen: None }));
+        w.draw();
+        for q in line_to(b, to, 10) {
+            w.event(PlatformInput::MouseMove(MouseMoveEvent { position: q, pressed_button: Some(MouseButton::Left), modifiers: Modifiers::default(), pen: None }));
+            w.draw();
+        }
+        let mid = readout(w).unwrap_or_default();
+        w.shot("live-while-dragging");
+        w.event(PlatformInput::MouseUp(MouseUpEvent { button: MouseButton::Left, position: to, modifiers: Modifiers::default(), click_count: 1, pen: None }));
+        w.draw();
+        w.step("drag B out");
+        if mid == r0 {
+            issue!(w, "the readout didn't change while B was dragged away ({mid:?})");
+        }
+        let after = readout(w).unwrap_or_default();
+        if after != mid {
+            issue!(w, "mid-drag the header said {mid:?}, after the drop {after:?}");
+        }
+        r0 == want && open && mid != r0
+    });
+
+    run.task("QB2", "make the figure 8 cm wide on the page by typing it", 3, QB_SRC, |w| {
+        let w0 = page_cm(w).0;
+        let ok = w.click_ui("field.fig.width", "the Width field");
+        if !ok {
+            return false;
+        }
+        w.key_raw("cmd-a");
+        w.typ("8");
+        w.key("enter", "commit");
+        let (pw, _) = page_cm(w);
+        let s = scale_of(w);
+        note!(w, "was {w0:.2} cm; now {pw:.2} cm at scale {s}");
+        if (pw - 8.0).abs() > 0.05 {
+            issue!(w, "typing 8 gives a page {pw:.2} cm wide");
+        }
+        w.shot("width-typed");
+        // a longer one is still a single step: 12.5
+        let u0 = w.read(|v| v.undo.len());
+        w.click_ui("field.fig.width", "the Width field");
+        w.key_raw("cmd-a");
+        w.typ("12.5");
+        w.key("enter", "commit");
+        let (pw2, _) = page_cm(w);
+        let steps = w.read(|v| v.undo.len()) - u0;
+        if (pw2 - 12.5).abs() > 0.05 {
+            issue!(w, "typing 12.5 gives {pw2:.2} cm");
+        }
+        if steps != 1 {
+            issue!(w, "typing 12.5 made {steps} undo steps");
+        }
+        // the header and the Scale field follow
+        let r = readout(w).unwrap_or_default();
+        let sf = w.window.update(&mut w.cx, |v, _, cx| v.fields.get("fig.scale").map(|f| f.entity.read(cx).text().to_string())).unwrap();
+        note!(w, "header {r:?}; Scale field {sf:?}");
+        if !r.starts_with("12.5") {
+            issue!(w, "the header says {r:?}");
+        }
+        w.shot("width-12-5");
+        // a width the labels alone exceed changes nothing
+        let s_before = scale_of(w);
+        w.click_ui("field.fig.width", "the Width field");
+        w.key_raw("cmd-a");
+        w.typ("0.6");
+        w.key("enter", "commit");
+        if (scale_of(w) - s_before).abs() > 1e-6 {
+            issue!(w, "0.6 cm (narrower than the labels) changed the scale to {}", scale_of(w));
+        }
+        (pw - 8.0).abs() <= 0.05 && (pw2 - 12.5).abs() <= 0.05 && steps == 1
+    });
+
+    run.task("QB3", "scale it with the slider and the Scale field", 3, QB_SRC, |w| {
+        let s0 = scale_of(w);
+        let Some(b) = w.ui("slider.fig.scale") else {
+            w.issue("no Scale slider in the Figure section");
+            return false;
+        };
+        let u0 = w.read(|v| v.undo.len());
+        let from = point(b.origin.x + b.size.width * 0.2, b.center().y);
+        let to = point(b.origin.x + b.size.width * 0.7, b.center().y);
+        w.drag(from, &line_to(from, to, 20), none, "the Scale slider", Some("slider"));
+        let (s1, steps) = (scale_of(w), w.read(|v| v.undo.len()) - u0);
+        note!(w, "scale {s0} → {s1} in {steps} step(s)");
+        if (s1 - s0).abs() < 0.05 {
+            issue!(w, "the slider didn't change the scale ({s0} → {s1})");
+        }
+        if steps != 1 {
+            issue!(w, "one slider drag made {steps} undo steps");
+        }
+        w.shot("after-slider");
+        w.click_ui("field.fig.scale", "the Scale field");
+        w.key_raw("cmd-a");
+        w.typ("1.5");
+        w.key("enter", "commit");
+        let s2 = scale_of(w);
+        if (s2 - 1.5).abs() > 1e-4 {
+            issue!(w, "typing 1.5 gives scale {s2}");
+        }
+        // the width field follows
+        let wf = w.window.update(&mut w.cx, |v, _, cx| v.fields.get("fig.width").map(|f| f.entity.read(cx).text().to_string())).unwrap();
+        let (pw, _) = page_cm(w);
+        note!(w, "Width field {wf:?}, page {pw:.2}");
+        if wf.as_deref() != Some(format!("{pw:.1}").as_str()) {
+            issue!(w, "the Width field says {wf:?} but the page is {pw:.1}");
+        }
+        (s1 - s0).abs() >= 0.05 && steps == 1 && (s2 - 1.5).abs() < 1e-4
+    });
+
+    run.task("QB4", "⌘1 shows it at its real size on this display; ⌘0 fits again", 2, QB_SRC, |w| {
+        // a known display: 40 logical px to the cm
+        set_dpi(w, 40.0);
+        let fit = w.px_per_cm();
+        w.key("cmd-1", "actual size");
+        let at = w.px_per_cm();
+        let st = state_text(w);
+        note!(w, "fit {fit:.1} px/cm; ⌘1 {at:.2} px/cm; corner says {st:?}");
+        if (at - 40.0).abs() > 0.2 {
+            issue!(w, "⌘1 shows {at:.2} px per cm, not 40");
+        }
+        if !st.contains("actual size") {
+            issue!(w, "the canvas state says {st:?}");
+        }
+        // 1 cm of the figure measures 40 px on screen (A to B is 3 cells)
+        let (a, b) = (w.centre(&ObjRef::Node("A".into())).unwrap(), w.centre(&ObjRef::Node("B".into())).unwrap());
+        let cell = w.read(|v| v.doc.scene.cell.0);
+        let measured = f32::from(b.x - a.x) / (3.0 * cell);
+        if (measured - 40.0).abs() > 0.3 {
+            issue!(w, "A to B is {:.1} px; at 40 px/cm it should be {:.1}", f32::from(b.x - a.x), 3.0 * cell * 40.0);
+        }
+        w.shot("actual-size");
+        // the panel folding away (⌘I) doesn't change the size it is shown at
+        w.key("cmd-i", "hide the panel");
+        let still = w.px_per_cm();
+        if (still - 40.0).abs() > 0.3 {
+            issue!(w, "hiding the panel changed the size to {still:.2} px/cm");
+        }
+        w.key("cmd-i", "show the panel");
+        // the figure scale changes what is on screen but not the cm: a wider page, still 40 px per cm
+        w.key("cmd-0", "fit");
+        let back = w.px_per_cm();
+        let st2 = state_text(w);
+        note!(w, "⌘0: {back:.1} px/cm, {st2:?}");
+        if (back - 40.0).abs() < 1.0 && (fit - 40.0).abs() > 1.0 || st2.contains("actual size") {
+            w.issue("⌘0 doesn't fit again");
+        }
+        // 2×: her trackpad zoom steps off actual size; the readout stops saying so
+        w.key("cmd-1", "actual size");
+        w.key("cmd-=", "zoom in");
+        let st3 = state_text(w);
+        if st3.contains("actual size") {
+            w.issue("zoomed in, the corner still says actual size");
+        }
+        (at - 40.0).abs() <= 0.2 && st.contains("actual size") && !st2.contains("actual size") && !st3.contains("actual size")
+    });
+
+    run.task("QB5", "hold ⌘: a page frame appears round the figure, not during a drag", 2, QB_SRC, |w| {
+        let none_at_rest = w.read(|v| v.page_frame().is_none());
+        if !none_at_rest {
+            w.issue("a page frame without ⌘");
+        }
+        cmd_key(w, true);
+        let frame = w.read(|v| v.page_frame());
+        let Some(f) = frame else {
+            w.issue("⌘ held, but no page frame");
+            return false;
+        };
+        let (pw, ph) = page_cm(w);
+        let (fw, fh) = (f.max.x - f.min.x, f.max.y - f.min.y);
+        note!(w, "frame {fw:.2} × {fh:.2} cm; the page {pw:.2} × {ph:.2}");
+        if (fw - pw).abs() > 0.01 || (fh - ph).abs() > 0.01 {
+            issue!(w, "the frame is {fw:.2} × {fh:.2}, the page {pw:.2} × {ph:.2}");
+        }
+        w.shot("page-frame");
+        cmd_key(w, false);
+        if w.read(|v| v.page_frame().is_some()) {
+            w.issue("the frame stays after ⌘ is released");
+        }
+        // a drag in progress: no frame
+        let a = w.centre(&ObjRef::Node("A".into())).unwrap();
+        w.hover(a);
+        w.event(PlatformInput::MouseDown(MouseDownEvent { button: MouseButton::Left, position: a, modifiers: Modifiers::default(), click_count: 1, first_mouse: false, pen: None }));
+        w.draw();
+        let to = point(a.x + px(40.), a.y + px(30.));
+        for q in line_to(a, to, 6) {
+            w.event(PlatformInput::MouseMove(MouseMoveEvent { position: q, pressed_button: Some(MouseButton::Left), modifiers: Modifiers::default(), pen: None }));
+            w.draw();
+        }
+        cmd_key(w, true);
+        let during = w.read(|v| v.page_frame().is_some());
+        w.event(PlatformInput::MouseUp(MouseUpEvent { button: MouseButton::Left, position: to, modifiers: Modifiers::default(), click_count: 1, pen: None }));
+        w.draw();
+        cmd_key(w, false);
+        if during {
+            w.issue("the page frame is drawn while an object is being dragged");
+        }
+        none_at_rest && !during
+    });
+
+    run.task("QB6", "⌘-drag a corner of the page frame to scale the whole figure", 2, QB_SRC, |w| {
+        let (w0, h0) = page_cm(w);
+        let s0 = scale_of(w);
+        let u0 = w.read(|v| v.undo.len());
+        cmd_key(w, true);
+        let r = w.read(|v| v.page_frame()).unwrap();
+        // the bottom-right corner (y is up: min y); the top-left stays
+        let corner = w.xf_px(Pt { x: r.max.x, y: r.min.y });
+        let anchor0 = w.xf_px(Pt { x: r.min.x, y: r.max.y });
+        // a press on a corner without moving changes nothing
+        w.mouse(corner, MouseButton::Left, 1, Modifiers::command());
+        if scale_of(w) != s0 || w.read(|v| v.undo.len()) != u0 {
+            w.issue("a click on the corner changed the figure");
+        }
+        let cmd = Modifiers::command();
+        w.hover(corner);
+        w.event(PlatformInput::MouseDown(MouseDownEvent { button: MouseButton::Left, position: corner, modifiers: cmd, click_count: 1, first_mouse: false, pen: None }));
+        w.draw();
+        let to = point(corner.x + px(120.), corner.y + px(60.));
+        let path = line_to(corner, to, 12);
+        for q in &path {
+            w.event(PlatformInput::MouseMove(MouseMoveEvent { position: *q, pressed_button: Some(MouseButton::Left), modifiers: cmd, pen: None }));
+            w.draw();
+        }
+        let live = w.read(|v| v.readout.clone().map(|(_, t)| t)).unwrap_or_default();
+        let hdr = readout(w).unwrap_or_default();
+        note!(w, "live readout {live:?}; header {hdr:?}");
+        if !live.contains("cm") || !live.contains("scale") {
+            issue!(w, "no live width readout while dragging the corner: {live:?}");
+        }
+        if scale_of(w) != s0 {
+            w.issue("the scale was committed before the mouse came up");
+        }
+        w.shot("dragging-corner");
+        w.event(PlatformInput::MouseUp(MouseUpEvent { button: MouseButton::Left, position: to, modifiers: cmd, click_count: 1, pen: None }));
+        w.draw();
+        w.step("⌘-drag the page corner");
+        cmd_key(w, false);
+        let (w1, h1) = page_cm(w);
+        let s1 = scale_of(w);
+        let steps = w.read(|v| v.undo.len()) - u0;
+        note!(w, "page {w0:.2}×{h0:.2} → {w1:.2}×{h1:.2}; scale {s0} → {s1}; {steps} step(s)");
+        if s1 <= s0 + 0.05 {
+            issue!(w, "dragging out didn't enlarge the figure ({s0} → {s1})");
+        }
+        if steps != 1 {
+            issue!(w, "the corner drag made {steps} undo steps");
+        }
+        // the readout agreed with what was set
+        if !hdr.starts_with(&format!("{w1:.1}")) {
+            issue!(w, "the header said {hdr:?} mid-drag but the page ended {w1:.2} cm wide");
+        }
+        // the opposite corner stayed where it was on screen
+        let r1 = w.read(|v| ntex_studio::ui::figure::geom::page_rect(&v.doc.scene));
+        let anchor1 = w.xf_px(Pt { x: r1.min.x, y: r1.max.y });
+        let moved = f32::from(anchor1.x - anchor0.x).hypot(f32::from(anchor1.y - anchor0.y));
+        if moved > 1.5 {
+            issue!(w, "the top-left corner moved {moved:.1} px on screen");
+        }
+        w.shot("after-corner-drag");
+        // Esc mid-drag puts it all back
+        cmd_key(w, true);
+        let r = w.read(|v| v.page_frame()).unwrap();
+        let corner = w.xf_px(Pt { x: r.max.x, y: r.min.y });
+        let (sb, tb) = (scale_of(w), w.read(|v| v.view.target.clone()));
+        w.hover(corner);
+        w.event(PlatformInput::MouseDown(MouseDownEvent { button: MouseButton::Left, position: corner, modifiers: cmd, click_count: 1, first_mouse: false, pen: None }));
+        w.draw();
+        for q in line_to(corner, point(corner.x - px(60.), corner.y - px(30.)), 6) {
+            w.event(PlatformInput::MouseMove(MouseMoveEvent { position: q, pressed_button: Some(MouseButton::Left), modifiers: cmd, pen: None }));
+            w.draw();
+        }
+        w.focus_canvas();
+        w.key_raw("escape");
+        w.event(PlatformInput::MouseUp(MouseUpEvent { button: MouseButton::Left, position: corner, modifiers: cmd, click_count: 1, pen: None }));
+        w.draw();
+        cmd_key(w, false);
+        let (sa, ta) = (scale_of(w), w.read(|v| v.view.target.clone()));
+        if sa != sb || ta != tb {
+            issue!(w, "Esc mid-drag left scale {sb} → {sa} / view moved");
+        }
+        s1 > s0 + 0.05 && steps == 1 && moved <= 1.5 && sa == sb && ta == tb
+    });
+
+    // ===================================================== figure-qol E: what the shorthand can say, the mouse can too
+    fn label_at(w: &mut Win, o: &ObjRef) -> Option<Pt> {
+        let o = o.clone();
+        w.read(move |v| v.doc.scene.draws.iter().find_map(|d| match d { Draw::Label { obj, at, .. } if *obj == o => Some(*at), _ => None }))
+    }
+    const QE_SRC: &str = "A at 0,0\nB at 3,0\nC at 3,-2\nA -f-> B\nA -g-> C\n";
+
+    run.task("QE1", "put an arrow's label near its end (panel)", 3, QE_SRC, |w| {
+        let i = w.arrow_index("A", "B").unwrap();
+        let o = ObjRef::Arrow(i);
+        let before = label_at(w, &o).unwrap();
+        let p = w.on_arrow(i, 0.5, 0.0).unwrap();
+        w.click(p, "the A → B arrow");
+        w.shot("selected");
+        if !w.click_ui("panel.labelpos.end", "Label at: end") && !w.click_ui("panel.labelpos.2", "Label at: end") {
+            return false;
+        }
+        w.shot("near-end");
+        let after = label_at(w, &o).unwrap();
+        let a = arrow_at(w, i).unwrap();
+        note!(w, "label x {:.2} → {:.2}; line `{}`", before.x, after.x, w.line("A -f"));
+        let mid = a.label_pos == LabelPos::NearEnd && after.x > before.x + 0.3 && w.line("A -f").contains("near-end");
+        // and near the start
+        w.click_ui("panel.labelpos.start", "Label at: start");
+        let s = label_at(w, &o).unwrap();
+        mid && s.x < before.x - 0.3 && w.line("A -f").contains("near-start")
+    });
+
+    run.task("QE2", "add a loop arrow on a node (panel button and menu)", 3, "A at 0,0\nB at 3,0\nA -f-> B\n", |w| {
+        let c = w.centre(&ObjRef::Node("A".into())).unwrap();
+        w.click(c, "node A");
+        w.shot("selected");
+        if !w.click_ui("button.node.A.loop", "Add loop arrow") {
+            return false;
+        }
+        w.shot("looped");
+        let n = w.read(|v| v.doc.figure.items.iter().filter(|it| matches!(it, Item::Arrow(a) if a.from == "A" && a.to == "A" && a.is_loop)).count());
+        // leave the label field (Esc), then the menu route on B
+        w.key_raw("escape");
+        w.focus_canvas();
+        let c = w.centre(&ObjRef::Node("B".into())).unwrap();
+        w.right(c, "node B");
+        w.shot("menu");
+        w.click_ui("menu.Loop", "Add loop arrow (menu)");
+        w.key_raw("escape");
+        let m = w.read(|v| v.doc.figure.items.iter().filter(|it| matches!(it, Item::Arrow(a) if a.from == "B" && a.to == "B" && a.is_loop)).count());
+        note!(w, "source:\n{}", w.source());
+        n == 1 && m == 1
+    });
+
+    run.task("QE3", "the ≅ and which side it sits on", 4, "A at 0,0\nB at 3,0\nA -f-> B\n", |w| {
+        let i = w.arrow_index("A", "B").unwrap();
+        let p = w.on_arrow(i, 0.5, 0.0).unwrap();
+        w.click(p, "the arrow");
+        let iso = w.find_ui("check.arrow.", "iso").unwrap_or_default();
+        if !w.click_ui(&iso, "≅") {
+            return false;
+        }
+        let cong = |w: &mut Win| w.read(|v| v.doc.scene.draws.iter().find_map(|d| match d { Draw::Label { obj: ObjRef::Arrow(_), at, latex, .. } if latex == "\\cong" => Some(at.y), _ => None }));
+        let f = |w: &mut Win| w.read(|v| v.doc.scene.draws.iter().find_map(|d| match d { Draw::Label { obj: ObjRef::Arrow(_), at, latex, .. } if latex == "f" => Some(at.y), _ => None }));
+        let (c0, f0) = (cong(w).unwrap(), f(w).unwrap());
+        w.shot("iso");
+        let swap = w.find_ui("check.arrow.", "swap").unwrap_or_default();
+        w.click_ui(&swap, "Swap side");
+        let (c1, f1) = (cong(w).unwrap(), f(w).unwrap());
+        w.shot("swapped");
+        note!(w, "≅ y {c0:.2} → {c1:.2}; f y {f0:.2} → {f1:.2}; `{}`", w.line("A -f"));
+        // ≅ is across the line from f, and swapping flips both
+        (c0 - 0.0) * (f0 - 0.0) < 0.0 && (c1 - 0.0) * (f1 - 0.0) < 0.0 && (c0 > 0.0) != (c1 > 0.0) && w.line("A -f").contains("swap") && w.line("A -f").contains("iso")
+    });
+
+    run.task("QE4", "colour and size of a text (panel)", 4, "A at 0,0\ntext \"kernel\" at (0,-2)\n", |w| {
+        let c = w.centre(&ObjRef::Text(1)).unwrap();
+        w.click(c, "the text");
+        w.shot("selected");
+        if !w.click_ui("colour.teal", "teal") {
+            return false;
+        }
+        if !w.click_ui("panel.textsize.large", "size large") {
+            return false;
+        }
+        w.shot("teal-large");
+        let l = w.line("text");
+        note!(w, "line `{l}`");
+        let (col, sz) = w.read(|v| v.doc.scene.draws.iter().find_map(|d| match d { Draw::Label { obj: ObjRef::Text(_), color, size, .. } => Some((color.clone(), *size)), _ => None }).unwrap());
+        l.contains("color=teal") && l.contains("size=large") && col == "teal" && sz > 10.5
+    });
+
+    run.task("QE5", "set the head of two arrows at once (mixed)", 5, "A at 0,0\nB at 3,0\nC at 0,-2\nA -f-> B\nA ->> C\n", |w| {
+        let (i, j) = (w.arrow_index("A", "B").unwrap(), w.arrow_index("A", "C").unwrap());
+        let p = w.on_arrow(i, 0.5, 0.0).unwrap();
+        w.click(p, "the A → B arrow");
+        let q = w.on_arrow(j, 0.5, 0.0).unwrap();
+        shift_click(w, q, "the A → C arrow");
+        w.shot("two-selected");
+        if w.selection().len() != 2 {
+            issue!(w, "selection {:?}", w.selection());
+            return false;
+        }
+        // the panel says the heads differ: neither is picked
+        let keys = w.ui_keys();
+        note!(w, "panel controls: {}", keys.iter().filter(|k| k.starts_with("many.")).cloned().collect::<Vec<_>>().join(" "));
+        if w.ui("many.head.To").is_none() {
+            w.issue("no shared Head row for two arrows");
+            return false;
+        }
+        w.click_ui("many.head.Hook", "↪ for both");
+        w.click_ui("many.line.dashed", "dashed for both");
+        w.shot("both-hooked");
+        let (a, b) = (arrow_at(w, i).unwrap(), arrow_at(w, j).unwrap());
+        w.focus_canvas();
+        // one undo step per click
+        a.head == Head::Hook && b.head == Head::Hook && a.line == Line::Dashed && b.line == Line::Dashed
+    });
+
+    run.task("QE6", "auto-place a node from the panel", 3, "A at 0,0\nB at 3,0\nC at 6,-2\nA -f-> B\nB -g-> C\n", |w| {
+        let c = w.centre(&ObjRef::Node("C".into())).unwrap();
+        w.click(c, "node C");
+        w.shot("selected");
+        if !w.click_ui("button.node.C.autoplace", "Auto-place") {
+            return false;
+        }
+        w.shot("auto-placed");
+        let l = w.line("C");
+        note!(w, "line `{l}`");
+        let placed = w.read(|v| v.doc.scene.anchors.iter().any(|(o, _, _)| *o == ObjRef::Node("C".into())));
+        !l.contains(" at ") && placed
+    });
+
+    run.task("QE7", "auto-place shapes: menu, and several at once", 4, "blob G \"G\" {a, b} at (0,0)\nblob H \"H\" {c} at (4,0)\nngon P 4 at 8,0\n", |w| {
+        let g = w.label(&ObjRef::Blob("G".into())).unwrap();
+        w.right(g, "blob G");
+        w.shot("menu");
+        w.click_ui("menu.AutoPlace", "Auto-place (menu)");
+        let l = w.line("blob G");
+        let one = !l.contains(" at ");
+        // now H and P together
+        w.focus_canvas();
+        let h = w.label(&ObjRef::Blob("H".into())).unwrap();
+        w.click(h, "blob H");
+        let p = w.centre(&ObjRef::NGon("P".into())).unwrap();
+        shift_click(w, p, "the polygon");
+        w.shot("two");
+        w.click_ui("button.many.autoplace", "Auto-place (both)");
+        note!(w, "source:\n{}", w.source());
+        one && !w.line("blob H").contains(" at ") && !w.line("ngon").contains(" at ")
+    });
+
+    run.task("QE8", "type where a blob and a text sit; switch cells ↔ cm", 5, "blob G \"G\" {a, b} at (0,0)\ntext \"hi\" at (2,-2)\n", |w| {
+        let g = w.label(&ObjRef::Blob("G".into())).unwrap();
+        w.click(g, "blob G");
+        w.shot("blob-panel");
+        if !w.click_ui("field.blob.G.col", "At x") {
+            return false;
+        }
+        w.key_raw("cmd-a");
+        w.typ("1.5");
+        w.key("enter", "commit");
+        let l = w.line("blob G");
+        note!(w, "line `{l}`");
+        let ok1 = l.contains("(1.5,0)");
+        // text: switch the units
+        let t = w.centre(&ObjRef::Text(1)).unwrap();
+        w.click(t, "the text");
+        w.click_ui("button.txtpos.1.unit", "cm → cells");
+        let l2 = w.line("text");
+        note!(w, "text line `{l2}`");
+        w.shot("text-cells");
+        ok1 && l2.contains("at ") && !l2.contains("at (")
+    });
+
+    run.task("QE9", "put a blob inside another (panel)", 3, "blob G \"G\" {a, b}\nblob K \"K\" {c}\n", |w| {
+        let k = w.label(&ObjRef::Blob("K".into())).unwrap();
+        w.click(k, "blob K");
+        w.shot("selected");
+        if !w.click_ui("panel.parent.G", "Inside: G") {
+            return false;
+        }
+        w.shot("inside");
+        let b = blob_of(w, "K").unwrap();
+        note!(w, "line `{}`", w.line("blob K"));
+        b.parent.as_deref() == Some("G") && w.line("blob K").contains(" in G")
+    });
+
+    run.task("QE10", "shared fields of two n-gons and two blobs", 6, "ngon P 4 at 0,0 plain\nngon Q 5 at 4,0\nblob G \"G\" {a} at (0,-4)\nblob H \"H\" {b} at (4,-4) shaded\n", |w| {
+        let p = w.centre(&ObjRef::NGon("P".into())).unwrap();
+        w.click(p, "square P");
+        let q = w.centre(&ObjRef::NGon("Q".into())).unwrap();
+        shift_click(w, q, "pentagon Q");
+        w.shot("two-ngons");
+        let fill = w.find_ui("check.many.ngon", "fill").unwrap_or_default();
+        if !w.click_ui(&fill, "Fill (mixed: sets both)") {
+            return false;
+        }
+        let both = [ngon_of(w, "P").unwrap().shaded, ngon_of(w, "Q").unwrap().shaded];
+        w.shot("both-filled");
+        // two blobs
+        w.focus_canvas();
+        let g = w.label(&ObjRef::Blob("G".into())).unwrap();
+        w.click(g, "blob G");
+        let h = w.label(&ObjRef::Blob("H".into())).unwrap();
+        shift_click(w, h, "blob H");
+        let sh = w.find_ui("check.many.blob", "shaded").unwrap_or_default();
+        w.click_ui(&sh, "Shaded (mixed)");
+        w.click_ui("many.shape.wide", "wide for both");
+        w.shot("blobs");
+        let (bg, bh) = (blob_of(w, "G").unwrap(), blob_of(w, "H").unwrap());
+        note!(w, "source:\n{}", w.source());
+        both == [true, true] && bg.shaded && bh.shaded && bg.shape == BlobShape::Wide && bh.shape == BlobShape::Wide
+    });
+
+    run.task("QE11", "loop arrow with the arrow tool: drag a node onto itself", 2, "A at 0,0\nB at 3,0\nA -f-> B\n", |w| {
+        w.key("a", "arrow tool");
+        let c = w.centre(&ObjRef::Node("A".into())).unwrap();
+        let out = point(c.x + px(40.), c.y + px(10.));
+        w.drag(c, &[out, c], none, "A out and back onto A", Some("looping"));
+        w.key_raw("escape");
+        w.shot("looped");
+        note!(w, "source:\n{}", w.source());
+        w.read(|v| v.doc.figure.items.iter().any(|it| matches!(it, Item::Arrow(a) if a.from == "A" && a.to == "A" && a.is_loop)))
+    });
+
+    // ============================================ independent review of figure-qol (R*)
+    // Each R task fails on figure-qol as reviewed and should pass once the
+    // finding it names is fixed (see the review report).
+    fn drawn_cm(w: &mut Win, names: &[&str]) -> Vec<(String, f32, f32)> {
+        w.read(|v| {
+            names
+                .iter()
+                .map(|n| {
+                    let p = geom::center_of(&v.doc.scene, &ObjRef::Node(n.to_string())).unwrap_or(Pt { x: f32::NAN, y: f32::NAN });
+                    (n.to_string(), (p.x * 100.0).round() / 100.0, (p.y * 100.0).round() / 100.0)
+                })
+                .collect()
+        })
+    }
+
+    // F1: copying auto-placed nodes re-flows the originals. The move path pins
+    // the others where they are drawn; the copy paths (⌥-drag, ⌘D, ⌘V) don't,
+    // so the new pinned copies push every auto-placed original along.
+    run.task("R1", "⌥-drag a copy of A in a figure with no positions: A, B, C stay where they are", 2, "A -> B\nB -> C\n", |w| {
+        let before = drawn_cm(w, &["A", "B", "C"]);
+        let a = w.centre(&ObjRef::Node("A".into())).unwrap();
+        w.click(a, "node A");
+        let (_, ch) = cell_px(w);
+        let to = point(a.x, a.y + px(ch));
+        w.drag(a, &line_to(a, to, 8), alt, "a copy of A one cell down", Some("copying"));
+        w.shot("copied");
+        let after = drawn_cm(w, &["A", "B", "C"]);
+        let n = nodes_n(w);
+        note!(w, "nodes {n}; drawn before {before:?}; after {after:?}\n{}", w.source());
+        if before != after {
+            issue!(w, "the originals moved when a copy was dropped: {before:?} → {after:?}");
+        }
+        n == 4 && before == after
+    });
+
+    run.task("R2", "⌘D on A in a figure with no positions: A, B, C stay where they are", 2, "A -> B\nB -> C\n", |w| {
+        let before = drawn_cm(w, &["A", "B", "C"]);
+        let a = w.centre(&ObjRef::Node("A".into())).unwrap();
+        w.click(a, "node A");
+        w.key("cmd-d", "duplicate");
+        w.shot("duplicated");
+        let after = drawn_cm(w, &["A", "B", "C"]);
+        let n = nodes_n(w);
+        note!(w, "nodes {n}; drawn before {before:?}; after {after:?}\n{}", w.source());
+        if before != after {
+            issue!(w, "⌘D moved the originals: {before:?} → {after:?}");
+        }
+        n == 4 && before == after
+    });
+
+    // F3: B's ⌘-press on a page-frame corner is taken before anything else, in
+    // every tool, within 12 px. When zoomed out, a node at a corner of the figure
+    // lies inside that grip, so A's ⌘-drag (move without snapping) scales the
+    // whole figure instead of moving the node.
+    run.task("R3", "⌘-drag the corner node A a little, free of the grid: A moves, the figure's scale doesn't", 1, "A at 0,0\nB at 20,0\nC at 0,8\nD at 20,8\nA -> B\nC -> D\n", |w| {
+        let s0 = w.read(|v| v.doc.figure.globals.scale);
+        let mut tries = 0;
+        let (mut a, mut d) = (point(px(0.), px(0.)), f32::MAX);
+        while tries < 6 {
+            a = w.centre(&ObjRef::Node("A".into())).unwrap();
+            let r = w.read(|v| geom::page_rect(&v.doc.scene));
+            let corner = w.xf_px(Pt { x: r.min.x, y: r.max.y });
+            d = f32::from(a.x - corner.x).hypot(f32::from(a.y - corner.y));
+            if d < 10.0 {
+                break;
+            }
+            w.key_raw("cmd--");
+            tries += 1;
+        }
+        note!(w, "node A's centre is {d:.1} px from the page frame's corner at {:.1} px/cm", w.px_per_cm());
+        w.shot("zoomed-out");
+        let to = point(a.x + px(30.), a.y + px(18.));
+        w.drag(a, &line_to(a, to, 8), cmd, "A with ⌘ (no snapping)", Some("dragging"));
+        let s1 = w.read(|v| v.doc.figure.globals.scale);
+        let pa = node_pos(w, "A");
+        note!(w, "scale {s0} → {s1}; A at {pa:?}");
+        if s1 != s0 {
+            issue!(w, "⌘-dragging node A scaled the whole figure ({s0} → {s1})");
+        }
+        s1 == s0 && !matches!(pa, Some(Pos::Cell(x, y)) if x == 0.0 && y == 0.0)
+    });
+
+    // ---------------------------------------------------------------- review fixes (worker 2)
+    fn rect_px(w: &mut Win, r: &Rect) -> Bounds<Pixels> {
+        let (a, b) = (w.xf_px(r.min), w.xf_px(r.max));
+        Bounds::from_corners(point(a.x.min(b.x), a.y.min(b.y)), point(a.x.max(b.x), a.y.max(b.y)))
+    }
+    fn panel_field(w: &mut Win, key: &str) -> Option<String> {
+        w.window.update(&mut w.cx, |v, _, cx| v.fields.get(key).map(|f| f.entity.read(cx).text().to_string())).unwrap()
+    }
+
+    // U4: a long panel scrolls, the folded Figure head stays reachable, controls under the cut are found by scrolling
+    run.task("QG1", "a long properties panel scrolls; the Figure head stays reachable", 4, "A at 0,0\nB at 3,0\nC at 0,-2\nA -f-> B\nA ->> C\n", |w| {
+        let (i, j) = (w.arrow_index("A", "B").unwrap(), w.arrow_index("A", "C").unwrap());
+        let p = w.on_arrow(i, 0.5, 0.0).unwrap();
+        w.click(p, "the A → B arrow");
+        let q = w.on_arrow(j, 0.5, 0.0).unwrap();
+        shift_click(w, q, "the A → C arrow");
+        w.shot("panel-cut-with-figure-head");
+        let over = w.read(|v| f32::from(v.panel_scroll.max_offset().y));
+        let (pb, head) = (w.ui("panel.box"), w.ui("panel.figure.toggle"));
+        note!(w, "panel overflows by {over:.0} px; panel {pb:?}; head {head:?}");
+        let (Some(pb), Some(head)) = (pb, head) else { return false };
+        if over < 1.0 {
+            w.issue("the panel doesn't overflow here, so nothing is tested");
+            return false;
+        }
+        if head.bottom() > pb.bottom() + px(1.) || head.top() < pb.top() {
+            issue!(w, "the Figure head {head:?} is outside the panel {pb:?}");
+        }
+        // a control under the cut: scroll to it as a user would, then click it
+        let b0: Vec<f32> = w.read(|v| v.doc.figure.items.iter().filter_map(|it| if let Item::Arrow(a) = it { Some(a.bend) } else { None }).collect());
+        if !w.click_ui("many.bend.right", "Bend right (under the cut)") {
+            return false;
+        }
+        w.shot("scrolled-to-bend");
+        let b1: Vec<f32> = w.read(|v| v.doc.figure.items.iter().filter_map(|it| if let Item::Arrow(a) = it { Some(a.bend) } else { None }).collect());
+        note!(w, "bends {b0:?} → {b1:?}");
+        // and the head still opens the Figure section
+        if !w.click_ui("panel.figure.toggle", "the Figure head") {
+            return false;
+        }
+        w.shot("figure-section-open");
+        let open = w.ui("field.fig.width").is_some();
+        b0 != b1 && open
+    });
+
+    // U6: the label field clears what it edits
+    run.task("QG2", "the label field doesn't sit on the loop or the node's selection box", 3, "A at 0,0\nB at 3,0\nA -f-> B\n", |w| {
+        let c = w.centre(&ObjRef::Node("A".into())).unwrap();
+        w.click(c, "node A");
+        w.click(c, "node A again (its label)");
+        let sel = w.read(|v| geom::extent_of(&v.doc.scene, &ObjRef::Node("A".into())).map(|_| ())).is_some();
+        let (field, outline) = {
+            let f = w.ui("label.field");
+            let o = w.read(|v| ntex_studio::ui::figure::handles::outline(&v.doc.scene, &ObjRef::Node("A".into())));
+            (f, o)
+        };
+        w.shot("node-field");
+        let (Some(field), Some(outline)) = (field, outline) else {
+            issue!(w, "no field ({sel}) or outline");
+            return false;
+        };
+        let ob = rect_px(w, &outline);
+        note!(w, "field {field:?}; selection box {ob:?}");
+        let mut ok = !field.intersects(&ob);
+        if !ok {
+            w.issue("the label field overlaps the node's selection box");
+        }
+        w.key_raw("escape");
+        w.focus_canvas();
+        w.click(c, "node A");
+        if !w.click_ui("button.node.A.loop", "Add loop arrow") {
+            return false;
+        }
+        w.shot("loop-field");
+        let loop_ext = w.read(|v| {
+            let i = v.doc.figure.items.iter().position(|it| matches!(it, Item::Arrow(a) if a.is_loop))?;
+            geom::extent_of(&v.doc.scene, &ObjRef::Arrow(i))
+        });
+        let (Some(field), Some(ext)) = (w.ui("label.field"), loop_ext) else {
+            w.issue("no label field or loop extent after adding the loop");
+            return false;
+        };
+        let lb = rect_px(w, &ext);
+        note!(w, "field {field:?}; loop {lb:?}");
+        if field.intersects(&lb) {
+            w.issue("the label field overlaps the loop");
+            ok = false;
+        }
+        ok
+    });
+
+    // U9: a text item shows its text (with the chip), not \text{…}
+    run.task("QG3", "a text item's panel shows the text, not \\text{...}", 2, "A at 0,0\ntext \"kernel\" at (0,-2)\n", |w| {
+        let c = w.centre(&ObjRef::Text(1)).unwrap();
+        w.click(c, "the text");
+        w.shot("text-panel");
+        let shown = panel_field(w, "text.1").unwrap_or_default();
+        let chip = w.ui("chip.text.1").is_some();
+        note!(w, "field shows {shown:?}; chip {chip}");
+        shown == "kernel" && chip
+    });
+
+    // U10: counter-clockwise left, clockwise right, in the Turn row
+    run.task("QG4", "the Turn row reads ⟲ n ⟳ like Angle and Rotation", 2, "ngon P 5\n", |w| {
+        let c = w.centre(&ObjRef::NGon("P".into())).unwrap();
+        w.click(c, "the pentagon");
+        w.shot("turn-row");
+        let (Some(l), Some(r)) = (w.ui("button.ngon.P.turn+"), w.ui("button.ngon.P.turn-")) else { return false };
+        note!(w, "⟲ at x {:.0}, ⟳ at x {:.0}", f32::from(l.center().x), f32::from(r.center().x));
+        l.center().x < r.center().x
+    });
+
+    // U11: a double-click on a Cayley vertex names it
+    run.task("QG5", "double-click a Cayley vertex to name it", 2, "cayley D4 <r, s>\n", |w| {
+        let cg = cayley_of(w).unwrap();
+        let top = top_vertex(w, &cg.name).unwrap();
+        let q = vertex_pt(w, &cg.name, &top).unwrap();
+        let q = w.xf_px(q);
+        w.dclick(q, "a vertex");
+        let want = ObjRef::CayleyVertex(cg.name.clone(), top.clone());
+        let editing = w.read(|v| v.label_edit.as_ref().map(|e| e.obj.clone()));
+        w.shot("field-open");
+        if editing.as_ref() != Some(&want) {
+            issue!(w, "double-click opened {editing:?}, wanted {want:?}");
+            return false;
+        }
+        w.typ("x");
+        w.key("enter", "commit");
+        w.shot("named");
+        let drawn = w.read(|v| v.doc.scene.draws.iter().any(|d| matches!(d, Draw::Label { obj: ObjRef::CayleyVertex(_, x), latex, .. } if *x == top && latex == "x")));
+        note!(w, "line: {}", w.line("cayley"));
+        drawn
+    });
+
+    // U12: the default name is a placeholder, not text
+    run.task("QG6", "the rotation arrow's Name shows its default as a placeholder", 3, "ngon P 4 axes rotation\n", |w| {
+        let Some(p) = rot_pt(w, "P", 0.5) else { return false };
+        w.click(p, "the rotation arrow");
+        if !w.click_ui("ngon.P.rot.cw", "↻") {
+            return false;
+        }
+        w.shot("name-placeholder");
+        let shown = panel_field(w, "ngon.P.rot.label");
+        let g = first_ngon(w).unwrap();
+        note!(w, "Name field holds {shown:?}; rotation_label {:?}", g.rotation_label);
+        shown.as_deref() == Some("") && g.rotation_label.is_none()
+    });
+
+    // U13: a width that can't be had says why
+    run.task("QG7", "typing a width the labels can't fit says so", 3, "A \"a long label here\" at 0,0\nB \"another long one\" at 1,0\nA -f-> B\n", |w| {
+        let s0 = scale_of(w);
+        if !w.click_ui("field.fig.width", "the Width field") {
+            return false;
+        }
+        w.key_raw("cmd-a");
+        w.typ("0.5");
+        w.shot("too-narrow");
+        let note = w.read(|v| v.width_note.clone());
+        let s1 = scale_of(w);
+        note!(w, "note {note:?}; scale {s0} → {s1}");
+        let said = note.as_deref().is_some_and(|n| n.contains("labels alone"));
+        // a width that works clears it
+        w.key_raw("cmd-a");
+        w.typ("8");
+        w.key("enter", "commit");
+        let gone = w.read(|v| v.width_note.is_none());
+        said && gone
+    });
+
+    // U15b: a loop has no reverse; the readout stays off the labels
+    run.task("QG8", "a loop's panel has no reverse button", 3, "A at 0,0\nB at 3,0\nA -f-> B\n", |w| {
+        let c = w.centre(&ObjRef::Node("A".into())).unwrap();
+        w.click(c, "node A");
+        if !w.click_ui("button.node.A.loop", "Add loop arrow") {
+            return false;
+        }
+        w.key_raw("escape");
+        w.focus_canvas();
+        let Some(i) = w.read(|v| v.doc.figure.items.iter().position(|it| matches!(it, Item::Arrow(a) if a.is_loop))) else { return false };
+        let _ = w.window.update(&mut w.cx, |v, _, cx| {
+            v.selection = vec![ObjRef::Arrow(i)];
+            cx.notify();
+        });
+        w.draw();
+        w.shot("loop-panel");
+        let rev = w.ui(&format!("button.arrow.{i}.reverse")).is_some();
+        let keys = w.ui_keys();
+        note!(w, "reverse drawn: {rev}; controls {keys:?}");
+        !rev
+    });
+
+    // F11: the turn steppers treat an old positive `turn` ≥ n (still accepted,
+    // "unchanged") as out of range and jump to 0: ⟲ on turn=7 of a pentagon
+    // (= turn 2) gives turn 0, not 3.
+    run.task("R4", "⟲ on a pentagon written `turn=7` (the same as turn=2) steps to turn 3", 2, "ngon P 5 turn=7\n", |w| {
+        let c = w.centre(&ObjRef::NGon("P".into())).unwrap();
+        w.click(c, "the pentagon");
+        if !w.click_ui("button.ngon.P.turn+", "⟲") {
+            return false;
+        }
+        let g = ngon_of(w, "P").unwrap();
+        note!(w, "turn after ⟲: {} (neg {}); `{}`", g.turn, g.turn_neg, w.line("ngon"));
+        let k = if g.turn_neg { (g.turn % 5) as i32 - 5 } else { (g.turn % 5) as i32 };
+        k.rem_euclid(5) == 3
+    });
+
+    // ============================================ fixes after the review (QF*)
+    fn blank_px(w: &mut Win) -> Point<Pixels> {
+        w.read(|v| {
+            let b = v.canvas_bounds.get().unwrap();
+            point(b.left() + px(14.), b.bottom() - px(14.))
+        })
+    }
+
+    // U1: ⇧ decides on release. Dragging takes the object (and the selection)
+    // along on one axis; a ⇧-click without moving toggles it.
+    run.task("QF1", "⇧-drag moves the pressed object (and the selection) along a line, bystanders stay; ⇧-click toggles", 6, "A at 0,0\nB at 3,0\nngon P 5 at (1,-3)\n", |w| {
+        let (cw, ch) = cell_px(w);
+        let p0 = first_ngon(w).unwrap().pos;
+        // an unselected A, ⇧-dragged: A alone moves, along one axis
+        let a = w.centre(&ObjRef::Node("A".into())).unwrap();
+        w.drag(a, &line_to(a, point(a.x + px(2.0 * cw), a.y + px(0.4 * ch)), 8), shift, "A across with ⇧", Some("locked"));
+        let (pa, pb) = (node_pos(w, "A"), node_pos(w, "B"));
+        let sel1 = w.selection();
+        note!(w, "A {pa:?} B {pb:?}; selection {sel1:?}");
+        let alone = near(pa, 2.0, 0.0) && near(pb, 3.0, 0.0) && first_ngon(w).unwrap().pos == p0;
+        if !alone {
+            issue!(w, "a ⇧-drag of one node moved a bystander or didn't lock: A {pa:?}, B {pb:?}");
+        }
+        // pick A and B, then ⇧-drag A down: the selected A is not toggled off, both move
+        let blank = blank_px(w);
+        w.click(blank, "empty canvas");
+        let a = w.centre(&ObjRef::Node("A".into())).unwrap();
+        w.click(a, "node A");
+        let b = w.centre(&ObjRef::Node("B".into())).unwrap();
+        shift_click(w, b, "node B");
+        let a = w.centre(&ObjRef::Node("A".into())).unwrap();
+        let u0 = undo_n(w);
+        w.drag(a, &line_to(a, point(a.x + px(0.3 * cw), a.y + px(1.0 * ch)), 8), shift, "the selected A down with ⇧", Some("group"));
+        let (qa, qb) = (node_pos(w, "A"), node_pos(w, "B"));
+        let sel2 = w.selection();
+        let steps = undo_n(w) - u0;
+        note!(w, "A {qa:?} B {qb:?}; selection {sel2:?}; {steps} undo step(s)");
+        let group = near(qa, 2.0, 1.0) && near(qb, 3.0, 1.0) && sel2.len() == 2 && steps == 1 && first_ngon(w).unwrap().pos == p0;
+        if !group {
+            issue!(w, "⇧-dragging a selected node didn't drag the selection: A {qa:?} B {qb:?} {sel2:?}");
+        }
+        // ⇧-click (no drag) on B takes it out of the selection
+        let b = w.centre(&ObjRef::Node("B".into())).unwrap();
+        shift_click(w, b, "node B");
+        let sel3 = w.selection();
+        note!(w, "after ⇧-click on B: {sel3:?}");
+        w.shot("toggled");
+        alone && group && sel3 == vec![ObjRef::Node("A".into())]
+    });
+
+    // U2 / U3: a paste never lands exactly on what it was copied from; nodes
+    // step a whole cell (on the grid), shapes half a cell.
+    run.task("QF2", "⌘V of what was copied, and of the same shorthand from elsewhere, never lands on the originals", 4, "A at 0,0\nB at 2,0\nA -f-> B\n", |w| {
+        w.key("cmd-a", "select all");
+        w.key("cmd-c", "copy");
+        w.key("cmd-v", "paste");
+        w.shot("pasted-own");
+        let own: Vec<Option<Pos>> = w.selection().iter().filter_map(|o| if let ObjRef::Node(n) = o { Some(node_pos(w, n)) } else { None }).collect();
+        // the same shorthand written elsewhere (Neovim, another window)
+        clip_set(w, "A at 0,0\nB at 2,0\nA -f-> B\n");
+        w.key("cmd-v", "paste the same text from elsewhere");
+        w.shot("pasted-foreign");
+        let there: Vec<Option<Pos>> = w.selection().iter().filter_map(|o| if let ObjRef::Node(n) = o { Some(node_pos(w, n)) } else { None }).collect();
+        // text that lands on nothing lands where it was written
+        clip_set(w, "Z at 9,9\n");
+        w.key("cmd-v", "paste somewhere empty");
+        let z = w.selection().iter().find_map(|o| if let ObjRef::Node(n) = o { node_pos(w, n) } else { None });
+        note!(w, "own {own:?}; foreign {there:?}; empty spot {z:?}\n{}", w.source());
+        let all: Vec<Option<Pos>> = w.read(|v| v.doc.figure.items.iter().filter_map(|it| if let Item::Node(n) = it { Some(n.pos) } else { None }).collect());
+        let mut dup = false;
+        for (i, p) in all.iter().enumerate() {
+            dup |= all[i + 1..].contains(p);
+        }
+        if dup {
+            issue!(w, "two nodes sit on the same cell: {all:?}");
+        }
+        !dup && own.iter().any(|p| near(*p, 1.0, 1.0)) && there.iter().any(|p| near(*p, 2.0, 2.0)) && near(z, 9.0, 9.0)
+    });
+
+    run.task("QF3", "⌘V steps a cell for a node and half a cell for a shape", 4, "A at 0,0\nngon P 5 at (4,-1)\n", |w| {
+        let a = w.centre(&ObjRef::Node("A".into())).unwrap();
+        w.click(a, "node A");
+        w.key("cmd-c", "copy");
+        w.key("cmd-v", "paste");
+        let np = w.selection().iter().find_map(|o| if let ObjRef::Node(n) = o { node_pos(w, n) } else { None });
+        let blank = blank_px(w);
+        w.click(blank, "empty canvas");
+        let c = w.centre(&ObjRef::NGon("P".into())).unwrap();
+        w.click(c, "the pentagon");
+        w.key("cmd-c", "copy");
+        w.key("cmd-v", "paste");
+        w.shot("pasted");
+        let ps: Vec<NGon> = w.read(|v| v.doc.figure.items.iter().filter_map(|it| if let Item::NGon(g) = it { Some(g.clone()) } else { None }).collect());
+        note!(w, "pasted node {np:?}; pentagons {:?}", ps.iter().map(|g| g.pos).collect::<Vec<_>>());
+        let step = match (ps.first().and_then(|g| g.pos), ps.get(1).and_then(|g| g.pos)) {
+            (Some(Pos::Abs(x0, y0)), Some(Pos::Abs(x1, y1))) => Some(((x1 - x0).abs(), (y1 - y0).abs())),
+            _ => None,
+        };
+        near(np, 1.0, 1.0) && step.is_some_and(|(dx, dy)| (dx - 0.95).abs() < 0.03 && (dy - 0.675).abs() < 0.03)
+    });
+
+    // C12: an element can't be on the clipboard alone, and says why
+    run.task("QF4", "⌘C on a single point says why it can't, and ⌘D / ⌥-drag add another point", 3, "blob G {g, k}\n", |w| {
+        let g = w.centre(&ObjRef::Element("g".into())).unwrap();
+        w.click(g, "the point g");
+        let sel = w.selection();
+        let before = clip_text(w);
+        w.key("cmd-c", "copy");
+        let t = toast_text(w);
+        w.shot("explained");
+        let after = clip_text(w);
+        note!(w, "selection {sel:?}; toast {t:?}");
+        w.key("cmd-d", "duplicate the point");
+        let n = blob_of(w, "G").map(|b| b.elements.len()).unwrap_or(0);
+        note!(w, "elements after ⌘D: {n}\n{}", w.source());
+        sel == vec![ObjRef::Element("g".into())] && t.contains("point") && t.contains("blob") && before == after && n == 3
+    });
+
+    // U7: the ⌘-corner drag keeps the figure, and its readout, on the canvas
+    run.task("QF5", "⌘-drag the page corner far off the canvas: the figure and its readout stay in view", 2, QB_SRC, |w| {
+        cmd_key(w, true);
+        let cmd = Modifiers::command();
+        let r = w.read(|v| v.page_frame()).unwrap();
+        let corner = w.xf_px(Pt { x: r.max.x, y: r.min.y });
+        let bounds = w.read(|v| v.canvas_bounds.get().unwrap());
+        w.hover(corner);
+        w.event(PlatformInput::MouseDown(MouseDownEvent { button: MouseButton::Left, position: corner, modifiers: cmd, click_count: 1, first_mouse: false, pen: None }));
+        w.draw();
+        // way past the canvas's lower right
+        let to = point(bounds.right() + px(300.), bounds.bottom() + px(300.));
+        let mut inside = true;
+        for q in line_to(corner, to, 16) {
+            w.event(PlatformInput::MouseMove(MouseMoveEvent { position: q, pressed_button: Some(MouseButton::Left), modifiers: cmd, pen: None }));
+            w.draw();
+            let (rect, per) = w.read(|v| {
+                let b = v.canvas_bounds.get().unwrap();
+                let xf = v.view.xf(b);
+                (v.drag_scene.as_ref().map(|s| geom::page_rect(s)), xf)
+            });
+            if let Some(rc) = rect {
+                let c = per.to_px(Pt { x: rc.max.x, y: rc.min.y });
+                inside &= c.x <= bounds.right() && c.y <= bounds.bottom() && c.x >= bounds.left() && c.y >= bounds.top();
+            }
+        }
+        let live = w.read(|v| v.readout.clone().map(|(_, t)| t)).unwrap_or_default();
+        w.shot("dragged-far");
+        w.event(PlatformInput::MouseUp(MouseUpEvent { button: MouseButton::Left, position: to, modifiers: cmd, click_count: 1, pen: None }));
+        w.draw();
+        cmd_key(w, false);
+        let s1 = scale_of(w);
+        let (c1, bnds) = {
+            let r = w.read(|v| geom::page_rect(&v.doc.scene));
+            (w.xf_px(Pt { x: r.max.x, y: r.min.y }), bounds)
+        };
+        note!(w, "readout {live:?}; scale {s1}; corner now at {c1:?} in {bnds:?}");
+        w.shot("dropped");
+        if !inside {
+            issue!(w, "the dragged corner left the canvas");
+        }
+        inside && s1 > 1.0 && c1.x <= bnds.right() && c1.y <= bnds.bottom() && live.contains("scale")
+    });
+
+    // U15a: ⌘0 keeps the selection's handles on the canvas
+    run.task("QF6", "⌘0 with a tall blob selected: its rotate knob is on the canvas", 2, "blob G size=2,16 at (0,0)\n", |w| {
+        let c = w.centre(&ObjRef::Blob("G".into())).unwrap();
+        w.click(c, "the blob");
+        w.key("cmd-0", "fit");
+        w.shot("fitted");
+        let bounds = w.read(|v| v.canvas_bounds.get().unwrap());
+        let Some(k) = w.handle(|k| k == HKind::Rotate) else { return false };
+        let ok = k.y >= bounds.top() + px(8.) && k.y <= bounds.bottom() - px(8.) && k.x >= bounds.left() && k.x <= bounds.right();
+        note!(w, "rotate knob at {k:?} in {bounds:?}");
+        ok
+    });
+
+    // ============================================ QH1: no footnote is cut off
+    // Every footnote, in every state the figure window can be in, is one line
+    // at the default width (W = 1180): measured from the laid-out rows (a
+    // line that doesn't fit wraps, and the footer is pushed off the window).
+    run.task("QH1", "every footnote fits on one line at the default window width", 1, "A at 0,0\nB at 3,0\nA -f-> B\nblob G \"G\" {e, g} at 0,-4\nngon P 4 rotation at 5,-4\ncayley D4 <r, s> at 7,2\ntext \"hi\" at (0,2)\n", |w| {
+        fn hints_now(w: &mut Win) -> Vec<(String, f32, f32)> {
+            w.draw();
+            let n = w.read(|v| v.ui_bounds.borrow().keys().filter(|k| k.starts_with("footnote.")).count());
+            let text: Vec<String> = w.read(|_| Vec::new());
+            let _ = text;
+            let hs = w.window.update(&mut w.cx, |v, window, cx| v.hints(window, cx).iter().map(|s| s.to_string()).collect::<Vec<_>>()).unwrap();
+            let mut out = Vec::new();
+            for (i, h) in hs.into_iter().enumerate() {
+                if let (Some(b), Some(t)) = (w.ui(&format!("footnote.{i}")), w.ui(&format!("footnote-text.{i}"))) {
+                    // (text, row height, how far past the row's right edge the text runs)
+                    out.push((h, f32::from(b.size.height), f32::from(t.right() - b.right()).max(0.0) + f32::from(b.bottom()) * 0.0));
+                }
+            }
+            let _ = n;
+            out
+        }
+        let mut seen: Vec<(String, String, f32, f32)> = Vec::new();
+        let record = |w: &mut Win, state: &str, seen: &mut Vec<(String, String, f32, f32)>| {
+            for (h, hgt, bottom) in hints_now(w) {
+                seen.push((state.to_string(), h, hgt, bottom));
+            }
+        };
+        let set_sel = |w: &mut Win, sel: Vec<ObjRef>| {
+            let _ = w.window.update(&mut w.cx, |v, _, cx| {
+                v.selection = sel;
+                cx.notify();
+            });
+            w.draw();
+        };
+        w.focus_canvas();
+        for (k, name) in [("v", "tool select"), ("n", "tool node"), ("a", "tool arrow"), ("b", "tool blob"), ("p", "tool polygon"), ("r", "tool rough")] {
+            w.key_raw(k);
+            record(w, name, &mut seen);
+        }
+        w.key_raw("v");
+        w.shot("footnotes-select-tool");
+        let sels: Vec<(&str, Vec<ObjRef>)> = vec![
+            ("node", vec![ObjRef::Node("A".into())]),
+            ("arrow", vec![ObjRef::Arrow(w.arrow_index("A", "B").unwrap_or(0))]),
+            ("blob", vec![ObjRef::Blob("G".into())]),
+            ("element", vec![ObjRef::Element("G.e".into())]),
+            ("ngon", vec![ObjRef::NGon("P".into())]),
+            ("ngon vertex", vec![ObjRef::NGonVertex("P".into(), 1)]),
+            ("rotation arrow", vec![ObjRef::NGonRotation("P".into())]),
+            ("cayley", vec![ObjRef::Cayley("D4".into())]),
+            ("cayley vertex", vec![ObjRef::CayleyVertex("D4".into(), "r".into())]),
+            ("text", vec![ObjRef::Text(w.read(|v| v.doc.figure.items.iter().position(|it| matches!(it, Item::Text(_))).unwrap_or(0)))]),
+            ("several", vec![ObjRef::Node("A".into()), ObjRef::Node("B".into())]),
+        ];
+        for (name, sel) in sels {
+            set_sel(w, sel);
+            record(w, &format!("selected {name}"), &mut seen);
+        }
+        // the label field (↵ on a node), the shorthand, the ask box, a panel field
+        set_sel(w, vec![ObjRef::Node("A".into())]);
+        w.key_raw("enter");
+        record(w, "label field", &mut seen);
+        w.key_raw("escape");
+        set_sel(w, vec![]);
+        let _ = w.window.update(&mut w.cx, |v, window, cx| v.shorthand.read(cx).focus.clone().focus(window, cx));
+        w.draw();
+        record(w, "shorthand focused", &mut seen);
+        let _ = w.window.update(&mut w.cx, |v, window, cx| v.ask_field.read(cx).focus.clone().focus(window, cx));
+        w.draw();
+        record(w, "ask focused", &mut seen);
+        w.focus_canvas();
+        set_sel(w, vec![ObjRef::NGon("P".into())]);
+        let f = w.ui_keys().into_iter().find(|k| k.starts_with("field."));
+        if let Some(f) = f
+            && w.click_ui(&f, "a panel field")
+        {
+            record(w, "panel field focused", &mut seen);
+        }
+        w.focus_canvas();
+        set_sel(w, vec![ObjRef::Node("A".into())]);
+        w.shot("footnotes-node-selected");
+        let base = seen.iter().map(|s| s.2).fold(f32::MAX, f32::min);
+        let bad: Vec<String> = seen.iter().filter(|s| s.2 > base * 1.4 || s.3 > 0.5).map(|s| format!("[{}] {:.0}px tall, runs {:.0}px past the edge: {}", s.0, s.2, s.3, s.1)).collect();
+        note!(w, "{} footnotes measured in {} states; one line is {base:.1} px; widest string {} chars", seen.len(), seen.iter().map(|s| s.0.clone()).collect::<std::collections::BTreeSet<_>>().len(), seen.iter().map(|s| s.1.chars().count()).max().unwrap_or(0));
+        for b in &bad {
+            issue!(w, "footnote wraps: {b}");
+        }
+        !seen.is_empty() && bad.is_empty()
+    });
+
     // ---------------------------------------------------------------- report
     let mut out = String::new();
     for r in &run.out {
@@ -2566,4 +3702,10 @@ fn main() {
     }
     let done = run.out.iter().filter(|r| r.ok).count();
     println!("usability: {done}/{} tasks done (see evidence/usability/results.txt)", run.out.len());
+    // the review's R tasks are regression tests: a NOT DONE one fails the run
+    let review_failed: Vec<&str> = run.out.iter().filter(|r| r.id.starts_with('R') && !r.ok).map(|r| r.id.as_str()).collect();
+    if !review_failed.is_empty() {
+        eprintln!("FAIL: review tasks not done: {}", review_failed.join(", "));
+        std::process::exit(1);
+    }
 }

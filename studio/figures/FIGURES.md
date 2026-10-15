@@ -230,8 +230,9 @@ cayley D4 <r, s> gens r^-1:maroon,s:hidden   % per generator: ^-1 draws g⁻¹, 
   if `legend` is given.
 - **Vertex names:** `vertex r^2s "x"` gives that vertex (named by its word)
   her own name; repeat for more (`cayley D4 <r, s> vertex r "ρ" vertex s "σ"`).
-  Empty or the word itself removes it. Edited in place or in the panel's Name
-  field.
+  The word may be spelled as in the generators (`vertex ρσ "x"`, `vertex \rho \sigma "x"`).
+  Empty or the word itself removes it. Double-click the vertex name to edit
+  it in place, or use the panel's Name field.
 - **Vertices:** labelled by shortlex words (`e, a, b, a^2, ab, …`), or
   `labels=none` for dots. **Dn** uses its normal form instead, as her course
   does: `e, r, …, r^{n-1}, s, rs, …, r^{n-1}s` (so `r^5`, not `srs`, in D6).
@@ -241,7 +242,9 @@ cayley D4 <r, s> gens r^-1:maroon,s:hidden   % per generator: ^-1 draws g⁻¹, 
 
 ### Free text and globals
 
-- `text "kernel ↦ identity" at (x,y)`
+- `text "kernel ↦ identity" at (x,y) [color=teal] [size=tiny|small|normal|large|huge]`
+  (`size` is relative to the figure's label size; `normal` is the default and
+  is not written back).
 - `scale 1.2`, `spacing 2.8,2`, `size small|normal|large` (label size).
   A rewrite keeps each global setting where you wrote it.
 
@@ -318,7 +321,7 @@ Ask  ________________________________________  [Sonnet ▾] ☐ fast  ⌘↵
   pinch, and pan by two-finger scroll.
   - On opening (and on a reload from disk) the figure is fitted to the
     canvas, at most 200 %, so a small figure isn't lost in the middle. An
-    empty figure is fitted when its first statement arrives. ⌘0 fits again.
+    empty figure is fitted when its first statement arrives. ⌘0 fits again, ⌘1 shows actual size.
   - When idle it shows the exact render (tectonic PNG via the studio's
     Renderer, at 2×).
   - While you drag or type, it switches to a native draft: Scene paths drawn
@@ -456,7 +459,7 @@ One grammar for every drag of the selection:
 | --- | --- |
 | (none) | the **whole selection** moves together, each object snapping as it would alone: nodes to cells, shapes to half cells, blobs, texts and elements to a millimetre. A blob takes its placed elements and the blobs inside it along. |
 | **⌥** (held as the drag starts) | the originals stay and **copies** are dragged (the cursor shows a copy badge and the readout says "copy"). The arrows *between* the copied objects come along, renamed. The whole drag is one undo step; Esc gives the originals back. A copy dropped where it started is no copy. |
-| **⇧** | the move is **locked to horizontal or vertical**, whichever has travelled further. |
+| **⇧** | the move is **locked to horizontal or vertical**, whichever has travelled further. ⇧ decides on release: dragged past the drag threshold, the selection plus the pressed object moves axis-locked and the selection is not toggled; a ⇧-click without movement toggles the object in the selection (so a ⇧-drag never deselects what it drags). |
 | **⌘** | **snapping is off** (positions to a millimetre). This is also what ⇧ meant for turning (free angle) and for the node and polygon tools' click (⌘-click puts the node exactly there). |
 
 ⌥ no longer means half-cell snapping, and ⇧ no longer means free placement
@@ -464,10 +467,14 @@ for shapes; ⌥ in a blob's *resize* drag still resizes from the centre.
 
 - **⌘C / ⌘X** put the selected objects on the system clipboard as `.fig`
   shorthand (names, positions, looks, and the arrows between them), so they
-  paste into another figure window or into Neovim. **⌘V** pastes: what this
-  window copied lands half a cell right and down, each further paste another
-  half cell; shorthand from elsewhere (or a cut pasted back) lands where it
-  was written, then steps the same way. Names are kept where they are free,
+  paste into another figure window or into Neovim. A blob's point alone can't
+  go on the clipboard (it only exists inside its blob): copy the blob, or ⌘D /
+  ⌥-drag the point for a sibling. **⌘V** pastes: it never lands
+  exactly on the originals. What this window copied lands one cell right and
+  down for nodes (half a cell for shapes), each further paste another step;
+  shorthand from elsewhere (or a cut pasted back) lands where it was written,
+  stepping the same way at once if any pasted object would sit on an existing
+  one. Names are kept where they are free,
   fresh otherwise; the pasted objects become the selection. Text that is not
   figure shorthand (it has warnings or errors, or holds no objects) is
   refused with a note, and nothing changes.
@@ -502,20 +509,29 @@ that apply to the selection. **Every change applies live, as one undo step.**
 | Selection | Fields |
 | --- | --- |
 | n-gon | Sides (stepper 3–12) · Size (field + slider) · Angle (field, ⟲ ⟳ 15° buttons, "point up" / "flat bottom" buttons) · ☐ Labels + an editable list (one field per vertex) · ☐ All axes, or a chip per axis · ☐ Rotation arrow (↺ ↻, steps) · Turn k (⟳ ⟲; negative allowed) / Flip k (the group action) · ☐ Fill · Colour swatches |
-| node | Label (with live preview) · Colour · Position (col, row) |
+| node | Label (with live preview) · Colour · At (col, row; a cells / cm switch; Auto-place) · Loop (Add loop arrow) |
 | rotation arrow | Turns (↺ ↻, − k +) · Edge (◂ k ▸; or drag the arrow round the polygon) · Remove |
-| arrow | Label · Ends (A → B and a ⇄ Reverse button; ⌘R) · Head (→ ↠ ↣ ↪ ↦ ⇒ = ↔ as a row of glyph buttons) · Line (solid / dashed / dotted) · Bend (slider) · ☐ Swap side · ☐ ≅ · ☐ Thick · Colour |
-| blob | Label · Label place · ☐ Shaded · Colour · Shape (round / tall / wide / bean) · Size · Angle · Elements (an editable list: add, rename, remove) |
-| element | Label · its blob |
-| Cayley graph | Group (field) · Generators · Edges: a row per generator (colour swatches, g / g⁻¹, ☐ shown) · Layout · ☐ Labels · ☐ Legend · Size · Angle |
-| text | Text |
-| several | Colour · Align (left, centre, top, middle) · Distribute (across, down; three or more) · Delete |
+| arrow | Label · Ends (A → B and a ⇄ Reverse button; ⌘R) · Head (→ ↠ ↣ ↪ ↦ ⇒ = ↔ as a row of glyph buttons) · Line (solid / dashed / dotted) · Bend (slider) · Label at (start / middle / end) · ☐ Swap side · ☐ ≅ · ☐ Thick · Colour |
+| blob | Label · Label place · ☐ Shaded · Colour · Shape (round / tall / wide / bean) · Size · Angle · At (with cells / cm and Auto-place) · Inside (none or another blob) · Elements (an editable list: add, rename, remove) |
+| element | Label · its blob · At (with Auto-place) |
+| Cayley graph | Group (field) · Generators · Edges: a row per generator (colour swatches, g / g⁻¹, ☐ shown) · Layout · ☐ Labels · ☐ Legend · Size · Angle · At |
+| text | Text · Colour · Size (tiny … huge) · At |
+| several | Colour · Delete · Align (left, centre, top, middle) · Distribute (across, down; three or more) · then, for each kind in the selection, the fields they share: arrows (Head, Line, Label at, Bend, ☐ Swap side / ≅ / Thick, Reverse), blobs (☐ Shaded, Shape, Place), n-gons (☐ Fill, Labels, All axes, Rotation arrow), Cayley graphs (☐ Labels, Legend, Layout), texts (Size) · Auto-place. Where the objects differ nothing is picked and the panel says "mixed" (check boxes say "(mixed)"); one click sets all of them, as one undo step. |
 | nothing | the figure: Scale · Spacing · Label size |
+
+### Accepted deviations from the spec (figure-qol)
+
+- **`iso` has no independent side.** ≅ sits opposite the label (or on the
+  label's side when there is none) and **Swap side** moves both together.
+- **A loop is made, not toggled.** "Add loop arrow" (node panel, right-click)
+  or the arrow tool dropped on the same node creates `A -> A`; there is no
+  loop switch on an existing arrow (change its ends, or delete it).
 
 ### Right-click menu, and keys in select mode
 
 - **Right-click** (or ⌃-click): Edit label · Duplicate · Copy · Cut · Paste · Reverse (arrows, ⌘R) · Rotate 90° ·
-  Distribute horizontally / vertically (several) · Hide/Show labels · Colour ▸ · Bring forward / Send back · Delete.
+  Distribute horizontally / vertically (several) · Hide/Show labels · Colour ▸ · Auto-place (clears `at`) ·
+  Add loop arrow (a node) · Bring forward / Send back · Delete.
 - **Keys:**
   - **Arrow keys:** nudge by one cell (nodes) or 0.1 cm (shapes); ⌥ for a
     fine nudge.
@@ -548,3 +564,42 @@ that apply to the selection. **Every change applies live, as one undo step.**
   Its default label is `r^{k}` or, clockwise, `r^{-k}`.
 - **Model:** `NGon.rotation_cw`, `rotation_edge`, `turn_neg`; `Cayley.gen_styles`
   (`GenStyle`: generator, colour, inverse, hidden); `ObjRef::NGonRotation`.
+
+### How big the figure is on the page (figure-qol B)
+
+- The header reads the figure's size on the PDF page, live (also mid-drag):
+  `6.4 × 3.1 cm on the page`. That is the Scene's bounds plus the standalone
+  class's `border=3pt` (`ntex_figures::pagesize`); tests build real PDFs with
+  tectonic and compare the page to the readout (within a millimetre).
+- The panel always has a **Figure** section: open when nothing is selected,
+  folded beneath the selection's section otherwise (click its head).
+  **Width** (cm on the page; typing solves for `scale`, iterating because
+  labels don't scale; a width the labels alone exceed changes nothing),
+  **Scale** (field and slider), **Spacing**, **Labels** (size). A run of
+  typing or a slider drag is one undo step.
+- **⌘1** actual size: 1 cm on screen is 1 cm on paper, from the display's
+  real size (CoreGraphics `CGDisplayScreenSize`; implausible values fall
+  back to 96 dpi). The canvas corner says `actual size`. **⌘0** still fits.
+  The figure window's ⌘1 is scoped to the figure window (the studio's ⌘1 is
+  its page switch).
+- Hold **⌘** with nothing being dragged: a faint page frame with grips at
+  its corners. **⌘-drag a corner** scales the whole figure about the
+  opposite corner (which stays put on screen), with a live
+  `width × height · scale` readout; one undo step on release, Esc cancels.
+  The grip yields to anything under the pointer: ⌘-dragging an object at the
+  figure's corner moves it (free), it doesn't scale. The `.tex`'s `\includegraphics` is never touched.
+
+### What the shorthand says, the mouse does too (figure-qol E)
+
+| Shorthand | Mouse |
+| --- | --- |
+| `near-start` / `near-end` / `middle` | arrow panel, Label at |
+| `A -> A` (loop) | node panel "Add loop arrow", right-click "Add loop arrow", or the arrow tool dropped on the same node |
+| `iso` (with `swap`) | ☐ ≅ and ☐ Swap side: ≅ sits across the line from the label (or on the label's side when there is none) and Swap moves both |
+| `text … color=… size=…` | text panel: swatches, Size |
+| `at …` of a blob, polygon, Cayley graph, element, text | panel At row; the cells / cm switch converts |
+| no `at` (auto-placed) | Auto-place: panel button, right-click, or for a selection; clears `at` |
+| `blob … in P` | blob panel, Inside |
+| several objects | the shared fields (see the table above) |
+
+Model additions (add-only): `Text.color`, `Text.size`.

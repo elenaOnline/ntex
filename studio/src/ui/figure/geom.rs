@@ -85,6 +85,19 @@ impl View {
         }
     }
 
+    /// (figure-qol B) px per cm on screen now.
+    pub fn px_per_cm(&self, bounds: Bounds<Pixels>) -> f32 {
+        self.xf(bounds).scale
+    }
+
+    /// (figure-qol B) ⌘1: the figure centred at exactly `px_per_cm` on screen
+    /// (the zoom that, with the fit the canvas has, gives that many px per cm).
+    pub fn actual_size(&mut self, scene: &Scene, bounds: Bounds<Pixels>, px_per_cm: f32) {
+        self.fit(scene);
+        let fit = self.fill_scale(bounds).clamp(MIN_FIT, MAX_FIT);
+        self.zoom = px_per_cm / fit;
+    }
+
     /// Fit this scene (zoom 1, no pan).
     pub fn fit(&mut self, scene: &Scene) {
         self.target = if is_empty_rect(&scene.bounds) { empty_target() } else { scene.bounds.clone() };
@@ -96,10 +109,37 @@ impl View {
     /// past FIT_ZOOM_MAX (a small figure isn't blown up to poster size). An
     /// empty scene gets the plain fit (zoom 1).
     pub fn fit_to(&mut self, scene: &Scene, bounds: Bounds<Pixels>) {
+        self.fit_to_with(scene, bounds, &|_| Vec::new());
+    }
+
+    /// `fit_to`, also keeping in view the points `extra(px_per_cm)` names (cm):
+    /// the selection's handles, whose knobs stand off the figure by a number
+    /// of pixels (so asked again at the scale the first fit gave).
+    pub fn fit_to_with(&mut self, scene: &Scene, bounds: Bounds<Pixels>, extra: &dyn Fn(f32) -> Vec<Pt>) {
+        self.fit_target(scene.bounds.clone(), scene, bounds);
+        if is_empty_rect(&scene.bounds) {
+            return;
+        }
+        for _ in 0..2 {
+            let pts = extra(self.xf(bounds).scale);
+            if pts.is_empty() {
+                break;
+            }
+            let mut r = scene.bounds.clone();
+            for p in pts {
+                r.min = Pt { x: r.min.x.min(p.x), y: r.min.y.min(p.y) };
+                r.max = Pt { x: r.max.x.max(p.x), y: r.max.y.max(p.y) };
+            }
+            self.fit_target(r, scene, bounds);
+        }
+    }
+
+    fn fit_target(&mut self, target: Rect, scene: &Scene, bounds: Bounds<Pixels>) {
         self.fit(scene);
         if is_empty_rect(&scene.bounds) {
             return;
         }
+        self.target = target;
         let fill = self.fill_scale(bounds);
         let at_one = fill.clamp(MIN_FIT, MAX_FIT);
         self.zoom = (fill / at_one).clamp(0.2, FIT_ZOOM_MAX);
@@ -469,4 +509,10 @@ pub fn ghost_outline(r: &Recognized, scene: &Scene) -> Vec<Vec<Pt>> {
         }
         Recognized::Nothing => vec![],
     }
+}
+
+/// (figure-qol B) The PDF's page (cm): the Scene's bounds and the standalone border.
+pub fn page_rect(scene: &Scene) -> Rect {
+    let b = ntex_figures::pagesize::BORDER_CM;
+    Rect { min: Pt { x: scene.bounds.min.x - b, y: scene.bounds.min.y - b }, max: Pt { x: scene.bounds.max.x + b, y: scene.bounds.max.y + b } }
 }

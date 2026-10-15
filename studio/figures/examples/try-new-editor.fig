@@ -1,0 +1,12 @@
+% Try the new editor: ⌥-drag copies, ⇧-drag keeps it level, ⌘C/⌘V paste shorthand, ⌘R reverses an arrow,
+% click a selected label to edit it (Tab walks every label), hold ⌘ for the page frame, ⌘1 is actual size.
+A at 0,0
+B at 1,0
+C at 0,1
+D at 1,1
+A -f-> B
+A -g-> C swap
+B -h-> D
+C -k-> D swap
+ngon P 4 axis 1 "s" rotation cw at (6,-0.7)
+blob G "G" {x, y} at (10,-0.7)

@@ -48,7 +48,7 @@ impl Tool {
     /// The footnote for the tool.
     pub fn hint(self) -> &'static str {
         match self {
-            Tool::Select => "V click, ⇧-click or drag a box to select · drag the handles to resize and turn · drag moves the selection (⌥ copies, ⇧ keeps a line, ⌘ goes free) · drag an arrow's end dots onto another object · ⌘R reverses an arrow · ⌘C ⌘X ⌘V · double-click a label or ↵ to edit it · ⌫ deletes · right-click for more",
+            Tool::Select => "V click, ⇧-click or drag a box selects · drag moves (⌥ copies, ⇧ keeps a line, ⌘ goes free) · end dots reattach an arrow · ⌘R reverses · ↵ edits · right-click for more",
             Tool::Node => "N click: a node on the nearest cell (⌘ anywhere), then type its label",
             Tool::Arrow => "A drag from one object to another: an arrow, then type its label",
             Tool::Blob => "B drag a rectangle: a blob of that size",
@@ -81,6 +81,12 @@ pub enum Gesture {
     Handle { start: Box<DragStart>, last: Option<Item>, down_px: Point<Pixels>, moved: bool },
     /// Select: a box dragged on empty canvas; `base` was selected before (⇧).
     Marquee { a: Pt, b: Pt, base: Vec<ObjRef> },
+    /// (figure-qol B) ⌘-drag on a corner of the page frame: the whole figure
+    /// scales (the `scale` global) about the opposite corner, which stays put
+    /// on screen. `fixed_px` / `start_px`: that corner and the grabbed one
+    /// (window px); `fixed_cm`: the opposite corner in the base figure;
+    /// `base_target`: the view before (the figure is kept where it is drawn).
+    PageScale { base: Box<Figure>, right: bool, top: bool, fixed_cm: Pt, fixed_px: (f32, f32), start_px: (f32, f32), base_target: Rect, down_px: Point<Pixels>, moved: bool },
 }
 
 /// (figure-qol A) A drag of the selection: every object moves together, each
@@ -106,6 +112,9 @@ pub struct MoveG {
     /// The draft's last positions (to skip a repeat), and how far the grabbed object has gone (cm).
     pub last: Option<Vec<(ObjRef, Pos)>>,
     pub shift: Pt,
+    /// ⇧ pressed on this object: a click without a drag toggles it in the
+    /// selection (on release); a drag takes it along with the selection.
+    pub shift_pick: Option<ObjRef>,
 }
 
 /// One object of a drag: where it starts (cm, as drawn) and the placed parts
@@ -128,6 +137,8 @@ impl Gesture {
 pub const GHOST: Duration = Duration::from_millis(150);
 /// Mouse travel (px) before a press becomes a drag.
 const DRAG_START: f32 = 3.0;
+/// (figure-qol B) How near (px) a press must be to a page-frame corner to take it.
+pub const PAGE_GRIP: f32 = 12.0;
 
 fn movable(obj: &ObjRef) -> bool {
     matches!(obj, ObjRef::Node(_) | ObjRef::Blob(_) | ObjRef::Element(_) | ObjRef::NGon(_) | ObjRef::NGonVertex(..) | ObjRef::Cayley(_) | ObjRef::CayleyVertex(..) | ObjRef::CayleyEdge(..) | ObjRef::Text(_))
@@ -296,6 +307,13 @@ impl FigureView {
         }
         if !m.moved {
             m.moved = true;
+            // a ⇧-press that turned into a drag: the object joins the selection
+            if let Some(o) = m.shift_pick.take()
+                && !self.selection.contains(&o)
+            {
+                self.selection.push(o);
+                m.sel0 = self.selection.clone();
+            }
             self.begin_move(&mut m, ev.modifiers.alt);
         }
         let scene = m.scene.clone().unwrap_or_else(|| self.doc.scene.clone());
@@ -349,7 +367,11 @@ impl FigureView {
     fn begin_move(&mut self, m: &mut MoveG, alt: bool) {
         let cell = self.cell();
         if alt {
-            let src = self.doc.figure.clone();
+            // the objects the layout placed for her stay where they are drawn,
+            // the ones being copied too (the copies are pinned, not them)
+            let mut src = self.doc.figure.clone();
+            let scene = self.doc.scene.clone();
+            pin_auto_nodes_except(&mut src, &scene, cell, &[]);
             let mut fig = src.clone();
             let sel: Vec<ObjRef> = self.selection.clone();
             match ntex_figures::clip::copy_objects(&mut fig, &src, &sel, Pt::default(), false) {
@@ -422,6 +444,23 @@ impl FigureView {
         if self.menu.take().is_some() {
             cx.notify();
         }
+        // (figure-qol B) ⌘ held: a corner of the page frame scales the figure
+        // (only where nothing else is under the pointer: an object, a handle or
+        // the node / polygon tool's click comes first, even at the frame's corner)
+        if ev.modifiers.platform
+            && !ev.modifiers.shift
+            && self.cmd_held_or(&ev.modifiers)
+            && !matches!(tool, Tool::Node | Tool::Polygon)
+            && let Some((right, top)) = self.page_corner_at(ev.position, &xf)
+            && (tool != Tool::Select || handles::hit(&self.handle_list(xf.scale), ev.position, &xf).is_none())
+            && self.pick_raw(p, &xf).is_none()
+            && self.part_label_at(p, &xf).is_none()
+        {
+            self.start_page_scale(right, top, ev.position, &xf);
+            window.prevent_default();
+            cx.notify();
+            return;
+        }
         // (class C) the labels of an n-gon's axes and rotation arrow: a double-click,
         // or a click once the n-gon is selected, edits them in place
         if tool == Tool::Select
@@ -445,10 +484,12 @@ impl FigureView {
             && let Some(raw) = self.pick_raw(p, &xf)
         {
             self.gesture = None;
-            if let ObjRef::CayleyVertex(c, w) = &raw
-                && !self.selection.iter().any(|s| matches!(s, ObjRef::CayleyVertex(..)))
-            {
-                self.selection = vec![ObjRef::CayleyVertex(c.clone(), w.clone())];
+            // (review U11) a double-click on a vertex of a Cayley graph names it right away
+            if let ObjRef::CayleyVertex(c, w) = &raw {
+                let v = ObjRef::CayleyVertex(c.clone(), w.clone());
+                self.selection = vec![v.clone()];
+                self.start_label_edit(v, window, cx);
+                window.prevent_default();
                 cx.notify();
                 return;
             }
@@ -535,11 +576,14 @@ impl FigureView {
             if !ev.modifiers.shift && on_label && self.selection == vec![obj.clone()] && !matches!(obj, ObjRef::Cayley(_) | ObjRef::NGon(_)) {
                 self.click_edit = Some(obj.clone());
             }
-            let mut toggled_off = false;
+            // (review U1) ⇧ decides on release: a click without a drag toggles the
+            // object in the selection; dragging takes it, and the selection, along
+            let mut shift_pick = None;
             if ev.modifiers.shift {
-                if let Some(i) = self.selection.iter().position(|o| o == &obj) {
+                if movable(&obj) {
+                    shift_pick = Some(obj.clone());
+                } else if let Some(i) = self.selection.iter().position(|o| o == &obj) {
                     self.selection.remove(i);
-                    toggled_off = true;
                 } else {
                     self.selection.push(obj.clone());
                 }
@@ -547,7 +591,7 @@ impl FigureView {
                 self.selection = vec![obj.clone()];
             }
             // (figure-qol A) the whole selection moves with the object grabbed
-            if movable(&obj) && !toggled_off {
+            if movable(&obj) && (!ev.modifiers.shift || shift_pick.is_some()) {
                 let primary = mover(&obj);
                 let mut objs: Vec<ObjRef> = Vec::new();
                 for o in self.selection.iter().map(mover) {
@@ -571,6 +615,7 @@ impl FigureView {
                     scene: None,
                     last: None,
                     shift: Pt::default(),
+                    shift_pick,
                 })));
             }
             cx.notify();
@@ -619,6 +664,11 @@ impl FigureView {
 
     pub fn canvas_moved(&mut self, ev: &MouseMoveEvent, xf: Xf, _window: &mut Window, cx: &mut Context<Self>) {
         let p = xf.to_cm(ev.position);
+        // (figure-qol B) the page frame follows ⌘ (also when the key went down elsewhere)
+        if self.cmd_held != ev.modifiers.platform && self.gesture.is_none() {
+            self.cmd_held = ev.modifiers.platform;
+            cx.notify();
+        }
         if matches!(self.gesture, Some(Gesture::Move(_))) {
             if ev.pressed_button.is_some() {
                 self.drag_move(ev, p, cx);
@@ -692,6 +742,15 @@ impl FigureView {
                 self.marquee_select(a, b, &base);
                 cx.notify();
             }
+            Gesture::PageScale { down_px, moved, .. } => {
+                let travel = (f32::from(ev.position.x - down_px.x)).hypot(f32::from(ev.position.y - down_px.y));
+                if !*moved && travel < DRAG_START {
+                    return;
+                }
+                *moved = true;
+                self.page_scale_moved(ev.position);
+                cx.notify();
+            }
         }
     }
 
@@ -717,6 +776,15 @@ impl FigureView {
             Gesture::Move(m) => {
                 self.drag_scene = None;
                 self.readout = None;
+                // ⇧-click (no drag): toggle the object in the selection
+                if !m.moved && let Some(o) = m.shift_pick.clone() {
+                    match self.selection.iter().position(|x| x == &o) {
+                        Some(i) => {
+                            self.selection.remove(i);
+                        }
+                        None => self.selection.push(o),
+                    }
+                }
                 if m.moved && let Some(fig) = self.drag_figure.take() {
                     if m.copied {
                         // a copy dropped where it started is no copy
@@ -752,8 +820,126 @@ impl FigureView {
             }
             Gesture::Handle { start, last, .. } => self.handle_done(*start, last, cx),
             Gesture::Marquee { a, b, base } => self.marquee_select(a, b, &base),
+            Gesture::PageScale { moved, base_target, .. } => {
+                self.drag_scene = None;
+                self.readout = None;
+                match self.drag_figure.take() {
+                    // one undo step: the scale
+                    Some(fig) if moved && fig.globals != self.doc.figure.globals => {
+                        self.commit_figure(fig, "resize the figure", cx);
+                    }
+                    _ => self.view.target = base_target,
+                }
+            }
         }
         cx.notify();
+    }
+
+    // -- (figure-qol B) the page frame --------------------------------------------
+
+    fn cmd_held_or(&self, m: &gpui::Modifiers) -> bool {
+        self.cmd_held || m.platform
+    }
+
+    /// Which corner of the page frame is under the pointer: (right, top).
+    pub fn page_corner_at(&self, at: Point<Pixels>, xf: &Xf) -> Option<(bool, bool)> {
+        let scene = &self.doc.scene;
+        if geom::is_empty_rect(&scene.bounds) || self.doc.is_empty() {
+            return None;
+        }
+        let r = geom::page_rect(scene);
+        let mut best: Option<(f32, (bool, bool))> = None;
+        for right in [false, true] {
+            for top in [false, true] {
+                let c = Pt { x: if right { r.max.x } else { r.min.x }, y: if top { r.max.y } else { r.min.y } };
+                let q = xf.to_px(c);
+                let d = (f32::from(at.x - q.x)).hypot(f32::from(at.y - q.y));
+                if d <= PAGE_GRIP && best.is_none_or(|(b, _)| d < b) {
+                    best = Some((d, (right, top)));
+                }
+            }
+        }
+        best.map(|(_, c)| c)
+    }
+
+    fn start_page_scale(&mut self, right: bool, top: bool, at: Point<Pixels>, xf: &Xf) {
+        let r = geom::page_rect(&self.doc.scene);
+        let corner = |right: bool, top: bool| Pt { x: if right { r.max.x } else { r.min.x }, y: if top { r.max.y } else { r.min.y } };
+        let fixed_cm = corner(!right, !top);
+        let (f, s) = (xf.to_px(fixed_cm), xf.to_px(corner(right, top)));
+        let _ = at;
+        self.selection_hover_clear();
+        self.gesture = Some(Gesture::PageScale {
+            base: Box::new(self.doc.figure.clone()),
+            right,
+            top,
+            fixed_cm,
+            fixed_px: (f32::from(f.x), f32::from(f.y)),
+            start_px: (f32::from(s.x), f32::from(s.y)),
+            base_target: self.view.target.clone(),
+            down_px: at,
+            moved: false,
+        });
+    }
+
+    fn selection_hover_clear(&mut self) {
+        self.hover = None;
+        self.hover_handle = None;
+    }
+
+    /// The pointer moved with the corner held: the page width follows it
+    /// along the diagonal, the scale is solved for, the draft is laid out.
+    fn page_scale_moved(&mut self, pos: Point<Pixels>) {
+        let Some(Gesture::PageScale { base, right, top, fixed_cm, fixed_px, start_px, base_target, .. }) = &self.gesture else { return };
+        let (base, right, top, fixed_cm, fixed_px, start_px, base_target) = ((**base).clone(), *right, *top, *fixed_cm, *fixed_px, *start_px, base_target.clone());
+        let (dx, dy) = (start_px.0 - fixed_px.0, start_px.1 - fixed_px.1);
+        let (px_, py_) = (f32::from(pos.x) - fixed_px.0, f32::from(pos.y) - fixed_px.1);
+        let ratio = ((px_ * dx + py_ * dy) / (dx * dx + dy * dy).max(1.0)).max(0.05);
+        let base_scene = doc::scene_of(&base);
+        let page_w = ntex_figures::pagesize::page_size(&base_scene).0;
+        let bounds = self.canvas_bounds.get();
+        // the grabbed corner stays on the canvas (inset a little): the figure
+        // can't be dragged off the edge, where it couldn't be seen to size it
+        let inset = 10.0;
+        let mut ratio = ratio;
+        if let Some(b) = bounds {
+            let (l, r, t, bt) = (f32::from(b.left()) + inset, f32::from(b.right()) - inset, f32::from(b.top()) + inset, f32::from(b.bottom()) - inset);
+            let cap = |d: f32, f: f32, lo: f32, hi: f32| if d > 1e-3 { (hi - f) / d } else if d < -1e-3 { (lo - f) / d } else { f32::MAX };
+            let room = cap(dx, fixed_px.0, l, r).min(cap(dy, fixed_px.1, t, bt));
+            // (a figure already past the edge may still shrink)
+            ratio = ratio.min(room.max(1.0));
+        }
+        let (mut fig, mut scene);
+        let mut tries = 0;
+        loop {
+            let Some(scale) = ntex_figures::pagesize::scale_for_width(&base, (page_w * ratio).max(0.5)) else { return };
+            fig = base.clone();
+            fig.globals.scale = scale;
+            scene = doc::scene_of(&fig);
+            let r = geom::page_rect(&scene);
+            let f1 = Pt { x: if right { r.min.x } else { r.max.x }, y: if top { r.min.y } else { r.max.y } };
+            // the opposite corner stays where it is on screen
+            let (ddx, ddy) = (f1.x - fixed_cm.x, f1.y - fixed_cm.y);
+            self.view.target = Rect { min: Pt { x: base_target.min.x + ddx, y: base_target.min.y + ddy }, max: Pt { x: base_target.max.x + ddx, y: base_target.max.y + ddy } };
+            // the labels don't scale with the figure: check where the corner really is
+            let off = bounds.is_some_and(|b| {
+                let xf = self.view.xf(b);
+                let g = xf.to_px(Pt { x: if right { r.max.x } else { r.min.x }, y: if top { r.max.y } else { r.min.y } });
+                let m = gpui::px(inset - 1.0);
+                g.x < b.left() + m || g.x > b.right() - m || g.y < b.top() + m || g.y > b.bottom() - m
+            });
+            tries += 1;
+            if !off || tries > 12 || ratio <= 1.0 {
+                break;
+            }
+            ratio *= 0.96;
+        }
+        let (w, h) = ntex_figures::pagesize::page_size(&scene);
+        let at = bounds.map(|b| self.view.xf(b).to_cm(pos)).unwrap_or(Pt { x: geom::page_rect(&scene).max.x, y: geom::page_rect(&scene).min.y });
+        let scale = fig.globals.scale;
+        self.readout = Some((at, format!("{} · scale {}", ntex_figures::pagesize::fmt_size(w, h), super::inspector::fmt_num(scale))));
+        self.drag_scene = Some(Arc::new(scene));
+        self.drag_figure = Some(fig);
     }
 
     fn last_of_kind_ngon(&self) -> Option<String> {

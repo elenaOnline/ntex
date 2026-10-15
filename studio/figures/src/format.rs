@@ -99,6 +99,39 @@ pub fn without_spans(fig: &Figure) -> Figure {
             Item::Comment { span, .. } => *span = z,
         }
     }
+    // (review U14/C11) formatting memory compares by what it does: entries about
+    // objects that are gone or labels that changed are dropped, and an option
+    // order counts as the order the statement is actually written in
+    let mut plain = fig.clone();
+    plain.hints.option_order.clear();
+    let mut order = Vec::new();
+    let (mut explicit, mut turns) = (Vec::new(), Vec::new());
+    for (i, it) in fig.items.iter().enumerate() {
+        let (key, name) = match it {
+            Item::Blob(b) => (format!("blob:{}", b.name), &b.name),
+            Item::NGon(g) => (format!("ngon:{}", g.name), &g.name),
+            Item::Cayley(c) => (format!("cayley:{}", c.name), &c.name),
+            _ => continue,
+        };
+        let _ = name;
+        let eff = option_heads(&item(fig, i));
+        if eff.len() > 1 && eff != option_heads(&item(&plain, i)) {
+            order.push((key.clone(), eff));
+        }
+        if let Item::Blob(b) = it {
+            if b.label == default_label(&b.name) && fig.hints.explicit_labels.contains(&key) {
+                explicit.push(key.clone());
+            }
+        }
+        if let Item::NGon(g) = it {
+            if g.turn_neg {
+                turns.extend(fig.hints.turn_spelled.iter().filter(|(n, _)| *n == g.name).cloned());
+            }
+        }
+    }
+    f.hints.option_order = order;
+    f.hints.explicit_labels = explicit;
+    f.hints.turn_spelled = turns;
     f
 }
 
@@ -359,6 +392,61 @@ pub(crate) fn pos(p: &Pos) -> String {
     }
 }
 
+/// (review U14) The option words of a statement, in the order written: `at`,
+/// `labels`, `rotation`, … (the first two chunks are the keyword and the name).
+pub(crate) fn option_heads(stmt: &str) -> Vec<String> {
+    split_options(stmt).1.into_iter().map(|(h, _)| h).collect()
+}
+
+const OPTION_HEADS: &[&str] = &[
+    "at", "labels", "axes", "axis", "rotation", "edge", "turn", "flip", "radius", "angle", "plain", "shaded", "color", "in", "shape", "size", "label", "legend",
+    "layout", "gens", "vertex", "name",
+];
+
+/// A statement → (its leading words, its options as (head, text)).
+fn split_options(stmt: &str) -> (String, Vec<(String, String)>) {
+    let chars: Vec<char> = stmt.chars().collect();
+    let cs = parse::chunks(&chars);
+    let mut prefix: Vec<&str> = Vec::new();
+    let mut opts: Vec<(String, String)> = Vec::new();
+    for (k, c) in cs.iter().enumerate() {
+        let head = c.text.split('=').next().unwrap_or("");
+        let is_head = k >= 2 && !c.text.starts_with(['"', '{', '(']) && OPTION_HEADS.contains(&head);
+        if is_head {
+            opts.push((head.to_string(), c.text.clone()));
+        } else if let Some(last) = opts.last_mut() {
+            last.1.push(' ');
+            last.1.push_str(&c.text);
+        } else {
+            prefix.push(&c.text);
+        }
+    }
+    (prefix.join(" "), opts)
+}
+
+/// (review U14) A formatted statement with its options back in the order she
+/// wrote them (options that weren't there before go last, in the usual order).
+fn keep_order(fig: &Figure, key: String, stmt: String) -> String {
+    let Some((_, order)) = fig.hints.option_order.iter().find(|(k, _)| *k == key) else { return stmt };
+    let (prefix, opts) = split_options(&stmt);
+    let mut taken = vec![false; opts.len()];
+    let mut out = prefix;
+    for h in order {
+        if let Some(j) = (0..opts.len()).find(|&j| !taken[j] && opts[j].0 == *h) {
+            taken[j] = true;
+            out.push(' ');
+            out.push_str(&opts[j].1);
+        }
+    }
+    for (j, o) in opts.iter().enumerate() {
+        if !taken[j] {
+            out.push(' ');
+            out.push_str(&o.1);
+        }
+    }
+    out
+}
+
 fn quote(l: &str) -> String {
     format!("\"{l}\"")
 }
@@ -531,9 +619,9 @@ fn elem(fig: &Figure, e: &Element) -> String {
     s
 }
 
-fn blob_stmt(fig: &Figure, b: &Blob) -> String {
+fn blob_stmt0(fig: &Figure, b: &Blob) -> String {
     let mut s = format!("blob {}", b.name);
-    if b.label != default_label(&b.name) {
+    if b.label != default_label(&b.name) || fig.hints.explicit_labels.contains(&format!("blob:{}", b.name)) {
         s.push(' ');
         s.push_str(&quote(&sp(fig, &format!("blob:{}", b.name), &b.label)));
     }
@@ -619,7 +707,7 @@ fn axis(v: u32) -> String {
     if v % 2 == 0 { format!("{}", v / 2) } else { format!("{}.5", (v - 1) / 2) }
 }
 
-fn ngon_stmt(fig: &Figure, g: &NGon) -> String {
+fn ngon_stmt0(fig: &Figure, g: &NGon) -> String {
     let mut s = format!("ngon {} {}", g.name, g.n);
     let default: Vec<String> = (1..=g.n).map(|k| k.to_string()).collect();
     if g.labels != default {
@@ -669,14 +757,24 @@ fn ngon_stmt(fig: &Figure, g: &NGon) -> String {
             s.push_str(&format!(" edge={e}"));
         }
     }
-    if g.rotation > 0
-        && let Some(l) = &g.rotation_label
+    // (review C9) a label with no arrow is written as `rotation=0 "ρ"`
+    if g.rotation == 0
+        && g.rotation_label.is_some()
     {
+        s.push_str(" rotation=0");
+    }
+    if let Some(l) = &g.rotation_label {
         s.push_str(&format!(" {}", quote(&sp(fig, &format!("ngon:{}.rot", g.name), l))));
     }
     if g.turn != 0 {
         if g.turn_neg {
-            s.push_str(&format!(" turn=-{}", g.n.max(1).saturating_sub(g.turn % g.n.max(1)).max(1)));
+            let n = g.n.max(1);
+            let canon = n.saturating_sub(g.turn % n).max(1);
+            // (review C11) her `turn=-9` while it still says the same turn
+            match fig.hints.turn_spelled.iter().find(|(n, _)| *n == g.name).map(|x| x.1) {
+                Some(k) if k < 0 && k.unsigned_abs() % n as u64 == canon as u64 % n as u64 => s.push_str(&format!(" turn={k}")),
+                _ => s.push_str(&format!(" turn=-{canon}")),
+            }
         } else {
             s.push_str(&format!(" turn={}", g.turn));
         }
@@ -703,7 +801,7 @@ fn ngon_stmt(fig: &Figure, g: &NGon) -> String {
     s
 }
 
-fn cayley_stmt(fig: &Figure, c: &Cayley) -> String {
+fn cayley_stmt0(fig: &Figure, c: &Cayley) -> String {
     let mut s = String::from("cayley");
     let spelled = |v: &[String], kind: &str| -> Vec<String> {
         v.iter().enumerate().map(|(k, l)| sp(fig, &format!("{kind}:{}.{}", c.name, k + 1), l)).collect()
@@ -770,7 +868,9 @@ fn cayley_stmt(fig: &Figure, c: &Cayley) -> String {
         s.push_str(&format!(" angle={}", num(c.angle)));
     }
     for (w, l) in &c.vertex_names {
-        s.push_str(&format!(" vertex {w} {}", quote(&sp(fig, &format!("cayley:{}.v.{w}", c.name), l))));
+        // (review C2) a word with a space or a backslash (`\rho \sigma`) is quoted
+        let word = if w.chars().any(|ch| ch.is_whitespace() || ch == '"' || ch == '\\') { quote(w) } else { w.clone() };
+        s.push_str(&format!(" vertex {word} {}", quote(&sp(fig, &format!("cayley:{}.v.{w}", c.name), l))));
     }
     if let Some(p) = &c.pos {
         s.push(' ');
@@ -780,7 +880,14 @@ fn cayley_stmt(fig: &Figure, c: &Cayley) -> String {
 }
 
 fn text_stmt(fig: &Figure, t: &Text) -> String {
-    format!("text {} {}", quote(&sp(fig, "text", &t.text)), pos(&t.pos))
+    let mut s = format!("text {} {}", quote(&sp(fig, "text", &t.text)), pos(&t.pos));
+    if let Some(c) = &t.color {
+        s.push_str(&format!(" color={c}"));
+    }
+    if let Some(z) = &t.size {
+        s.push_str(&format!(" size={z}"));
+    }
+    s
 }
 
 /// (FIG-POLISH) The globals with a remembered place: (key, item index, line).
@@ -810,4 +917,16 @@ fn globals_lines(g: &Globals) -> Vec<String> {
         v.push(format!("size {}", g.size));
     }
     v
+}
+
+fn blob_stmt(fig: &Figure, b: &Blob) -> String {
+    keep_order(fig, format!("blob:{}", b.name), blob_stmt0(fig, b))
+}
+
+fn ngon_stmt(fig: &Figure, g: &NGon) -> String {
+    keep_order(fig, format!("ngon:{}", g.name), ngon_stmt0(fig, g))
+}
+
+fn cayley_stmt(fig: &Figure, c: &Cayley) -> String {
+    keep_order(fig, format!("cayley:{}", c.name), cayley_stmt0(fig, c))
 }

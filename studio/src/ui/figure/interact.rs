@@ -701,7 +701,10 @@ impl FigureView {
 
     /// Copy `objs` `offset` (cm, as drawn) away as one undo step; the copies become the selection.
     fn copy_with_offset(&mut self, objs: &[ObjRef], offset: Pt, what: &str, cx: &mut Context<Self>) -> bool {
-        let src = self.doc.figure.clone();
+        // the nodes the layout placed for her stay where they are drawn
+        let mut src = self.doc.figure.clone();
+        let (scene, cell) = (self.doc.scene.clone(), self.cell());
+        super::tools::pin_auto_nodes_except(&mut src, &scene, cell, &[]);
         let mut fig = src.clone();
         match ntex_figures::clip::copy_objects(&mut fig, &src, objs, offset, false) {
             Ok(got) if !got.pairs.is_empty() => {
@@ -732,9 +735,17 @@ impl FigureView {
 
     /// ⌘C / ⌘X: the selection as `.fig` shorthand on the clipboard (⌘X also deletes it).
     pub fn copy_selection(&mut self, cut: bool, cx: &mut Context<Self>) -> bool {
-        let objs = self.copyable();
+        let mut objs = self.copyable();
+        // an element lives in its blob: it copies with the blob (⌘D / ⌥-drag copy
+        // an element on its own, as another element of the same blob)
+        let elements = objs.iter().filter(|o| matches!(o, ObjRef::Element(_))).count();
+        objs.retain(|o| !matches!(o, ObjRef::Element(_)));
         let Some(text) = ntex_figures::clip::to_shorthand(&self.doc.figure, &objs) else {
-            self.toast("Select an object to copy (an arrow only goes with its ends).", cx);
+            if elements > 0 && objs.is_empty() {
+                self.toast("A point belongs to its blob, so ⌘C can't carry it alone: copy the blob, or ⌘D / ⌥-drag the point to add another to the same blob.", cx);
+            } else {
+                self.toast("Select an object to copy (an arrow only goes with its ends).", cx);
+            }
             return false;
         };
         cx.write_to_clipboard(gpui::ClipboardItem::new_string(text.clone()));
@@ -747,47 +758,74 @@ impl FigureView {
             self.delete_selection(cx);
             self.toast(format!("Cut ({n}) — ⌘V pastes them back, ⌘Z undoes."), cx);
         } else {
-            self.toast(format!("Copied ({n}) as shorthand — ⌘V pastes."), cx);
+            if elements > 0 {
+                self.toast(format!("Copied ({n}) as shorthand — ⌘V pastes. (Points go with their blob; ⌘D copies a point.)"), cx);
+            } else {
+                self.toast(format!("Copied ({n}) as shorthand — ⌘V pastes."), cx);
+            }
         }
         true
     }
 
-    /// ⌘V: the clipboard's shorthand, as objects. What this window copied
-    /// lands half a cell right and down, and each further paste another
-    /// half cell; shorthand from elsewhere lands where it was written (a
-    /// pasted-back cut too), then steps the same way. The pasted objects
-    /// become the selection.
+    /// ⌘V: the clipboard's shorthand, as objects, where it was written
+    /// unless that would put an object exactly on one already there (what
+    /// this window copied, usually): then it steps one cell right and down
+    /// (half a cell when it is only shapes), and each further paste another
+    /// step. The pasted objects become the selection.
     pub fn paste(&mut self, cx: &mut Context<Self>) -> bool {
+        use ntex_figures::clip;
         let Some(text) = cx.read_from_clipboard().and_then(|c| c.text()) else {
             self.toast("Nothing to paste: the clipboard has no text.", cx);
             return false;
         };
-        let own = self.clip.copied.as_deref() == Some(text.as_str()) && !self.clip.cut;
-        let n = match &self.clip.pasted {
-            Some((t, n)) if *t == text => n + 1,
-            _ => u32::from(own),
-        };
-        let cell = self.cell();
-        let offset = Pt { x: n as f32 * 0.5 * cell.0, y: -(n as f32) * 0.5 * cell.1 };
-        let mut fig = self.doc.figure.clone();
-        match ntex_figures::clip::paste_into(&mut fig, &text, offset) {
-            Ok(got) => {
-                if !self.commit_grouped(fig, "paste", None, cx) {
-                    return false;
-                }
-                let mut sel: Vec<ObjRef> = got.pairs.into_iter().map(|(_, n)| n).collect();
-                sel.extend(got.arrows);
-                let count = sel.len();
-                self.selection = sel;
-                self.clip.pasted = Some((text, n));
-                self.toast(format!("Pasted ({count}) — ⌘Z undoes."), cx);
-                true
-            }
+        let parsed = match clip::from_shorthand(&text) {
+            Ok(f) => f,
             Err(e) => {
                 self.toast(format!("Nothing to paste: {e}."), cx);
-                false
+                return false;
+            }
+        };
+        let cell = self.cell();
+        // a step is one cell for nodes (they stay on the grid), half for shapes
+        let step = if parsed.items.iter().any(|it| matches!(it, Item::Node(_))) { 1.0 } else { 0.5 };
+        let first = match &self.clip.pasted {
+            Some((t, n)) if *t == text => n + 1,
+            _ => 0,
+        };
+        // the objects the layout placed stay where they are drawn
+        let mut base = self.doc.figure.clone();
+        let scene = self.doc.scene.clone();
+        super::tools::pin_auto_nodes_except(&mut base, &scene, cell, &[]);
+        let there: Vec<Pt> = scene.anchors.iter().filter(|(o, _, _)| matches!(o, ObjRef::Node(_) | ObjRef::Blob(_) | ObjRef::NGon(_) | ObjRef::Cayley(_) | ObjRef::Text(_) | ObjRef::Element(_))).map(|(_, p, _)| *p).collect();
+        let mut tried = None;
+        for n in first..first + 40 {
+            let offset = Pt { x: n as f32 * step * cell.0, y: -(n as f32) * step * cell.1 };
+            let mut fig = base.clone();
+            let Ok(got) = clip::paste_parsed(&mut fig, &parsed, offset) else { break };
+            let drawn = doc::scene_of(&fig);
+            // a pasted object on top of one that was there: step on
+            let clash = got.pairs.iter().any(|(_, o)| {
+                geom::center_of(&drawn, o).is_some_and(|c| there.iter().any(|q| (q.x - c.x).abs() < 0.2 * cell.0 && (q.y - c.y).abs() < 0.2 * cell.1))
+            });
+            tried = Some((n, fig, got));
+            if !clash {
+                break;
             }
         }
+        let Some((n, fig, got)) = tried else {
+            self.toast("Nothing to paste: that text holds no figure objects.", cx);
+            return false;
+        };
+        if !self.commit_grouped(fig, "paste", None, cx) {
+            return false;
+        }
+        let mut sel: Vec<ObjRef> = got.pairs.into_iter().map(|(_, n)| n).collect();
+        sel.extend(got.arrows);
+        let count = sel.len();
+        self.selection = sel;
+        self.clip.pasted = Some((text, n));
+        self.toast(format!("Pasted ({count}) — ⌘Z undoes."), cx);
+        true
     }
 
     /// The colour of the selection (`None`: the default).
@@ -804,6 +842,7 @@ impl FigureView {
                 Item::Arrow(a) => a.color = c.clone(),
                 Item::Blob(b) => b.color = c.clone(),
                 Item::NGon(g) => g.color = c.clone(),
+                Item::Text(x) => x.color = c.clone(),
                 _ => continue,
             }
             if item == fig.items[i] {

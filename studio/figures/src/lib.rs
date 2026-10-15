@@ -9,6 +9,7 @@ pub mod cayley;    // FIG-CORE-B
 pub mod tikz;      // FIG-CORE-B
 pub mod recognize; // FIG-CORE-B
 pub mod build;     // FIG-CORE-B
+pub mod pagesize;  // figure-qol B
 pub mod spelling;  // FIG-POLISH
 pub mod clip;      // figure-qol A: copy, paste and clone objects
 pub(crate) mod gridedit; // FIG-INTERACT: grid blocks edited in place

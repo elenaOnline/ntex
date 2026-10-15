@@ -134,3 +134,18 @@ fn text_that_is_not_shorthand_is_refused() {
     assert!(from_shorthand("A -> B\n").is_ok());
     assert!(from_shorthand("ngon P 4 rotation\n").is_ok());
 }
+
+/// (merge of A and E) a copied or pasted text keeps her colour and size.
+#[test]
+fn a_copied_text_keeps_its_colour_and_size() {
+    let src = "text \"kernel\" at (1,1) color=teal size=large\n";
+    let f = fig(src);
+    let mut g = f.clone();
+    let got = copy_objects(&mut g, &f, &[ObjRef::Text(0)], Pt { x: 1.0, y: 0.0 }, false).unwrap();
+    assert_eq!(got.pairs.len(), 1);
+    let texts: Vec<&Text> = g.items.iter().filter_map(|i| if let Item::Text(t) = i { Some(t) } else { None }).collect();
+    assert_eq!(texts.len(), 2);
+    assert_eq!((texts[1].color.clone(), texts[1].size.clone()), (texts[0].color.clone(), texts[0].size.clone()));
+    let clip = to_shorthand(&f, &[ObjRef::Text(0)]).unwrap();
+    assert!(clip.contains("color=teal") && clip.contains("size=large"), "{clip}");
+}

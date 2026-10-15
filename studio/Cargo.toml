@@ -72,3 +72,9 @@ harness = false
 [[test]]
 name = "usability"
 harness = false
+
+# The Library page (every snippet: search, edit in place), offscreen with a
+# real headless ntex bridge, on a temp copy of the config (evidence/library/).
+[[test]]
+name = "library"
+harness = false

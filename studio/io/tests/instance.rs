@@ -19,7 +19,7 @@ fn two_claims_in_process() {
     let Instance::Primary(rx) = claim(&paths, &first).unwrap() else { panic!("the first claim must be primary") };
     assert!(socket_path(&paths).exists());
 
-    let second = OpenRequest { page: Some("inbox".into()), output: Some("x^2".into()), context: Some("math".into()), ft: Some("tex".into()), figure: None };
+    let second = OpenRequest { page: Some("inbox".into()), output: Some("x^2".into()), context: Some("math".into()), ft: Some("tex".into()), figure: None, background: true };
     match claim(&paths, &second).unwrap() {
         Instance::Forwarded => {}
         Instance::Primary(_) => panic!("the second claim must forward"),
@@ -90,4 +90,31 @@ fn args() {
 
     // a missing file: no output, no crash
     assert_eq!(parse_args(&s(&["--output-file", "/nonexistent/x"])).output, None);
+}
+
+#[test]
+fn background_flag_parses() {
+    let a = |s: &[&str]| s.iter().map(|x| x.to_string()).collect::<Vec<_>>();
+    assert!(parse_args(&a(&["--background"])).background);
+    assert!(parse_args(&a(&["--page", "inbox", "--background"])).background);
+    let r = parse_args(&a(&["--background", "--page", "inbox"]));
+    assert!(r.background && r.page.as_deref() == Some("inbox"), "the flag takes no value");
+    assert!(!parse_args(&a(&["--page", "inbox"])).background);
+}
+
+#[test]
+fn background_flag_round_trips_over_the_socket_and_defaults_off() {
+    let t = TempDir::new("instbg");
+    let paths = paths_in(&t);
+    let Instance::Primary(rx) = claim(&paths, &OpenRequest::default()).unwrap() else { panic!("primary") };
+    let bg = OpenRequest { figure: Some("/tmp/x.fig".into()), background: true, ..Default::default() };
+    assert!(matches!(claim(&paths, &bg).unwrap(), Instance::Forwarded));
+    let got = rx.recv_timeout(Duration::from_secs(5)).unwrap();
+    assert!(got.background && got.figure.as_deref() == Some("/tmp/x.fig"));
+    // a normal request after it is not background
+    assert!(matches!(claim(&paths, &OpenRequest::default()).unwrap(), Instance::Forwarded));
+    assert!(!rx.recv_timeout(Duration::from_secs(5)).unwrap().background);
+    // an old client's JSON (no field) is a normal request
+    let old: OpenRequest = serde_json::from_str(r#"{"page":"inbox"}"#).unwrap();
+    assert!(!old.background);
 }

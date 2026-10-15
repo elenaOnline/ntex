@@ -258,6 +258,20 @@ impl Win {
 
     /// Click the middle of a named control.
     fn click_ui(&mut self, key: &str) -> bool {
+        // the panel scrolls: wheel it until the control is in its visible part, as a user would
+        for _ in 0..30 {
+            let (Some(b), Some(p)) = (self.ui(key), self.ui("panel.box")) else { break };
+            let pinned = self.ui("panel.figure.toggle");
+            if key == "panel.figure.toggle" && b.top() >= p.top() && b.bottom() <= p.bottom() {
+                break;
+            }
+            let pinned_top = pinned.filter(|h| h.bottom() <= p.bottom() + px(1.) && h.top() > p.top() + px(100.)).map(|h| h.top()).unwrap_or(p.bottom());
+            let (c, top, bottom) = (b.center().y, p.top() + px(30.), pinned_top - px(12.));
+            let dy = if c < top { 120.0 } else if c > bottom { -120.0 } else { break };
+            let at = point(p.center().x, p.top() + px(40.));
+            self.event(PlatformInput::ScrollWheel(gpui::ScrollWheelEvent { position: at, delta: gpui::ScrollDelta::Pixels(point(px(0.), px(dy))), modifiers: Modifiers::default(), touch_phase: gpui::TouchPhase::Moved }));
+            self.draw();
+        }
         match self.ui(key) {
             Some(b) => {
                 self.click(b.center());

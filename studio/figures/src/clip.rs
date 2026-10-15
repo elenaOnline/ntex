@@ -62,11 +62,11 @@ fn fresh_node(taken: &HashSet<String>) -> String {
 fn fresh_ngon(taken: &HashSet<String>, dotted: &[String], old: &str) -> String {
     // `P` → `P2`, `P3`, …; `P2` → `P3`
     let digits = old.trim_end_matches(|c: char| c.is_ascii_digit());
-    let (base, start) = if digits.len() < old.len() && !digits.is_empty() { (digits.to_string(), old[digits.len()..].parse::<u32>().unwrap_or(1) + 1) } else { (old.to_string(), 2) };
-    (start..)
+    let (base, start) = if digits.len() < old.len() && !digits.is_empty() { (digits.to_string(), old[digits.len()..].parse::<u64>().unwrap_or(1).saturating_add(1)) } else { (old.to_string(), 2) };
+    (start..=u64::MAX)
         .map(|k| format!("{base}{k}"))
         .find(|c| !taken.contains(&canon(c)) && !dotted.iter().any(|d| d.starts_with(&format!("{c}."))))
-        .unwrap()
+        .unwrap_or_else(|| fresh_node(taken))
 }
 
 /// `key` of a spelling record with the names of `map` renamed (None when it
@@ -108,17 +108,17 @@ pub fn copy_objects(dst: &mut Figure, src: &Figure, objs: &[ObjRef], offset: Pt,
     let dst_cell = (dsp.0 * dst_scale, dsp.1 * dst_scale);
 
     // -- what is copied
-    let mut want_nodes: Vec<String> = Vec::new();
-    let mut want_blobs: Vec<String> = Vec::new();
-    let mut want_ngons: Vec<String> = Vec::new();
-    let mut want_cayleys: Vec<String> = Vec::new();
+    // (sets of canonical names: copying thousands of objects stays linear)
+    let mut want_nodes: HashSet<String> = HashSet::new();
+    let mut want_blobs: HashSet<String> = HashSet::new();
+    let mut want_ngons: HashSet<String> = HashSet::new();
+    let mut want_cayleys: HashSet<String> = HashSet::new();
     let mut want_texts: Vec<usize> = Vec::new();
-    let mut want_elems: Vec<String> = Vec::new();
-    let mut want_arrows: Vec<usize> = Vec::new();
-    let push = |v: &mut Vec<String>, n: &String| {
-        if !v.iter().any(|x| canon(x) == canon(n)) {
-            v.push(n.clone());
-        }
+    let mut seen_texts: HashSet<usize> = HashSet::new();
+    let mut want_elems: HashSet<String> = HashSet::new();
+    let mut want_arrows: HashSet<usize> = HashSet::new();
+    let push = |v: &mut HashSet<String>, n: &String| {
+        v.insert(canon(n));
     };
     for o in objs {
         match o {
@@ -127,15 +127,13 @@ pub fn copy_objects(dst: &mut Figure, src: &Figure, objs: &[ObjRef], offset: Pt,
             ObjRef::NGon(n) | ObjRef::NGonVertex(n, _) | ObjRef::NGonRotation(n) | ObjRef::NGonAxis(n, _) | ObjRef::NGonRotationLabel(n) => push(&mut want_ngons, n),
             ObjRef::Cayley(n) | ObjRef::CayleyVertex(n, _) | ObjRef::CayleyEdge(n, _) => push(&mut want_cayleys, n),
             ObjRef::Text(i) => {
-                if !want_texts.contains(i) {
+                if seen_texts.insert(*i) {
                     want_texts.push(*i)
                 }
             }
             ObjRef::Element(n) => push(&mut want_elems, n),
             ObjRef::Arrow(i) => {
-                if !want_arrows.contains(i) {
-                    want_arrows.push(*i)
-                }
+                want_arrows.insert(*i);
             }
         }
     }
@@ -145,10 +143,9 @@ pub fn copy_objects(dst: &mut Figure, src: &Figure, objs: &[ObjRef], offset: Pt,
         for it in &src.items {
             if let Item::Blob(b) = it
                 && let Some(p) = &b.parent
-                && want_blobs.iter().any(|w| canon(w) == canon(p))
-                && !want_blobs.iter().any(|w| canon(w) == canon(&b.name))
+                && want_blobs.contains(&canon(p))
             {
-                want_blobs.push(b.name.clone());
+                want_blobs.insert(canon(&b.name));
             }
         }
         if want_blobs.len() == before {
@@ -156,10 +153,18 @@ pub fn copy_objects(dst: &mut Figure, src: &Figure, objs: &[ObjRef], offset: Pt,
         }
     }
     // an element of a copied blob comes with the blob
-    want_elems.retain(|e| {
-        !src.items.iter().any(|it| matches!(it, Item::Blob(b) if want_blobs.iter().any(|w| canon(w) == canon(&b.name)) && b.elements.iter().any(|x| canon(&x.name) == canon(e))))
-    });
-    let has = |v: &[String], n: &str| v.iter().any(|w| canon(w) == canon(n));
+    let with_blob: HashSet<String> = src
+        .items
+        .iter()
+        .filter_map(|it| match it {
+            Item::Blob(b) if want_blobs.contains(&canon(&b.name)) => Some(b.elements.iter().map(|x| canon(&x.name))),
+            _ => None,
+        })
+        .flatten()
+        .collect();
+    want_elems.retain(|e| !with_blob.contains(e));
+    let has = |v: &HashSet<String>, n: &str| v.contains(&canon(n));
+    let dst_blobs: HashSet<String> = dst.items.iter().filter_map(|it| if let Item::Blob(b) = it { Some(canon(&b.name)) } else { None }).collect();
 
     // -- names
     let mut taken = names(dst);
@@ -219,9 +224,18 @@ pub fn copy_objects(dst: &mut Figure, src: &Figure, objs: &[ObjRef], offset: Pt,
             None => at.map(|q| Pos::Abs(two(q.x / src_scale + offset.x / dst_scale), two(q.y / src_scale + offset.y / dst_scale))),
         }
     };
-    let frame_centre = |o: ObjRef| scene.shapes.iter().find(|s| s.obj == o).map(|s| s.centre);
-    let anchor = |o: ObjRef| scene.anchors.iter().find(|(x, _, _)| *x == o).map(|x| x.1);
-    let root_has = |o: &ObjRef| objs.contains(o);
+    let mut centres: HashMap<&ObjRef, Pt> = HashMap::new();
+    for s in &scene.shapes {
+        centres.entry(&s.obj).or_insert(s.centre);
+    }
+    let mut anchors: HashMap<&ObjRef, Pt> = HashMap::new();
+    for (o, p, _) in &scene.anchors {
+        anchors.entry(o).or_insert(*p);
+    }
+    let frame_centre = |o: ObjRef| centres.get(&o).copied();
+    let anchor = |o: ObjRef| anchors.get(&o).copied();
+    let root: HashSet<&ObjRef> = objs.iter().collect();
+    let root_has = |o: &ObjRef| root.contains(o);
     let label_for = |old_label: &str, old: &str, new: &str| -> String {
         if old_label == parse::default_label(old) { parse::default_label(new) } else { old_label.to_string() }
     };
@@ -253,7 +267,10 @@ pub fn copy_objects(dst: &mut Figure, src: &Figure, objs: &[ObjRef], offset: Pt,
                 let mut c = b.clone();
                 c.name = new.clone();
                 c.label = label_for(&b.label, &b.name, &new);
-                c.parent = b.parent.as_ref().map(|p| map.get(p).cloned().unwrap_or_else(|| p.clone()));
+                // `in P` stays only where P exists in the copy's figure (copied
+                // along, or already there): shorthand naming a missing blob
+                // can't be pasted.
+                c.parent = b.parent.as_ref().and_then(|p| map.get(p).cloned().or_else(|| dst_blobs.contains(&canon(p)).then(|| p.clone())));
                 c.pos = shift(b.pos, frame_centre(ObjRef::Blob(b.name.clone())));
                 c.span = Span::default();
                 for e in c.elements.iter_mut() {
@@ -303,7 +320,7 @@ pub fn copy_objects(dst: &mut Figure, src: &Figure, objs: &[ObjRef], offset: Pt,
     for &i in &want_texts {
         if let Some(Item::Text(t)) = src.items.get(i) {
             let pos = shift(Some(t.pos), None).unwrap_or(t.pos);
-            text_pairs.push((i, Text { text: t.text.clone(), pos, span: Span::default() }));
+            text_pairs.push((i, Text { pos, span: Span::default(), ..t.clone() }));
         }
     }
     // arrows between copied objects
@@ -336,6 +353,12 @@ pub fn copy_objects(dst: &mut Figure, src: &Figure, objs: &[ObjRef], offset: Pt,
 
     // -- write them
     let mut out = Cloned::default();
+    let sp_id = |s: &Spelling| (s.key.clone(), s.latex.clone(), s.raw.clone());
+    let mut have_sp: HashSet<(String, String, String)> = dst.hints.spelling.iter().map(sp_id).collect();
+    let mut by_key: HashMap<&str, Vec<&Spelling>> = HashMap::new();
+    for s in &src.hints.spelling {
+        by_key.entry(s.key.as_str()).or_default().push(s);
+    }
     dst.items.extend(new_items);
     for (owner, e) in elem_adds {
         match dst.items.iter_mut().find_map(|x| match x {
@@ -352,7 +375,7 @@ pub fn copy_objects(dst: &mut Figure, src: &Figure, objs: &[ObjRef], offset: Pt,
         out.pairs.push((ObjRef::Text(i), ObjRef::Text(dst.items.len() - 1)));
         // (free text is spelled by its LaTeX alone)
         for s in src.hints.spelling.iter().filter(|s| s.key == "text") {
-            if matches!(src.items.get(i), Some(Item::Text(t)) if t.text == s.latex) && !dst.hints.spelling.contains(s) {
+            if matches!(src.items.get(i), Some(Item::Text(t)) if t.text == s.latex) && have_sp.insert(sp_id(s)) {
                 dst.hints.spelling.push(s.clone());
             }
         }
@@ -360,9 +383,9 @@ pub fn copy_objects(dst: &mut Figure, src: &Figure, objs: &[ObjRef], offset: Pt,
     for (i, a, old_key) in arrow_items {
         let new_key = crate::spelling::arrow_key(&a.from, &a.to);
         if let Some(l) = &a.label {
-            for s in src.hints.spelling.iter().filter(|s| s.key == old_key && &s.latex == l) {
+            for s in by_key.get(old_key.as_str()).into_iter().flatten().filter(|s| &s.latex == l) {
                 let n = Spelling { key: new_key.clone(), latex: s.latex.clone(), raw: s.raw.clone() };
-                if !dst.hints.spelling.contains(&n) {
+                if have_sp.insert(sp_id(&n)) {
                     dst.hints.spelling.push(n);
                 }
             }
@@ -375,10 +398,10 @@ pub fn copy_objects(dst: &mut Figure, src: &Figure, objs: &[ObjRef], offset: Pt,
         }
     }
     // her spelling of the copied labels
-    for s in src.hints.spelling.clone() {
+    for s in &src.hints.spelling {
         if let Some(k) = rename_key(&s.key, &map) {
             let n = Spelling { key: k, latex: s.latex.clone(), raw: s.raw.clone() };
-            if !dst.hints.spelling.contains(&n) {
+            if have_sp.insert(sp_id(&n)) {
                 dst.hints.spelling.push(n);
             }
         }
@@ -401,6 +424,9 @@ pub fn to_shorthand(fig: &Figure, objs: &[ObjRef]) -> Option<String> {
     (!s.trim().is_empty()).then_some(s)
 }
 
+/// The deepest `{…}` nesting a paste accepts.
+pub const MAX_NESTING: usize = 24;
+
 /// Shorthand text (from the clipboard) as a figure, or why it isn't one.
 /// Text that doesn't parse cleanly, or that holds no objects, is refused.
 pub fn from_shorthand(text: &str) -> Result<Figure, String> {
@@ -409,6 +435,22 @@ pub fn from_shorthand(text: &str) -> Result<Figure, String> {
     }
     if text.trim().is_empty() {
         return Err("the clipboard is empty".into());
+    }
+    // braces nested deeper than any label needs: not a figure (and the
+    // layout shouldn't be asked to measure it)
+    let (mut depth, mut deepest) = (0usize, 0usize);
+    for c in text.chars() {
+        match c {
+            '{' => {
+                depth += 1;
+                deepest = deepest.max(depth);
+            }
+            '}' => depth = depth.saturating_sub(1),
+            _ => {}
+        }
+    }
+    if deepest > MAX_NESTING {
+        return Err(format!("that text nests braces {deepest} deep; figure shorthand never needs more than {MAX_NESTING}"));
     }
     let (fig, diags) = parse::parse(text);
     if let Some(d) = diags.iter().find(|d| d.severity != Severity::Note) {
@@ -424,8 +466,13 @@ pub fn from_shorthand(text: &str) -> Result<Figure, String> {
 /// where it was written, with fresh names where its names are taken.
 pub fn paste_into(dst: &mut Figure, text: &str, offset: Pt) -> Result<Cloned, String> {
     let src = from_shorthand(text)?;
-    let objs = all_objects(&src);
-    let mut got = copy_objects(dst, &src, &objs, offset, true)?;
+    paste_parsed(dst, &src, offset)
+}
+
+/// `paste_into` for shorthand already read by `from_shorthand`.
+pub fn paste_parsed(dst: &mut Figure, src: &Figure, offset: Pt) -> Result<Cloned, String> {
+    let objs = all_objects(src);
+    let mut got = copy_objects(dst, src, &objs, offset, true)?;
     got.pairs.retain(|(_, n)| !matches!(n, ObjRef::Arrow(_)));
     Ok(got)
 }
