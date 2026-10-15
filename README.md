@@ -91,10 +91,8 @@ To build Ntex Studio and Ntex Figures as well:
 ~/.config/texnvim/install.sh --studio   # = studio/build.sh: fonts from tectonic, then cargo build --release
 ```
 
-> **Building the apps currently needs access to a private dependency.** Studio and
-> Figures use a patched GPUI from [elenaOnline/iron-drawxide](https://github.com/elenaOnline/iron-drawxide),
-> which is not public yet, so `cargo build` will fail to fetch it for now. The
-> Neovim side has no such dependency.
+The apps build against a patched GPUI, [elenaOnline/gpui-patched](https://github.com/elenaOnline/gpui-patched)
+(Zed's GPUI plus a small patch queue, Apache-2.0), which Cargo fetches by itself.
 
 Then, inside ntex, `Space n` opens Studio and `Space g` opens the figure under
 the cursor (or a new one). Saving a `.fig` rebuilds its PDF; the `.tex` just
@@ -208,7 +206,7 @@ and behaviours come from [Obsidian Latex Suite](https://github.com/artisticat1/o
 Built on [LuaSnip](https://github.com/L3MON4D3/LuaSnip),
 [VimTeX](https://github.com/lervag/vimtex), [snacks.nvim](https://github.com/folke/snacks.nvim),
 [blink.cmp](https://github.com/saghen/blink.cmp), [tectonic](https://tectonic-typesetting.github.io),
-[KaTeX](https://katex.org) and [GPUI](https://www.gpui.rs).
+[KaTeX](https://katex.org) and [GPUI](https://www.gpui.rs) (patched: [gpui-patched](https://github.com/elenaOnline/gpui-patched)).
 
 ## License
 

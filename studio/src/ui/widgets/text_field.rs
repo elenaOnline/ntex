@@ -1,7 +1,6 @@
 //! A single-line (or multi-line) text field drawn as a fill-in blank: a thin
 //! baseline rule, blue when focused. IME, selection, clipboard, ⌥-word and
-//! ⌘-line motions, undo. Model: GPUI's examples/input.rs, as drawxide-ui's
-//! text_input.rs does; the editing core is `edit.rs`.
+//! ⌘-line motions, undo. Model: GPUI's examples/input.rs; the editing core is `edit.rs`.
 //!
 //! Keys (context "NtexEdit TextField"): ←/→/↑/↓ (⇧ selects), ⌥←/→ words,
 //! ⌘←/→ line, ⌘↑/↓ document, ⌫ ⌦ ⌥⌫ ⌘⌫, ⌘A ⌘C ⌘X ⌘V, ⌘Z ⌘⇧Z, Return

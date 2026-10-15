@@ -23,11 +23,11 @@ path = "src/main.rs"
 ntex-studio-core = { path = "core" }
 ntex-studio-io = { path = "io" }
 ntex-figures = { path = "figures" }
-# A patched GPUI (iron-drawxide's vendored Zed copy, the same pin as
-# another project): it has a headless Metal renderer, so every screen can be rendered
+# A patched GPUI (github.com/elenaOnline/gpui-patched: Zed's GPUI plus a
+# patch queue): it has a headless Metal renderer, so every screen can be rendered
 # and checked offscreen without a window ever appearing.
-gpui = { git = "https://github.com/elenaOnline/iron-drawxide", rev = "6ed3e1b77c8b268002bfa8114d86076d7e053bb4", default-features = false }
-gpui_platform = { git = "https://github.com/elenaOnline/iron-drawxide", rev = "6ed3e1b77c8b268002bfa8114d86076d7e053bb4", default-features = false, features = ["font-kit", "runtime_shaders"] }
+gpui = { git = "https://github.com/elenaOnline/gpui-patched", rev = "7b48484ef37c217facd650bedbeeab95f5510792", default-features = false }
+gpui_platform = { git = "https://github.com/elenaOnline/gpui-patched", rev = "7b48484ef37c217facd650bedbeeab95f5510792", default-features = false, features = ["font-kit", "runtime_shaders"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 unicode-segmentation = "1"
@@ -35,8 +35,8 @@ unicode-segmentation = "1"
 image = { version = "0.25", default-features = false, features = ["png"] }
 
 [dev-dependencies]
-gpui = { git = "https://github.com/elenaOnline/iron-drawxide", rev = "6ed3e1b77c8b268002bfa8114d86076d7e053bb4", default-features = false, features = ["test-support"] }
-gpui_platform = { git = "https://github.com/elenaOnline/iron-drawxide", rev = "6ed3e1b77c8b268002bfa8114d86076d7e053bb4", default-features = false, features = ["test-support"] }
+gpui = { git = "https://github.com/elenaOnline/gpui-patched", rev = "7b48484ef37c217facd650bedbeeab95f5510792", default-features = false, features = ["test-support"] }
+gpui_platform = { git = "https://github.com/elenaOnline/gpui-patched", rev = "7b48484ef37c217facd650bedbeeab95f5510792", default-features = false, features = ["test-support"] }
 image = { version = "0.25", default-features = false, features = ["png"] }
 
 # Offscreen renders of every screen (AppKit wants the text system on the main

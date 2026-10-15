@@ -212,9 +212,6 @@ the comment in `ntex-notes.sty` says custom blocks live in ntex-blocks.sty.
 - No orphan processes: every nvim/tectonic/claude child is killed on drop, on
   quit and on panic.
 - Don't commit. The architect commits.
-- Reference sources for GPUI: the vendored Zed copy at
-  `~/.cargo/git/checkouts/iron-drawxide-e0f2eadc13c7c365/6ed3e1b/vendor/zed/crates/gpui`,
-  and drawxide-ui's components at
-  `~/.cargo/git/checkouts/iron-drawxide-e0f2eadc13c7c365/6ed3e1b/crates/drawxide-ui/src/components/`.
-  `text_input.rs` is a complete IME text field built on GPUI's
-  examples/input.rs.
+- Reference source for GPUI: the patched Zed copy Cargo checks out from
+  github.com/elenaOnline/gpui-patched (under `~/.cargo/git/checkouts/`).
+  GPUI's examples/input.rs shows a complete IME text field.
