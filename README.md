@@ -91,6 +91,11 @@ To build Ntex Studio and Ntex Figures as well:
 ~/.config/texnvim/install.sh --studio   # = studio/build.sh: fonts from tectonic, then cargo build --release
 ```
 
+> **Building the apps currently needs access to a private dependency.** Studio and
+> Figures use a patched GPUI from [elenaOnline/iron-drawxide](https://github.com/elenaOnline/iron-drawxide),
+> which is not public yet, so `cargo build` will fail to fetch it for now. The
+> Neovim side has no such dependency.
+
 Then, inside ntex, `Space n` opens Studio and `Space g` opens the figure under
 the cursor (or a new one). Saving a `.fig` rebuilds its PDF; the `.tex` just
 says `\includegraphics{figures/name}`.
