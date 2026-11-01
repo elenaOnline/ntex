@@ -11,3 +11,7 @@ pub mod colour;
 pub mod apply;
 pub mod prefs;
 pub mod library;
+pub mod look;
+pub mod looks;
+pub mod notes;
+pub mod ghostty;

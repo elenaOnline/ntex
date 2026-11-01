@@ -14,7 +14,7 @@
 //! themselves.
 use crate::model::*;
 use crate::model::Context as SnipContext;
-use crate::ui::screens::{block::BlockPage, inbox::InboxPage, library::LibraryPage, shell, snippet::SnippetPage};
+use crate::ui::screens::{block::BlockPage, inbox::InboxPage, library::LibraryPage, look::LookPage, notes::NotesPage, shell, snippet::SnippetPage, terminal::TerminalPage};
 use gpui::{
     App, AppContext as _, Bounds, Context, FocusHandle, Focusable, Global, InteractiveElement as _, IntoElement,
     KeyBinding, ParentElement as _, Pixels, Render, RenderImage, ScrollHandle, SharedString, Styled as _, Subscription,
@@ -38,6 +38,12 @@ actions!(
         PageInbox,
         /// ⌘4
         PageLibrary,
+        /// ⌘5: the editor look (palette, structure marks)
+        PageLook,
+        /// ⌘6: the notes look (typeface, boxes, colors of the PDF)
+        PageNotes,
+        /// ⌘7: the terminal look (Ghostty and cmux)
+        PageTerminal,
         /// ⌘F: search the library
         LibSearch,
         /// ↑ in the library (its list or its search field)
@@ -77,8 +83,16 @@ pub const KEY_CONTEXT: &str = "Studio";
 pub const INBOX_CONTEXT: &str = "InboxTable";
 pub const LIBRARY_CONTEXT: &str = "LibraryList";
 
-/// How often the poll loop drains the receivers.
+/// How often the poll loop drains the receivers while something is going on
+/// (typing, a render or a check in flight, a toast fading) …
 const POLL: Duration = Duration::from_millis(16);
+/// … and when the studio has been still for `HOT_FOR` (nothing to drain but
+/// the mtime watches and the next Space n): 60 wakeups a second, all day, in
+/// a studio that ⌘W only hides, cost battery for nothing.
+const POLL_IDLE: Duration = Duration::from_millis(100);
+/// Fast polling lasts this long after the last render (every edit, result
+/// and fade renders).
+const HOT_FOR: Duration = Duration::from_secs(3);
 /// The inbox file's mtime is checked this often (hand edits, sorting).
 const MTIME_EVERY: Duration = Duration::from_secs(1);
 /// A toast stays at full slate ink this long …
@@ -115,6 +129,9 @@ pub fn init(cx: &mut gpui::App) {
         // (bound after the kit, so it wins over their Submit at the same depth)
         KeyBinding::new("cmd-enter", Save, Some("NtexEdit")),
         KeyBinding::new("cmd-4", PageLibrary, s),
+        KeyBinding::new("cmd-5", PageLook, s),
+        KeyBinding::new("cmd-6", PageNotes, s),
+        KeyBinding::new("cmd-7", PageTerminal, s),
         KeyBinding::new("cmd-f", LibSearch, s),
         KeyBinding::new("up", LibUp, Some(LIBRARY_CONTEXT)),
         KeyBinding::new("down", LibDown, Some(LIBRARY_CONTEXT)),
@@ -150,6 +167,9 @@ pub enum Page {
     Block,
     Inbox,
     Library,
+    Look,
+    Notes,
+    Terminal,
 }
 
 impl Page {
@@ -159,6 +179,9 @@ impl Page {
             "block" => Some(Page::Block),
             "inbox" => Some(Page::Inbox),
             "library" => Some(Page::Library),
+            "look" => Some(Page::Look),
+            "notes" => Some(Page::Notes),
+            "terminal" => Some(Page::Terminal),
             _ => None,
         }
     }
@@ -458,11 +481,21 @@ pub struct Studio {
     pub block: BlockPage,
     pub inbox_page: InboxPage,
     pub library: LibraryPage,
+    /// The editor look (look.json), for the Look page.
+    pub look: crate::core::look::Look,
+    pub look_page: LookPage,
+    /// The notes look (notes-look.json), for the Notes page.
+    pub notes: crate::core::notes::NotesLook,
+    pub notes_page: NotesPage,
+    /// The terminal look (Ghostty, cmux), for the Terminal page.
+    pub terminal: TerminalPage,
     pub open_rx: Option<Receiver<OpenRequest>>,
     /// Hide requests (quiet mode counts them instead of hiding).
     pub hides: u32,
     /// Frame changed: written to state/window.json on the next pump.
     bounds_dirty: Option<Bounds<Pixels>>,
+    /// Poll fast until then (see `POLL_IDLE`).
+    hot_until: Option<Instant>,
     _poll: Option<Task<()>>,
     _subs: Vec<Subscription>,
 }
@@ -481,7 +514,11 @@ impl Studio {
         let block = BlockPage::new(window, cx, &mut subs);
         let inbox_page = InboxPage::new(cx);
         let library = LibraryPage::new(window, cx, &mut subs);
+        let look_page = LookPage::new(window, cx, &mut subs);
+        let notes_page = NotesPage::new(window, cx, &mut subs);
+        let terminal = TerminalPage::new(window, cx, &mut subs);
         let renderer = safe("Renderer::new", || Renderer::new(&paths));
+        let paths_look = paths.clone();
         let mut studio = Studio {
             paths,
             prefs,
@@ -507,9 +544,15 @@ impl Studio {
             block,
             inbox_page,
             library,
+            look: crate::core::look::read(&paths_look),
+            look_page,
+            notes: crate::core::notes::read(&paths_look),
+            notes_page,
+            terminal,
             open_rx: None,
             hides: 0,
             bounds_dirty: None,
+            hot_until: None,
             _poll: None,
             _subs: subs,
         };
@@ -524,10 +567,15 @@ impl Studio {
         studio.block_changed(cx);
         // the poll loop: drains every receiver, runs debounces, the toast, the mtime watch
         studio._poll = Some(cx.spawn_in(window, async move |this, cx| {
+            let mut every = POLL;
             loop {
-                cx.background_executor().timer(POLL).await;
-                if this.update_in(cx, |s, window, cx| s.pump(window, cx)).is_err() {
-                    break;
+                cx.background_executor().timer(every).await;
+                match this.update_in(cx, |s, window, cx| {
+                    s.pump(window, cx);
+                    s.poll_every(cx)
+                }) {
+                    Ok(e) => every = e,
+                    Err(_) => break,
                 }
             }
         }));
@@ -537,6 +585,11 @@ impl Studio {
 
     pub fn now(&self, cx: &App) -> Instant {
         cx.background_executor().now()
+    }
+
+    /// The poll loop's next wait: `POLL` while anything renders, `POLL_IDLE` after.
+    fn poll_every(&self, cx: &App) -> Duration {
+        if self.hot_until.is_some_and(|t| self.now(cx) < t) { POLL } else { POLL_IDLE }
     }
 
     // -- the bridge --------------------------------------------------------
@@ -677,6 +730,7 @@ impl Studio {
         changed |= self.pump_block(now, cx);
         changed |= self.pump_inbox(now, cx);
         changed |= self.pump_library(now, cx);
+        changed |= self.pump_terminal(now, cx);
 
         if let Some(t) = &self.toast {
             let age = now.saturating_duration_since(t.at);
@@ -744,6 +798,20 @@ impl Studio {
                     self.reload_library(cx);
                 }
                 self.library.search.read(cx).focus.clone().focus(window, cx);
+            }
+            Page::Notes => {
+                self.reload_notes();
+                self.notes_sync_hex(cx);
+                self.focus.clone().focus(window, cx);
+            }
+            Page::Look => {
+                self.reload_look();
+                self.look_sync_hex(cx);
+                self.focus.clone().focus(window, cx);
+            }
+            Page::Terminal => {
+                self.reload_terminal(cx);
+                self.focus.clone().focus(window, cx);
             }
         }
         cx.notify();
@@ -863,6 +931,9 @@ impl Studio {
             Page::Block => self.block_hints(window, cx),
             Page::Inbox => self.inbox_hints(window, cx),
             Page::Library => self.library_hints(window, cx),
+            Page::Look => self.look_hints(window, cx),
+            Page::Notes => self.notes_hints(window, cx),
+            Page::Terminal => self.terminal_hints(window, cx),
         }
     }
 
@@ -890,11 +961,15 @@ impl Focusable for Studio {
 
 impl Render for Studio {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+        self.hot_until = Some(self.now(cx) + HOT_FOR);
         let body = match self.page {
             Page::Snippet => self.render_snippet(window, cx).into_any_element(),
             Page::Block => self.render_block(window, cx).into_any_element(),
             Page::Inbox => self.render_inbox(window, cx).into_any_element(),
             Page::Library => self.render_library(window, cx).into_any_element(),
+            Page::Look => self.render_look(window, cx).into_any_element(),
+            Page::Notes => self.render_notes(window, cx).into_any_element(),
+            Page::Terminal => self.render_terminal(window, cx).into_any_element(),
         };
         let page = shell::frame(self, body, window, cx);
         div()
@@ -905,6 +980,9 @@ impl Render for Studio {
             .on_action(cx.listener(|s, _: &PageBlock, w, cx| s.set_page(Page::Block, w, cx)))
             .on_action(cx.listener(|s, _: &PageInbox, w, cx| s.set_page(Page::Inbox, w, cx)))
             .on_action(cx.listener(|s, _: &PageLibrary, w, cx| s.set_page(Page::Library, w, cx)))
+            .on_action(cx.listener(|s, _: &PageLook, w, cx| s.set_page(Page::Look, w, cx)))
+            .on_action(cx.listener(|s, _: &PageNotes, w, cx| s.set_page(Page::Notes, w, cx)))
+            .on_action(cx.listener(|s, _: &PageTerminal, w, cx| s.set_page(Page::Terminal, w, cx)))
             .on_action(cx.listener(|s, _: &LibSearch, w, cx| {
                 s.set_page(Page::Library, w, cx);
                 s.library.search.update(cx, |f, cx| f.select_all(cx));
@@ -912,12 +990,12 @@ impl Render for Studio {
             .on_action(cx.listener(|s, _: &Save, w, cx| match s.page {
                 Page::Snippet => s.save_snippet(w, cx),
                 Page::Block => s.save_block(w, cx),
-                Page::Inbox | Page::Library => {}
+                Page::Inbox | Page::Library | Page::Look | Page::Notes | Page::Terminal => {}
             }))
             .on_action(cx.listener(|s, _: &Clear, w, cx| match s.page {
                 Page::Snippet => s.clear_snippet(w, cx),
                 Page::Block => s.clear_block(w, cx),
-                Page::Inbox | Page::Library => {}
+                Page::Inbox | Page::Library | Page::Look | Page::Notes | Page::Terminal => {}
             }))
             .on_action(cx.listener(|s, _: &Undo, w, cx| s.undo_last(w, cx)))
             .on_action(cx.listener(|s, _: &Redo, _, cx| s.redo_last(cx)))
@@ -946,7 +1024,7 @@ impl Studio {
         let empty = match self.page {
             Page::Snippet => self.snippet_is_empty(),
             Page::Block => self.block_is_empty(),
-            Page::Inbox | Page::Library => true,
+            Page::Inbox | Page::Library | Page::Look | Page::Notes | Page::Terminal => true,
         };
         let in_field = !self.focus.is_focused(window);
         // editing a Library snippet: Esc leaves the field it is in, then goes

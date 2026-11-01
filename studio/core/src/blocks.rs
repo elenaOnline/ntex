@@ -811,7 +811,7 @@ pub fn specimen(block: &BlockDraft) -> String {
     let opt = if block.with_title { "[Specimen]" } else { "" };
     format!(
         "% Ntex Studio block specimen: a {base} beside the new ‘{title_plain}’ block.\n\
-         \\documentclass[11pt]{{article}}\n\
+         \\documentclass[12pt]{{article}}\n\
          \\usepackage{{ntex-notes}}\n\
          \\geometry{{paperwidth=13cm, paperheight=7cm, margin=6mm}}\n\
          \\pagestyle{{empty}}\n\

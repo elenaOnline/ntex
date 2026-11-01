@@ -5,4 +5,14 @@ reference/examples.json
 reference/build-report.txt
 reference/screenshots/
 templates/workshop/*.pdf
+look.json
+look.json.tmp
+
+# app icon mockups (not committed)
+studio/icon-work/
+templates/tex/ntex-notes-fonts.tex
+templates/tex/ntex-notes-look.tex
+notes-look.json
+notes-look.json.tmp
+terminal-look.json
 studio/target/

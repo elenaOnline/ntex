@@ -6,7 +6,11 @@
 # In ntex: Space n (a new snippet; in visual mode, from the selection),
 # Space N (the inbox), :SnippetStudio [page]. A second ntex-studio hands its
 # request to the running one and exits.
-BIN="$HOME/.config/texnvim/studio/target/release/ntex-studio"
+# The binary inside Ntex Studio.app (so the Dock shows Studio's name and
+# icon), else the bare release binary.
+REL="$HOME/.config/texnvim/studio/target/release"
+BIN="$REL/Ntex Studio.app/Contents/MacOS/ntex-studio"
+[ -x "$BIN" ] || BIN="$REL/ntex-studio"
 if [ ! -x "$BIN" ]; then
   echo "Ntex Studio isn't built yet. Build it with:" >&2
   echo "  ~/.config/texnvim/studio/build.sh" >&2

@@ -146,7 +146,7 @@ pub fn parse_args(args: &[String]) -> OpenRequest {
         match (flag.as_str(), value) {
             ("--page", Some(v)) => {
                 let v = v.to_lowercase();
-                if matches!(v.as_str(), "snippet" | "block" | "inbox") {
+                if matches!(v.as_str(), "snippet" | "block" | "inbox" | "library" | "look" | "notes" | "terminal") {
                     req.page = Some(v);
                 }
             }

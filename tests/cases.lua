@@ -118,7 +118,8 @@ local function defaults(T)
 
     io.write(("\n-- %s: turned-off defaults stay off\n"):format(ft))
     T.case("@a stays @a", ft, I("‸"), { "@a", I("@a‸") })
-    T.case("alpha stays alpha (no automatic backslash)", ft, I("‸"), { "alpha", I("alpha‸") })
+    T.case("alpha → \\alpha (yours, inbox, since 2026-10-21)", ft, I("‸"), { "alpha", I("\\alpha‸") })
+    T.case("gamma stays gamma (no automatic backslash)", ft, I("‸"), { "gamma", I("gamma‸") })
     T.case("\\tox stays \\tox (no space after macros)", ft, I("‸"), { "\\tox", I("\\tox‸") })
     T.case("\\leq3 stays \\leq3", ft, I("‸"), { "\\leq3", I("\\leq3‸") })
     T.case("QQ → \\mathbb{Q} (yours again since 2026-10-05)", ft, I("‸"), { "QQ", I("\\mathbb{Q}‸") })
@@ -184,6 +185,19 @@ local function english(T)
 end
 
 -- Every before/after in snippets/decisions.json, re-checked -----------------------
+-- decisions.json records the migration as it was; snippets edited since then expect
+-- their new output here instead (entry id|keys → text, in .tex and .md alike)
+local LATER = {
+  ["change-inside-23|and"] = "$\\text{ and }‸$", -- sets.lua: and → \text{ and }
+  ["kept-24|orr"] = "$\\text{ or }‸$", -- sets.lua: orr → \text{ or }
+  ["kept-0|CC"] = "$\\mathbb{C}‸$", -- sets.lua: CC → \mathbb{C}
+  ["dropped-own-115|CC"] = "$\\mathbb{C}‸$",
+  ["kept-18|st."] = "$\\text{ such that }‸$", -- sets.lua: st. → \text{ such that }
+  ["kept-28|eset"] = "$\\varnothing‸$", -- sets.lua: eset → \varnothing
+  ["kept-36|text"] = "$\\text{ ‸ }$", -- text.lua: text → \text{ <> }
+  ["off-38|alpha"] = "$\\alpha‸$", -- inbox.lua: alpha → \alpha (was alp)
+}
+
 local function decisions(T)
   local path = vim.env.TEXNVIM_DECISIONS
   local ok_read, data = pcall(function()
@@ -209,8 +223,9 @@ local function decisions(T)
         local st = T.state()
         local got = T.render(st)
         local want_sel = ex.after.sel ~= vim.NIL and ex.after.sel or nil
-        local good = got == ex.after.text and st.mode == ex.after.mode and (st.sel or nil) == want_sel
-        T.ok(("%-4s [%s] %s: %s → %s"):format(ex.ft, e.category, e.trigger, ex.keys, tostring(ex.after.text):gsub("\n", "⏎")), good,
+        local want = LATER[e.id .. "|" .. ex.keys] or ex.after.text
+        local good = got == want and st.mode == ex.after.mode and (st.sel or nil) == want_sel
+        T.ok(("%-4s [%s] %s: %s → %s"):format(ex.ft, e.category, e.trigger, ex.keys, tostring(want):gsub("\n", "⏎")), good,
           ("\n        got:      %s (mode %s, sel %s)"):format(vim.inspect(got), st.mode, vim.inspect(st.sel)))
       end
     end
@@ -870,7 +885,7 @@ local function system(T)
     end
     return { first = first, has_thm = has_thm, pdf = ok, written = vim.uv.fs_stat(dir .. "/notes.tex") ~= nil, view_automatic = vim.g.vimtex_view_automatic, method = vim.g.vimtex_compiler_method }
   ]], dir)
-  T.ok("     new .tex gets the article template (" .. tostring(r.first) .. ")", r.first == "\\documentclass[11pt]{article}" and r.has_thm)
+  T.ok("     new .tex gets the article template (" .. tostring(r.first) .. ")", r.first == "\\documentclass[12pt]{article}" and r.has_thm)
   T.ok("     :w writes the file", r.written)
   if compile then
     T.ok("     :w compiles with " .. tostring(r.method) .. " → notes.pdf", r.pdf)
@@ -1217,59 +1232,53 @@ local function ide(T)
   T.ok("     Space z offers Harper's fixes (" .. table.concat(vim.list_slice(fix.titles, 1, 3), " / ") .. ")", #fix.titles > 0 and fix.map:find("Harper") ~= nil)
 
   -- Copilot ----------------------------------------------------------------
-  -- skipped when prefs.lua has copilot = false or the server isn't installed
-  local cp_ready = T.lua([[local co = require("ide.copilot"); return require("config.prefs").copilot ~= false and co.cmd() ~= nil]])
-  if not cp_ready then
-    io.write("\n-- Copilot: skipped (prefs.lua copilot = false, or the server isn't installed)\n")
-  else
-    io.write("\n-- Copilot (not signed in)\n")
-    T.open("tex", "‸")
-    local cp = T.lua([[
-      local co = require("ide.copilot")
-      local ok = vim.wait(20000, function() return #vim.lsp.get_clients({ bufnr = 0, name = "copilot" }) > 0 end, 50)
-      vim.wait(15000, function() return co.status ~= nil end, 50)
-      local hints = 0
-      for _, m in ipairs(_G.__msgs) do if m:find("LspCopilotSignIn", 1, true) then hints = hints + 1 end end
-      local keys = {}
-      for _, k in ipairs({ { "i", "<M-l>" }, { "i", "<M-]>" }, { "i", "<M-[>" }, { "n", "<Space>a" } }) do
-        keys[#keys + 1] = vim.fn.maparg(k[2], k[1]) ~= "" and k[2] or nil
-      end
-      local tab = vim.fn.maparg("<Tab>", "i", false, true)
-      return { started = ok, status = co.status, on = co.on, hints = hints, keys = keys, inline = vim.lsp.inline_completion.is_enabled(),
-        signin = vim.fn.exists(":LspCopilotSignIn") == 2, tab = tab.desc or tab.rhs or "", cmd = co.cmd()[1] }
-    ]])
-    T.ok("     server started unauthenticated (status " .. tostring(cp.status) .. "; " .. vim.fs.basename(cp.cmd) .. ")", cp.started and cp.status == "NotSignedIn")
-    T.ok("     one quiet hint: “Copilot: run :LspCopilotSignIn” (" .. cp.hints .. "×), :LspCopilotSignIn exists", cp.hints == 1 and cp.signin)
-    T.ok("     keys: " .. table.concat(cp.keys, " "), #cp.keys == 4)
-    T.ok("     ghost text on at start (prefs.lua copilot_at_start), Tab is not Copilot's (" .. cp.tab .. ")", cp.on and cp.inline and not cp.tab:lower():find("copilot") and not cp.tab:lower():find("inline"))
-    -- (Esc and Space within 'ttimeoutlen' would arrive as Alt-Space)
-    T.type_keys("<Esc>")
-    T.lua([[vim.wait(100)]])
-    -- leader keys go in as one input (typed one by one, Space would time out)
-    local mark = T.lua([[return #_G.__msgs]])
-    T.rpc("nvim_input", " a")
-    T.sync()
-    local off = T.lua([[
-      vim.wait(5000, function() return #vim.lsp.get_clients({ name = "copilot" }) == 0 end, 50)
-      local mark = ...
-      vim.wait(500)
-      return { on = require("ide.copilot").on, clients = #vim.lsp.get_clients({ name = "copilot" }), inline = vim.lsp.inline_completion.is_enabled(), msg = table.concat(vim.list_slice(_G.__msgs, mark + 1), " | ") }
-    ]], mark)
-    T.ok("     Space a → off, server stopped (" .. tostring(off.msg) .. ")", off.on == false and off.clients == 0 and not off.inline and off.msg == "Copilot off", vim.inspect(off))
-    T.rpc("nvim_input", " a")
-    T.sync()
-    local on = T.lua([[
-      vim.wait(20000, function() return #vim.lsp.get_clients({ bufnr = 0, name = "copilot" }) > 0 end, 50)
-      local hints = 0
-      for _, m in ipairs(_G.__msgs) do if m:find("run :LspCopilotSignIn", 1, true) then hints = hints + 1 end end
-      return { on = require("ide.copilot").on, clients = #vim.lsp.get_clients({ bufnr = 0, name = "copilot" }), inline = vim.lsp.inline_completion.is_enabled(), msg = _G.__msgs[#_G.__msgs], hints = hints }
-    ]])
-    T.lua([[vim.wait(1000)]])
-    T.ok("     Space a → on again, server back (" .. tostring(on.msg) .. "), still one hint", on.on and on.clients == 1 and on.inline and on.hints == 1)
-    T.case("Tab still expands snippets with Copilot on: enum<Tab>", "tex", "‸", { "enum<Tab>", "\\begin{enumerate}\n\t\\item ‸\n\\end{enumerate}" })
-    T.case("Tab still expands \\sum's tabstops with Copilot on", "tex", "$‸$", { "sum", "$\\sum‸$", "<Tab>", { "$\\sum_{i=1}^{N}$", mode = "s", sel = "i" } })
-    T.case("Alt-l with no suggestion types nothing", "tex", "abc‸", { "<M-l>", "abc‸" })
-  end
+  io.write("\n-- Copilot (not signed in)\n")
+  T.open("tex", "‸")
+  local cp = T.lua([[
+    local co = require("ide.copilot")
+    local ok = vim.wait(20000, function() return #vim.lsp.get_clients({ bufnr = 0, name = "copilot" }) > 0 end, 50)
+    vim.wait(15000, function() return co.status ~= nil end, 50)
+    local hints = 0
+    for _, m in ipairs(_G.__msgs) do if m:find("LspCopilotSignIn", 1, true) then hints = hints + 1 end end
+    local keys = {}
+    for _, k in ipairs({ { "i", "<M-l>" }, { "i", "<M-]>" }, { "i", "<M-[>" }, { "n", "<Space>a" } }) do
+      keys[#keys + 1] = vim.fn.maparg(k[2], k[1]) ~= "" and k[2] or nil
+    end
+    local tab = vim.fn.maparg("<Tab>", "i", false, true)
+    return { started = ok, status = co.status, on = co.on, hints = hints, keys = keys, inline = vim.lsp.inline_completion.is_enabled(),
+      signin = vim.fn.exists(":LspCopilotSignIn") == 2, tab = tab.desc or tab.rhs or "", cmd = co.cmd()[1] }
+  ]])
+  T.ok("     server started unauthenticated (status " .. tostring(cp.status) .. "; " .. vim.fs.basename(cp.cmd) .. ")", cp.started and cp.status == "NotSignedIn")
+  T.ok("     one quiet hint: “Copilot: run :LspCopilotSignIn” (" .. cp.hints .. "×), :LspCopilotSignIn exists", cp.hints == 1 and cp.signin)
+  T.ok("     keys: " .. table.concat(cp.keys, " "), #cp.keys == 4)
+  T.ok("     ghost text on at start (prefs.lua copilot_at_start), Tab is not Copilot's (" .. cp.tab .. ")", cp.on and cp.inline and not cp.tab:lower():find("copilot") and not cp.tab:lower():find("inline"))
+  -- (Esc and Space within 'ttimeoutlen' would arrive as Alt-Space)
+  T.type_keys("<Esc>")
+  T.lua([[vim.wait(100)]])
+  -- leader keys go in as one input (typed one by one, Space would time out)
+  local mark = T.lua([[return #_G.__msgs]])
+  T.rpc("nvim_input", " a")
+  T.sync()
+  local off = T.lua([[
+    vim.wait(5000, function() return #vim.lsp.get_clients({ name = "copilot" }) == 0 end, 50)
+    local mark = ...
+    vim.wait(500)
+    return { on = require("ide.copilot").on, clients = #vim.lsp.get_clients({ name = "copilot" }), inline = vim.lsp.inline_completion.is_enabled(), msg = table.concat(vim.list_slice(_G.__msgs, mark + 1), " | ") }
+  ]], mark)
+  T.ok("     Space a → off, server stopped (" .. tostring(off.msg) .. ")", off.on == false and off.clients == 0 and not off.inline and off.msg == "Copilot off", vim.inspect(off))
+  T.rpc("nvim_input", " a")
+  T.sync()
+  local on = T.lua([[
+    vim.wait(20000, function() return #vim.lsp.get_clients({ bufnr = 0, name = "copilot" }) > 0 end, 50)
+    local hints = 0
+    for _, m in ipairs(_G.__msgs) do if m:find("run :LspCopilotSignIn", 1, true) then hints = hints + 1 end end
+    return { on = require("ide.copilot").on, clients = #vim.lsp.get_clients({ bufnr = 0, name = "copilot" }), inline = vim.lsp.inline_completion.is_enabled(), msg = _G.__msgs[#_G.__msgs], hints = hints }
+  ]])
+  T.lua([[vim.wait(1000)]])
+  T.ok("     Space a → on again, server back (" .. tostring(on.msg) .. "), still one hint", on.on and on.clients == 1 and on.inline and on.hints == 1)
+  T.case("Tab still expands snippets with Copilot on: enum<Tab>", "tex", "‸", { "enum<Tab>", "\\begin{enumerate}\n\t\\item ‸\n\\end{enumerate}" })
+  T.case("Tab still expands \\sum's tabstops with Copilot on", "tex", "$‸$", { "sum", "$\\sum‸$", "<Tab>", { "$\\sum_{i=1}^{N}$", mode = "s", sel = "i" } })
+  T.case("Alt-l with no suggestion types nothing", "tex", "abc‸", { "<M-l>", "abc‸" })
 
   -- finder -----------------------------------------------------------------
   io.write("\n-- finder (snacks.picker)\n")
@@ -1340,6 +1349,62 @@ local function arg_contexts(T)
   T.case("escaped \\$ inside [ ]: no maths", "tex", "\\item[costs \\$‸]", { "5 uu", "\\item[costs \\$5 uu‸]" })
 end
 
+-- The editor look (lua/config/look.lua, palettes.lua, structure.lua) -------
+-- TEXNVIM_LOOK is a temp file here: Ntex Studio's Look page writes the real one.
+local function look(T)
+  io.write("\n-- editor look: palette + structure marks, look.json followed live\n")
+  T.open("tex", "\\section{Groups}\n\\begin{definition}[Kernel]\n  The kernel $x \\in G$.‸\n\\end{definition}")
+  T.rpc("nvim_input", "<Esc>")
+  T.sync()
+  local function state()
+    return T.lua([[
+      local function hex(n, k) local h = vim.api.nvim_get_hl(0, { name = n, link = false })[k]; return h and string.format("#%06x", h) or nil end
+      local s = require("config.structure")
+      return {
+        bg = vim.o.background, page = hex("Normal", "bg"), cmd = hex("texCmd", "fg"), def = hex("NtexKindDefinition", "fg"),
+        stc = vim.wo.statuscolumn, bar = (s.bars[vim.api.nvim_get_current_buf()] or {})[3],
+        marks = #vim.api.nvim_buf_get_extmarks(0, vim.api.nvim_create_namespace("ntex_structure"), 0, -1, {}),
+        look = require("config.look").get(),
+      }
+    ]])
+  end
+  local function write(json)
+    T.lua([[
+      local f = assert(io.open(vim.env.TEXNVIM_LOOK, "w")); f:write(...); f:close()
+      vim.wait(2000, function() return vim.deep_equal(require("config.look").read(), require("config.look").get()) end, 20)
+      vim.wait(200, function() return false end)
+    ]], json)
+  end
+  local a = state()
+  T.ok("     defaults: Slate on white, light background", a.look.palette == "slate" and a.page == "#ffffff" and a.bg == "light" and a.cmd == "#7b8fae", vim.inspect(a))
+  T.ok("     block kinds colored, gutter bar beside the definition", a.def == "#2e7d32" and a.stc:find("structure", 1, true) ~= nil and a.bar == "definition" and a.marks > 0, vim.inspect(a))
+  write('{"palette":"code-dark"}')
+  local b = state()
+  T.ok("     look.json → code-dark: dark background, dark page (written elsewhere, followed live)", b.bg == "dark" and b.page == "#0f1318" and b.cmd == "#ff7b72", vim.inspect(b))
+  write('{"palette":"slate","kinds":"color","ink":"all"}')
+  local c = state()
+  T.ok("     back to slate: light, white paper; kinds=color drops the gutter bar; ink=all", c.bg == "light" and c.page == "#ffffff" and c.stc == "" and c.cmd == "#111111", vim.inspect(c))
+  write('{"palette":"gruvbox-dark"}')
+  local d = T.lua([[return { cs = vim.g.colors_name, bg = vim.o.background, page = string.format("#%06x", vim.api.nvim_get_hl(0, { name = "Normal", link = false }).bg or 0), def = vim.api.nvim_get_hl(0, { name = "NtexKindDefinition", link = false }).fg }]])
+  T.ok("     a standard theme (gruvbox-dark): its own colorscheme, dark, structure groups from it", d.cs == "gruvbox" and d.bg == "dark" and d.page == "#282828" and d.def ~= nil, vim.inspect(d))
+  write('{"palette":"slate","colors":{"slate":{"math":"#cc2266","Definition":"#1f8a70"},"code":{"math":"#000000"}}}')
+  local e = T.lua([[local function fg(n) return string.format("#%06x", vim.api.nvim_get_hl(0, { name = n, link = false }).fg or 0) end
+    return { math = fg("texMathZone"), def = fg("NtexKindDefinition"), conceal = fg("Conceal"), cmd = fg("texCmd") }]])
+  T.ok("     Look page color edits (look.json colors) paint over Slate, other roles stay", e.math == "#cc2266" and e.conceal == "#cc2266" and e.def == "#1f8a70" and e.cmd == "#7b8fae", vim.inspect(e))
+  write('{"palette":"slate","kinds":"color","ink":"all","colors":{"slate":{"math":"#cc2266"}}}')
+  T.lua([[vim.cmd("NtexLook kinds bar")]])
+  write('{"palette":"slate","structure":{"bar_glyph":"┃","bar_side":"left","subrule":"none"}}')
+  local st = T.lua([[local s = require("config.structure"); return { glyph = s.opts.bar_glyph, side = s.opts.bar_side, sub = s.opts.subrule, col = s.column() }]])
+  T.ok("     look.json structure settings reach structure.lua (bar glyph, side, subsection rule)", st.glyph == "┃" and st.side == "left" and st.sub == "none", vim.inspect(st))
+  write('{"palette":"slate","kinds":"color","ink":"all","colors":{"slate":{"math":"#cc2266"}}}')
+  T.lua([[vim.cmd("NtexLook kinds bar")]])
+  local kept = T.lua([[return require("config.look").read().colors.slate]])
+  T.ok("     :NtexLook keeps the color edits in look.json", kept and kept.math == "#cc2266", vim.inspect(kept))
+  T.sync()
+  local saved = T.lua([[return require("config.look").read().kinds]])
+  T.ok("     :NtexLook kinds bar saves look.json and the bar comes back", saved == "bar" and state().stc ~= "", tostring(saved))
+end
+
 function M.run(suite, T)
   if suite == "mine" then
     mine(T)
@@ -1361,6 +1426,7 @@ function M.run(suite, T)
   elseif suite == "system" then
     health(T)
     system(T)
+    look(T)
   elseif suite == "ide" then
     ide(T)
   elseif suite == "figures" then

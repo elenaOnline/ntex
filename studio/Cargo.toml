@@ -78,3 +78,19 @@ harness = false
 [[test]]
 name = "library"
 harness = false
+
+# The Look page (editor palette + structure toggles) offscreen, on a temp config.
+[[test]]
+name = "look"
+harness = false
+
+# The Notes page (PDF typeface, boxes, colors) offscreen, on a temp config.
+[[test]]
+name = "notes"
+harness = false
+
+# The Terminal page (Ghostty's look) offscreen, on temp copies of the Ghostty
+# and cmux configs; nothing is reloaded (evidence/terminal/).
+[[test]]
+name = "terminal"
+harness = false

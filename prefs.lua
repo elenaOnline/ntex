@@ -21,6 +21,9 @@ return {
   --   "skim"    Skim.app
   -- Outside cmux it's always Skim.
   pdf_viewer = "tdf",
+  -- In Tern instead: "browser" (Tern's browser split) | "tdf" (tdf-ntex at
+  -- Tern's real cell size) | "skim"
+  tern_pdf_viewer = "tdf",
 
   -- Conceal sub/superscripts too (x_{i} → xᵢ). Those glyphs are small in most
   -- fonts; set false to keep _{…}/^{…} as typed while still concealing symbols.

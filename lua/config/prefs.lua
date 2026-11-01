@@ -7,6 +7,7 @@ local defaults = {
   live_pdf_delay_ms = 800,
   pdf_viewer = "tdf",
   tern_pdf_viewer = "browser", -- \lv inside Tern: "browser" (sharp) | "tdf" | "skim"
+  tern_cell_px = "20x44", -- tdf-ntex in Tern when Tern's layout can't be read: cell in device px
   conceal_scripts = true,
   compile_errors = true,
   box_warnings = false,

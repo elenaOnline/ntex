@@ -33,7 +33,7 @@ return h.group("Text and structure", {
   text("dm",       block_after_text,          "yours",   { line = "after text", priority = 1, desc = "Display maths after some text: on the next line" }),
   text("dm",       block_in_list,             "changed", { line = "list item", priority = 2, desc = "Display math when in a list" }),
 
-  math("text",     [[\text{<>}]],             "changed"),
+  math("text",     [[\text{ <> }]],           "changed"),
   math('"',        [[\text{ <> }]],           "changed"),
 
   -- added from Gilles Castel's set (DECISIONS.md, "New from Castel": delete a line to veto it).

@@ -10,6 +10,9 @@
 -- Esc-b / Esc-f by default (its built-in `alt+arrow_left=esc:b` keybinds),
 -- which Neovim reads as <M-b> / <M-f>; other terminals send <M-Left> etc.
 -- Both are mapped. Option-Backspace arrives as <M-BS>.
+--   Option-Up/Down    move the current line, or the selected lines, up or down
+--                     (as in VS Code); the moved lines are reindented and the
+--                     selection is kept, and a count moves that many lines.
 local M = {}
 local api = vim.api
 
@@ -216,9 +219,61 @@ function M.setup_undo()
   end
 end
 
+-- Option-Up/Down: move lines. Moves lines first..last by delta (clamped to
+-- the buffer), reindents them when the buffer has an indent rule (VimTeX's
+-- for .tex), and returns the delta actually moved.
+local function move_range(first, last, delta)
+  local n = api.nvim_buf_line_count(0)
+  delta = delta > 0 and math.min(delta, n - last) or math.max(delta, 1 - first)
+  if delta == 0 then
+    return 0
+  end
+  local dest = delta > 0 and last + delta or first + delta - 1
+  vim.cmd(("silent keepjumps lockmarks %d,%dmove %d"):format(first, last, dest))
+  if vim.bo.indentexpr ~= "" then
+    vim.cmd(("silent keepjumps normal! %dG=%dG"):format(first + delta, last + delta))
+  end
+  return delta
+end
+
+-- Keeps the cursor on the same character of the moved line, even when
+-- reindenting changed the line's leading whitespace.
+local function move_line(dir)
+  local row, col = unpack(api.nvim_win_get_cursor(0))
+  local off = col - #api.nvim_get_current_line():match("^%s*")
+  local d = move_range(row, row, dir * vim.v.count1)
+  if d ~= 0 then
+    local line = api.nvim_buf_get_lines(0, row + d - 1, row + d, false)[1]
+    api.nvim_win_set_cursor(0, { row + d, math.max(0, #line:match("^%s*") + off) })
+  end
+end
+
+function M.move_selection(dir)
+  local s, e = vim.fn.getpos("'<"), vim.fn.getpos("'>")
+  local d = move_range(s[2], e[2], dir * vim.v.count1)
+  vim.fn.setpos("'<", { 0, s[2] + d, s[3], s[4] })
+  vim.fn.setpos("'>", { 0, e[2] + d, e[3], e[4] })
+  vim.cmd("normal! gv")
+end
+
+function M.setup_move_lines()
+  local o = { silent = true }
+  for dir, key in pairs({ [-1] = "Up", [1] = "Down" }) do
+    local desc = "Move line(s) " .. key:lower()
+    for _, lhs in ipairs({ "<M-" .. key .. ">", "<A-" .. key .. ">" }) do
+      vim.keymap.set({ "n", "i" }, lhs, function()
+        move_line(dir)
+      end, vim.tbl_extend("force", o, { desc = desc }))
+      vim.keymap.set("x", lhs, (":<C-u>lua require('config.macos_keys').move_selection(%d)<CR>"):format(dir),
+        vim.tbl_extend("force", o, { desc = desc }))
+    end
+  end
+end
+
 function M.setup()
   M.setup_clipboard()
   M.setup_undo()
+  M.setup_move_lines()
   local o = { silent = true }
   for _, lhs in ipairs({ "<M-Left>", "<A-Left>", "<M-b>" }) do
     vim.keymap.set({ "i", "n", "x" }, lhs, M.word_left, vim.tbl_extend("force", o, { desc = "macOS: word left" }))

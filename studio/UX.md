@@ -277,11 +277,87 @@ Calculus  calculus.lua                                   ← blue bold head, mon
   library comes back on the same row, with the toast *Updated ‘dint’ in
   Calculus — live in ntex now. ⌘Z undoes.*
 
+## Page 5: Look (⌘5)
+
+    5  Editor look
+    How ntex colors your .tex files while you type (not the PDF).
+    PALETTE     ○ Slate  ○ Code  ● Code Dark  ○ Alabaster
+    STANDARD    ○ VS Code Light+  ○ VS Code Dark+  ○ GitHub Light  … ○ Gruvbox Dark
+    SECTIONS    ○ None  ● Rule  ○ Band
+    BLOCKS      ○ Plain  ○ Names  ● Names + bar
+    BEGIN/END   ○ Name only  ● Whole line
+    GUIDES      ⊠ Nesting lines
+    BLACK INK   ● Content only  ○ Commands too
+    SAMPLE      (three lines of a note in the palette's colors, settings applied)
+
+Radio groups (Tab between them, ←/→ inside one) and a checkbox. Palette and
+Standard are one setting in two rows. On a standard theme Black ink is
+grayed out (the theme's own colors), and the sample uses colors read from a
+headless ntex (core::look::swatch). Every change
+writes `look.json` (core::look, temp file + rename) and every ntex repaints
+(lua/config/look.lua watches it). Opening the page re-reads the file, so a
+`:NtexLook` change in ntex shows. Nothing to save: ⌘↵ and ⌘N do nothing here.
+
+Colors of <palette>: a chip per role (core::look::ROLES; • = edited). The
+chosen one: a 64 px swatch, H/S/V ChannelSliders (tracks painted with the
+color along that channel; ←/→ step, ⇧ ×5), a hex TextField (Return or leaving
+it applies; Esc restores), the palette's own value, Reset this color / Reset
+all. Edits go to look.json `colors[palette][role]`; setting a color back to
+the palette's own drops the edit.
+
+## Page 7: Terminal (⌘7)
+
+    7  Terminal
+    How Ghostty and cmux look. Click anything in the window below …
+    APPLIES TO   [Ghostty + cmux]  [Ghostty only]  [cmux only]
+    SAVED LOOKS  Ghostty default ·   Ghostty today ·   (as found)
+    (a Ghostty window: ntex above, a shell below, in her font and metrics)
+    bg fg cursor cur.text select sel.text   0 1 2 … 15
+    SELECTED     (the clicked option: HSV, hex, contrast; what goes with it)
+    THEMES       (Ghostty's themes as little windows; Light / Dark / All / pair)
+    All options ▸ (every look option, grouped, from Ghostty's own list)
+
+The window is the design surface. ntex is captured live from a headless
+`nvim --embed` with her config, Studio attached as its UI (io::ghostty,
+re-captured when the grid size changes); the shell is canned
+(core::ghostty::screen::shell) and uses all 16 colors, a selection, every
+text style. Each cell knows its role, so clicking it selects the option its
+color comes from: palette N, foreground, background, selection, cursor; a
+color ntex chose itself says so and points to the Look page. The title bar
+selects the title bar options, the divider the divider color, the
+"unfocused split" tag the unfocused split options, the desk around the
+window the opacity. Dragging a padding edge sets that side of
+window-padding-x/y; dragging the line under a row sets adjust-cell-height;
+⌘-scroll over the text sets font-size (a click that doesn't move selects).
+
+The strip: chips for the six special colors and the 16 ANSI ones (• =
+changed since the look it started from); drag one numbered chip onto
+another to swap them. The inspector: for a color, a 64 px swatch, H/S/V
+sliders, hex, the special words it takes (unset, cell-foreground, bright …),
+Ghostty's own, and how it reads (WCAG ratio, the palette's faintest on a
+background, what minimum-contrast turns it into); then the options that go
+with it. The drawer: every look option (core::ghostty::catalog, checked
+against `ghostty +show-config --default --docs`), grouped, each with its
+control (chips, slider, ± stepper in px or %, checkbox, font picks, the raw
+value checked by `+validate-config`), Ghostty's docs on hover, and the
+preview marking where it shows.
+
+Each change writes ~/.config/ghostty/ntex-look.ghostty about 150 ms after
+the last one (core::ghostty explains the file), validates it, then sends
+Ghostty SIGUSR2 and runs `cmux reload-config` (neither comes to the front).
+"Connect to Ghostty" adds `config-file = ?ntex-look.ghostty` to her main
+config when it isn't there (backup first); until then nothing reloads.
+Applies to: both (cmux's own background/foreground lines follow), Ghostty
+only (cmux keeps its look in a marked block of its config.ghostty), cmux only
+(the look goes in that block; Ghostty keeps its file). Every file is backed
+up once per run before Studio first writes it. State: terminal-look.json;
+saved looks: looks.json `terminal`.
+
 ## Global keys
 
 | Key | Does |
 | --- | --- |
-| ⌘1 ⌘2 ⌘3 | pages (in a figure window ⌘1 is *actual size*, ⌘0 fits) |
+| ⌘1 … ⌘7 | pages (in a figure window ⌘1 is *actual size*, ⌘0 fits) |
 | ⌘↵ | save (snippet / block) |
 | ⌘N | clear |
 | ⌘Z / ⌘⇧Z | in a field: text undo; elsewhere: undo the last save, delete or sort |

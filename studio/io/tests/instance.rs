@@ -67,6 +67,7 @@ fn args() {
     assert_eq!(r.context.as_deref(), Some("text"));
     assert_eq!(r.ft.as_deref(), Some("markdown"));
     assert_eq!(parse_args(&s(&["--page=block"])).page.as_deref(), Some("block"));
+    assert_eq!(parse_args(&s(&["--page", "Library"])).page.as_deref(), Some("library"));
     assert_eq!(parse_args(&s(&["--page", "nonsense"])).page, None);
 
     // a selection file under $TMPDIR: read, then deleted

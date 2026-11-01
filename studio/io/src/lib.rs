@@ -6,3 +6,5 @@ pub mod render;
 pub mod agent;
 pub mod instance;
 pub mod figure_ai;
+pub mod ghostty;
+pub mod msgpack;

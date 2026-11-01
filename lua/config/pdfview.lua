@@ -7,14 +7,19 @@
 -- In Tern it is prefs.lua `tern_pdf_viewer` instead (default "browser"):
 --   "browser" a Tern browser split: WebKit's own PDF view, sharp on Retina;
 --             reloaded after every successful compile
---   "tdf"     a Tern split running tdf. Blurry: Tern tells programs the 1x
---             pixel size of the window, so tdf draws the page at half the
---             Retina resolution and Tern scales it up
+--   "tdf"     a Tern split running tdf. Tern (0.9.4) answers pixel-size queries
+--             in cells (a cell is "1x1 px"), so plain tdf guesses the page size
+--             and blurs. ~/.local/bin/tdf-ntex (tdf with a TDF_CELL_PX override,
+--             ~/code/tdf-ntex) is used when present, given the real cell size
+--             in device pixels from Tern's layout; Tern shows Kitty images at
+--             full Retina resolution
 --   "skim"    Skim.app
--- Elsewhere, or if cmux/Tern refuses, it falls back to Skim.
+-- In Ghostty.app (1.3+, macOS) "tdf" and "browser" both give a Ghostty split
+-- running tdf, made with Ghostty's AppleScript; "skim" is Skim.app.
+-- Elsewhere, or if cmux/Tern/Ghostty refuses, it falls back to Skim.
 -- \ls always opens Skim (SyncTeX forward search).
 local prefs = require("config.prefs")
-local M = { panes = {} } -- pdf path -> { kind = "tdf"|"browser"|"tern"|"tern_browser", ref = "surface:N" | block id }
+local M = { panes = {} } -- pdf path -> { kind = "tdf"|"browser"|"tern"|"tern_browser"|"ghostty", ref = "surface:N" | block id | terminal id }
 
 local function in_cmux()
   return (vim.env.CMUX_WORKSPACE_ID or vim.env.CMUX_SOCKET_PATH or vim.env.CMUX_SURFACE_ID) ~= nil
@@ -22,6 +27,46 @@ end
 
 local function in_tern()
   return not in_cmux() and vim.env.TERM_PROGRAM == "tern" and vim.fn.executable("tern") == 1
+end
+
+-- standalone Ghostty.app, new enough for its AppleScript (split, focus, terminal ids)
+local function in_ghostty()
+  if in_cmux() or in_tern() or vim.env.TERM_PROGRAM ~= "ghostty" then
+    return false
+  end
+  if vim.fn.has("mac") == 0 or vim.fn.executable("osascript") == 0 then
+    return false
+  end
+  local v = vim.version.parse(vim.env.TERM_PROGRAM_VERSION or "", { strict = false })
+  return v ~= nil and vim.version.ge({ v.major, v.minor, v.patch }, { 1, 3, 0 }) -- tip builds too
+end
+
+-- AppleScript, fed to `osascript -` on stdin; paths come in as argv, never pasted
+-- into the source. Runs as a child of nvim inside Ghostty, so Ghostty is the app
+-- asking and macOS shouldn't need an Automation prompt (expected, not verified).
+local ghostty_split = [[
+on run argv
+  tell application "Ghostty"
+    set here to focused terminal of selected tab of front window
+    set cfg to new surface configuration
+    set command of cfg to (quoted form of item 1 of argv) & " " & (quoted form of item 2 of argv)
+    set wait after command of cfg to false
+    set pane to split here direction right with configuration cfg
+    focus here
+    return id of pane
+  end tell
+end run
+]]
+
+local ghostty_exists = [[
+on run argv
+  tell application "Ghostty" to return exists terminal id (item 1 of argv)
+end run
+]]
+
+local function ghostty(script, args)
+  local res = vim.system(vim.list_extend({ "osascript", "-" }, args), { text = true, stdin = script }):wait(5000)
+  return res.code == 0, vim.trim((res.stdout or "") .. (res.stderr or ""))
 end
 
 local function tern(args)
@@ -61,6 +106,30 @@ local function tern_reload(block)
   tern_browser({ op = "release", block = tonumber(block) })
 end
 
+-- the cell size in device pixels, "WxH", for tdf-ntex: a block cursor's box
+-- (a thin one still gives the height) times the backing scale, from `tern ctl
+-- dump`; prefs.lua `tern_cell_px` fills in what that doesn't give
+local function tern_cell_px()
+  local fw, fh = (prefs.tern_cell_px or "20x44"):match("(%d+)x(%d+)")
+  local w, h
+  local ok, out = tern({ "ctl", "dump", "section.tn-pane div.tv-cursor" })
+  local okj, d = pcall(vim.json.decode, ok and out or "")
+  if okj and type(d) == "table" and type(d.elements) == "table" then
+    local scale = vim.tbl_get(d, "header", "viewport", "deviceScaleFactor") or 2
+    for _, e in ipairs(d.elements) do
+      local r = e.visible and e.rect
+      if type(r) == "table" and type(r[3]) == "number" and type(r[4]) == "number" and r[4] >= 4 then
+        h = h or math.floor(r[4] * scale + 0.5)
+        if r[3] >= 4 then
+          w = math.floor(r[3] * scale + 0.5)
+          break
+        end
+      end
+    end
+  end
+  return ("%dx%d"):format(w or tonumber(fw), h or tonumber(fh))
+end
+
 local function tern_self()
   if vim.env.TERN_PANE and vim.env.TERN_PANE ~= "" then
     return vim.env.TERN_PANE
@@ -95,7 +164,10 @@ local function skim(msg)
 end
 
 local function pane_alive(p)
-  if p.kind == "tern_browser" then
+  if p.kind == "ghostty" then
+    local ok, out = ghostty(ghostty_exists, { p.ref })
+    return ok and out == "true"
+  elseif p.kind == "tern_browser" then
     for _, b in ipairs((tern_browser({ op = "blocks" }) or {}).blocks or {}) do
       if tostring(b.block) == p.ref then
         return true
@@ -125,10 +197,15 @@ function M.view()
   local buf = vim.api.nvim_get_current_buf()
   local kind = prefs.pdf_viewer or "tdf"
   local tern_here = in_tern()
+  local ghostty_here = in_ghostty()
   if tern_here then
     kind = prefs.tern_pdf_viewer or "browser"
+  elseif ghostty_here and kind == "browser" then
+    -- Ghostty has no browser pane; tdf keeps the PDF beside the source, where
+    -- "browser" wanted it (Skim would put it in another window)
+    kind = "tdf"
   end
-  if kind == "skim" or not (in_cmux() or tern_here) then
+  if kind == "skim" or not (in_cmux() or tern_here or ghostty_here) then
     return skim()
   end
   local pdf = pdf_of(buf)
@@ -165,14 +242,18 @@ function M.view()
     return
   elseif tern_here then
     local tdf = vim.fn.exepath("tdf")
-    if tdf == "" then
+    local cmd = { tdf, pdf }
+    local ntex = vim.fn.expand("~/.local/bin/tdf-ntex")
+    if vim.fn.executable(ntex) == 1 then
+      cmd = { "env", "TDF_CELL_PX=" .. tern_cell_px(), ntex, pdf }
+    elseif tdf == "" then
       return skim("tdf isn't installed (brew install tdf)")
     end
     local me = tern_self()
     if not me then
       return skim("couldn't find this Tern pane")
     end
-    ok, out = tern({ "split", me, "right", "--keep-open", "--json", "--", tdf, pdf })
+    ok, out = tern(vim.list_extend({ "split", me, "right", "--keep-open", "--json", "--" }, cmd))
     if not ok then
       return skim("Tern couldn't open a pane: " .. vim.trim(out))
     end
@@ -181,6 +262,17 @@ function M.view()
     if okj and type(res) == "table" and res.block then
       M.panes[pdf] = { kind = "tern", ref = tostring(res.block) }
     end
+    return
+  elseif ghostty_here then
+    local tdf = vim.fn.exepath("tdf")
+    if tdf == "" then
+      return skim("tdf isn't installed (brew install tdf)")
+    end
+    ok, out = ghostty(ghostty_split, { tdf, pdf })
+    if not ok or out == "" then
+      return skim("Ghostty couldn't open a pane: " .. out)
+    end
+    M.panes[pdf] = { kind = "ghostty", ref = out }
     return
   elseif kind == "browser" then
     ok, out = cmux({ "browser", "open-split", "file://" .. pdf, "--focus", "false" })

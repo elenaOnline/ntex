@@ -14,7 +14,9 @@ Two companion apps (macOS, Rust + GPUI) cover what a terminal can't:
 - **Ntex Studio** makes new snippets, Tab shortcuts and theorem-like blocks
   mid-lecture. Type a trigger and an output, press ⌘↵, and the snippet is live
   in every open ntex. Its Library page lists every snippet you have,
-  searchable and editable in place.
+  searchable and editable in place. Three more pages set the look: the
+  editor's palette and structure marks, the notes PDF's typeface and boxes,
+  and the terminal (Ghostty and cmux).
 - **Ntex Figures** draws commutative diagrams, Cayley graphs, blob diagrams
   and polygons. A figure is a short text file (`figures/x.fig`) that compiles
   to TikZ and PDF; you can edit it as text, on a canvas, or by asking a model.
@@ -31,7 +33,7 @@ kernel blob, D4 symmetries, Cayley graphs of D4, Q8 and A4, an equaliser):
 
 ![A grid of nine figures produced by Ntex Figures](docs/img/figures-gallery.png)
 
-Everything selected: one panel colours, aligns, distributes and restyles all
+Everything selected: one panel colors, aligns, distributes and restyles all
 the arrows at once. Holding ⌘ shows the frame the figure will take on the page:
 
 ![The figure editor with ten objects selected and the multi-selection panel](docs/img/figures-select.png)
@@ -79,7 +81,7 @@ was opened to make them.
 The Neovim side works on Linux as well, minus the macOS keys and Skim. The apps
 need macOS (Metal).
 
-A terminal with good Unicode maths helps: the conceal layer turns `\alpha` into
+A terminal with good Unicode math helps: the conceal layer turns `\alpha` into
 α and `x_{i}` into xᵢ. The author uses [cmux](https://github.com/manaflow-ai/cmux)
 (on libghostty) with JuliaMono; see [extras/terminals](extras/terminals).
 
@@ -113,7 +115,7 @@ and the three links in `~/.local/bin`.
 ## Using it
 
 The full manual is [docs/MANUAL.md](docs/MANUAL.md): the Vim you need, the
-maths keys, compile and view, IDE features, preferences, commands and tests.
+math keys, compile and view, IDE features, preferences, commands and tests.
 The short version:
 
 ```sh
@@ -125,15 +127,19 @@ ntex notes.md           # markdown with $…$ and $$…$$ works too
 | --- | --- |
 | type a trigger | auto snippets expand as you type; letter triggers fire only at the start of a word |
 | `Tab` / `Shift-Tab` | expand a Tab snippet, jump between tab stops, step out of brackets |
-| `/` in maths | auto-fraction: `(a+b)/` → `\frac{a+b}{…}` |
+| `/` in math | auto-fraction: `(a+b)/` → `\frac{a+b}{…}` |
 | `\lv` · `\ls` · `\le` | show the PDF in a split · open Skim at the cursor · show errors |
 | `Space ?` | the reference page: every snippet, key, symbol and setting, searchable |
 | `Space n` · `Space N` | Ntex Studio: new snippet · the inbox |
 | `Space g` | Ntex Figures for the figure under the cursor |
 | `F2` | toggle conceal (`\alpha` ↔ α) |
+| `:NtexLook` | show the editor look; `:NtexLook palette code` changes one setting |
+
+A winbar shows where you are (section › environment), and the status bar shows
+the compile state and the diagnostics.
 
 Preferences live in [prefs.lua](prefs.lua) (live PDF delay, PDF viewer,
-conceal, Harper, Copilot, and every Latex Suite behaviour switch).
+conceal, Harper, Copilot, and every Latex Suite behavior switch).
 
 Tests run headless and never open a window:
 
@@ -142,13 +148,47 @@ Tests run headless and never open a window:
 cd ~/.config/texnvim/studio && cargo test  # Studio + Figures
 ```
 
+## Looks
+
+Three Studio pages set how things look, and each writes a small file that
+everything already open follows live:
+
+- **The editor (⌘5).** A palette painted over Modus, so menus and floats keep
+  their WCAG AAA contrast: Slate (default), Code, Code Dark or Alabaster, or one
+  of twelve standard themes (VS Code, GitHub, Solarized, Catppuccin, Tokyo
+  Night, Gruvbox, …) for comparison. On top of it, structure marks that never
+  touch the file: a rule above each `\section`, block names colored by kind, a
+  bar in the gutter beside theorem-like blocks, nesting lines. Every color can be
+  edited (H, S, V, hex). Written to `look.json`; `:NtexLook` reads and sets it
+  from ntex.
+- **The notes (⌘6).** The PDF's typeface (Charter, Palatino, Times, Utopia,
+  Libertinus, STIX Two, Fourier), line spacing, the theorem boxes (fill,
+  outline, corners, head color, bar) and the notes palette. Studio writes two
+  small `.tex` files that `ntex-base.sty` reads; with the defaults they don't
+  exist and the PDF is exactly the theme's.
+- **The terminal (⌘7).** A live Ghostty window (ntex above, a shell below)
+  where clicking anything selects the option that draws it, dragging sets
+  padding and line gaps, and a gallery shows Ghostty's themes. Changes go to
+  `~/.config/ghostty/ntex-look.ghostty`, are checked with
+  `ghostty +validate-config`, and Ghostty and cmux reload without coming to
+  the front. *Applies to* decides whether cmux follows.
+
+Saved looks (`looks.json`) are buttons that put a whole look back; the stock
+ones are protected. Dark palettes also switch the terminal's background while
+ntex runs, and give it back on quit.
+
+The notes theme (`templates/tex/`) splits into `ntex-base.sty` (fonts and
+palette), `ntex-notes.sty` (the blocks and page) and `ntex-blocks.sty` (blocks
+made in Studio, plus `G \acts X`: a small clockwise loop arrow for a group
+action, with `\acts[\varphi]` for a named one).
+
 ## How it fits together
 
 ```
                 ┌──────────────────────────── ntex (Neovim, NVIM_APPNAME=texnvim) ────────────────────────────┐
-  you type ───► │ lua/snips/   LuaSnip engine: context (maths/text), Tab, auto-fraction, conceal, visual snips │
+  you type ───► │ lua/snips/   LuaSnip engine: context (math/text), Tab, auto-fraction, conceal, visual snips │
                 │   └─ snippets/tex/*.lua   the snippet collection (hot-reloaded on save)                      │
-                │ lua/config/  options, keys, macOS keys, live PDF, PDF view, :Scratch, :Reference             │
+                │ lua/config/  options, keys, macOS keys, live PDF, PDF view, look + structure, status bar     │
                 │ lua/ide/     tectonic log → diagnostics, Harper, Copilot, finder                              │
                 └──────┬──────────────────────────────┬───────────────────────────────┬────────────────────────┘
                        │ save + compile (tectonic)    │ Space n / Space N             │ Space g, save .fig
@@ -211,7 +251,7 @@ docs/           the manual and the README images
 ## Credits
 
 The snippet style follows Gilles Castel's LaTeX-in-Vim setup, and the triggers
-and behaviours come from [Obsidian Latex Suite](https://github.com/artisticat1/obsidian-latex-suite).
+and behaviors come from [Obsidian Latex Suite](https://github.com/artisticat1/obsidian-latex-suite).
 Built on [LuaSnip](https://github.com/L3MON4D3/LuaSnip),
 [VimTeX](https://github.com/lervag/vimtex), [snacks.nvim](https://github.com/folke/snacks.nvim),
 [blink.cmp](https://github.com/saghen/blink.cmp), [tectonic](https://tectonic-typesetting.github.io),

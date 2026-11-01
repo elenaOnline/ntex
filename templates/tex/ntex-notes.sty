@@ -1,4 +1,4 @@
-% ntex-notes.sty — the author's notes theme. Used by every new .tex from ntex
+% ntex-notes.sty — the notes theme. Used by every new .tex from ntex
 % (templates/article.tex → \usepackage{ntex-notes}). ntex's compiler finds it
 % via tectonic -Z search-path=~/.config/texnvim/templates/tex.
 % To share a .tex with someone / Overleaf: put a copy of this file next to it
@@ -62,7 +62,7 @@
   ntexbox/.style={
     enhanced, breakable,
     frame hidden, sharp corners,
-    colback=ntex#1Back,
+    colback=ntex#1Back, coltext=ntexInk,
     borderline west={3pt}{0pt}{ntex#1Rule},
     left=11pt, right=10pt, top=7pt, bottom=7pt,
     before skip=12pt, after skip=12pt,
@@ -81,7 +81,7 @@
 \renewcommand{\qedsymbol}{\textcolor{ntexProofRule!80!black}{$\square$}}
 \tcolorboxenvironment{proof}{
   enhanced, breakable, frame hidden, sharp corners,
-  colback=ntexProofBack,
+  colback=ntexProofBack, coltext=ntexInk,
   borderline west={1pt}{0pt}{ntexProofRule},
   left=10pt, right=10pt, top=6pt, bottom=6pt,
   before skip=8pt, after skip=12pt,
@@ -117,7 +117,7 @@
   \@ifpackageloaded{course-hw}{}{%
     \NewDocumentEnvironment{exercise}{m o}{%
       \begin{tcolorbox}[enhanced, frame hidden, sharp corners,
-          colback=ntexOchreBack, borderline west={3pt}{0pt}{ntexOchreRule},
+          colback=ntexOchreBack, coltext=ntexInk, borderline west={3pt}{0pt}{ntexOchreRule},
           left=11pt, right=10pt, top=7pt, bottom=7pt,
           before skip=18pt, after skip=8pt]%
       {\bfseries\color{ntexOchreHead}Exercise\if\relax\detokenize{#1}\relax\else\ #1\fi}%

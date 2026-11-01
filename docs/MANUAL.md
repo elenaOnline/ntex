@@ -72,7 +72,7 @@ mode and `⌘Z` takes back what you typed since the last break; with a selection
 the selection goes away first. Vim's own `u` and `Ctrl-R` are unchanged.
 (`lua/config/macos_keys.lua`)
 
-## Maths keys (insert mode)
+## Math keys (insert mode)
 
 | Keys | What happens |
 | --- | --- |
@@ -120,7 +120,7 @@ copied from the files (`tex/sets.lua`, `tex/operations.lua`, `tex/calculus.lua`)
 ```
 
 `<>` is a tabstop (Tab jumps to the next, then out), `<:0>` a tabstop holding
-`0`. `math` fires by itself in maths at the start of a word; `math_tab` needs
+`0`. `math` fires by itself in math at the start of a word; `math_tab` needs
 Tab; `suffix`, `post` (`xhat` → `\hat{x}`), `pat` (Lua patterns: `x2` →
 `x_{2}`), `env`, `text` and `vis` (select, then a key) are the others —
 `snippets/README.md` explains each.
@@ -158,7 +158,11 @@ Tab; `suffix`, `post` (`xhat` → `\hat{x}`), `pat` (Lua patterns: `x2` →
   right (`pdf_viewer` in `prefs.lua`): `"tdf"` (default — a terminal PDF viewer
   that reloads itself and keeps your page; `j`/`k` or arrows to move, `q` to
   close), `"browser"` (cmux browser split, sharp and selectable, reloaded after
-  each compile) or `"skim"`. Outside cmux, or if cmux refuses, it uses Skim.
+  each compile) or `"skim"`. In Tern, `tern_pdf_viewer` picks instead (default
+  `"browser"`, a Tern browser split; `"tdf"` runs `~/.local/bin/tdf-ntex`, a tdf
+  patched in `~/code/tdf-ntex` to take Tern's real cell size, when it exists). In Ghostty.app 1.3+ (not cmux), `"tdf"` and
+  `"browser"` both open a Ghostty split running tdf; the cursor stays in your
+  pane. Anywhere else, or if the terminal refuses, it uses Skim.
 - `\ls` opens **Skim** at the cursor (SyncTeX). Skim only ever opens when you
   ask. The first time, macOS asks whether the terminal may control Skim — click *OK*.
 - `\ll` compile now · `\le` show errors · `\lc` delete build files · `\lt` table of contents
@@ -215,7 +219,7 @@ Vim's own spell check is off where Harper runs, so nothing is underlined twice.
   did before (Vim's first suggestion). `z=` still lists Vim's suggestions.
   Space `z` moved to Harper because its fixes cover grammar too ("a apple",
   "teh"), and *add to dictionary* is one of them.
-- Maths is never checked: Harper itself skips `$…$` and maths environments,
+- Math is never checked: Harper itself skips `$…$` and math environments,
   and ntex drops anything it flags inside `\[…\]`, `\(…\)` and `$$…$$` (Harper
   reads those as prose). Commands, labels, `\cref` and environment names are
   not flagged.
@@ -224,7 +228,7 @@ Vim's own spell check is off where Harper runs, so nothing is underlined twice.
 
 ### Copilot ghost text
 
-GitHub Copilot suggests the rest of a sentence or formula in grey italics while
+GitHub Copilot suggests the rest of a sentence or formula in gray italics while
 you type in .tex and .md files. Neovim's built-in inline completion and GitHub's
 own server do the work (no plugin).
 
@@ -282,7 +286,7 @@ for product improvement is a setting at https://github.com/settings/copilot.
 | Space `x` | errors, warnings, grammar notes |
 
 Type to filter, Enter opens, Esc closes; `Ctrl-v` / `Ctrl-s` open in a split.
-It is snacks.nvim's picker in Modus colours: a small list at the top, no
+It is snacks.nvim's picker in Modus colors: a small list at the top, no
 icons, no preview (text search and the error list get a preview). Needs `fd`
 and `rg` (`brew install fd ripgrep`).
 
@@ -304,14 +308,25 @@ and `rg` (`brew install fd ripgrep`).
 | `harper_dialect` | `"American"` | `"British"`, `"Australian"`, `"Canadian"`, `"Indian"` |
 | `copilot` | `true` | Copilot ghost text at all (`false`: never started) |
 | `copilot_at_start` | `true` | on when ntex starts; Space `a` switches |
-| `latex = { … }` | your Latex Suite values | maths typing: `autofraction`, `tabout`, `matrix_envs`, `enlarge_triggers`, `auto_delete_dollar`, `remove_snippet_whitespace`, `fire_after_letters`, … (each explained in prefs.lua) |
+| `latex = { … }` | your Latex Suite values | math typing: `autofraction`, `tabout`, `matrix_envs`, `enlarge_triggers`, `auto_delete_dollar`, `remove_snippet_whitespace`, `fire_after_letters`, … (each explained in prefs.lua) |
 
 **Font:** JuliaMono, set for cmux in `~/.config/ghostty/config` (proper-size
-sub/superscripts and maths symbols for conceal).
+sub/superscripts and math symbols for conceal).
 
-**Colours:** Modus (`lua/config/theme.lua`) — high contrast (WCAG AAA), light or
-dark following the terminal. Concealed symbols use the math colour instead of
-the usual pale grey. Change colours in `on_highlights` there.
+**Colors and structure:** a palette (`lua/config/palettes.lua`) painted over
+Modus (`lua/config/theme.lua`, WCAG AAA menus and floats): Slate by default,
+Code, Code Dark, or Alabaster (the look before 2026-10-18). To compare, twelve
+standard themes as their Neovim ports draw LaTeX (VS Code Light+/Dark+, GitHub
+Light, One Light, Solarized Light/Dark, Catppuccin Latte/Mocha, Tokyo Night,
+Gruvbox Dark, Newpaper Light/Dark; `lua/plugins/themes.lua`), with the same structure marks on top. On top of it,
+`lua/config/structure.lua` marks structure without touching the file: a rule
+above each `\section`, block names (and whole `\begin`/`\end` lines) colored
+by kind, a bar in the gutter beside theorem-like blocks, and nesting lines.
+Pick all of it on Ntex Studio's Look page (⌘5), or `:NtexLook palette code`;
+both write `look.json`, and every open ntex follows. Code Dark and the
+standard themes set the terminal's background and text color while ntex runs
+(so cmux matches) and give the white back on one of your light palettes or
+when ntex quits. Concealed symbols use the math color.
 
 ## Rendered math in the terminal (snacks.nvim) — off by default
 
@@ -334,7 +349,7 @@ source; move off it to see the rendering. The first formula takes a few seconds
 `Space ?` (or `:Reference`) opens an all-in-one reference: the daily loop,
 **every snippet with a verified example** (typed into a headless ntex, so it
 shows what really comes out), the **migration decisions** (every change from
-Latex Suite, before and after, filterable; “needs your call” marked), maths
+Latex Suite, before and after, filterable; “needs your call” marked), math
 typing features, Vim keys (the ntex / VimTeX
 ones read from the live keymap), LaTeX style standards, a symbol finder
 ("how do I type ⊆?"), settings and files, commands, troubleshooting. One global
@@ -384,7 +399,7 @@ Suites: `mine` (your snippets in .md and .tex, macOS keys, hot reload),
 unchanged, except an allowlist in `reference/content/symbols.mjs`), `english`
 (ordinary text, also inside `\text{}`, stays as typed), `decisions` (every
 “now” example in `snippets/decisions.json` typed again), `perf`
-(per-keystroke cost), `system` (health, maths rendering to PNG, template,
+(per-keystroke cost), `system` (health, math rendering to PNG, template,
 :Scratch, conceal, texlab completion; compiling only with
 `TEXNVIM_TEST_COMPILE=1`, since a compile can make VimTeX talk to Skim),
 `ide` (compile errors land on the right line for an undefined command, a
@@ -420,10 +435,14 @@ only when asked, not when another program saves them), `TEXNVIM_SNIPPETS=DIR`
   init.lua                        loads everything below
   lua/config/options.lua          wrap, spell, conceal defaults, mouse, clipboard
   lua/config/keymaps.lua          Ctrl-s, Ctrl-z, Space shortcuts
-  lua/config/theme.lua            colours (Modus + readable conceal)
+  lua/config/theme.lua            colors: Modus under the palette, readable conceal
+  lua/config/palettes.lua         the editor palettes (Slate, Code, Code Dark, Alabaster) + standard themes
+  lua/plugins/themes.lua          the standard themes' Neovim ports (loaded only when picked)
+  lua/config/structure.lua        section rules, block-kind colors, gutter bar, nesting lines
+  lua/config/look.lua             look.json: which palette + structure marks (:NtexLook)
   lua/config/macos_keys.lua       Option-Left/Right/Backspace like macOS
   lua/config/livepdf.lua          save + compile when you pause typing
-  lua/config/pdfview.lua          \\lv: PDF in a cmux pane (tdf / browser) or Skim
+  lua/config/pdfview.lua          \\lv: PDF in a cmux / Tern / Ghostty pane or Skim
   lua/config/commands.lua         :Scratch, new-file template
   lua/config/reference.lua        :Reference / Space ?: build + open the reference page
   lua/config/studio.lua           :SnippetStudio / Space n, Space N: launch Ntex Studio
@@ -434,15 +453,15 @@ only when asked, not when another program saves them), `TEXNVIM_SNIPPETS=DIR`
   lua/ide/                        diagnostics.lua (how errors look, Space d), compile_errors.lua
                                   (tectonic log → errors), harper.lua, copilot.lua, finder.lua
   lua/plugins/core.lua            plugins: VimTeX, LuaSnip, blink.cmp, treesitter, snacks, nvim-lspconfig
-  lua/snips/                      snippets and maths typing
+  lua/snips/                      snippets and math typing
     init.lua        LuaSnip setup, loading + hot reload of snippets/, commands
     helpers.lua     the snippet vocabulary (math, post, pat, env, vis, …)
-    cond.lua        when a snippet may fire (word starts, \commands, maths/text)
+    cond.lua        when a snippet may fire (word starts, \commands, math/text)
     context.lua     math / text / \text{} / comment detection (VimTeX for .tex)
     mdmath.lua      $ / $$ scanner for .md
     features.lua    Tab, Enter, auto-fraction, tabout, matrix keys, enlarge brackets
     visual.lua      visual snippets in select mode
-    settings.lua    prefs.lua latex = { … } → behaviour
+    settings.lua    prefs.lua latex = { … } → behavior
     conceal.lua     F2 conceal (.tex via VimTeX, .md own)
     report.lua      :SnippetReport
   snippets/                       your snippets (tex/*.lua), README.md, DECISIONS.md, decisions.json

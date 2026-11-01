@@ -8,4 +8,20 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{ntex-blocks}[2026/10/07 v1 blocks made in Ntex Studio]
 
+% ── group action arrow (hand-written, not a Studio block) ──
+% G \acts X: a loop that leaves X and comes back into it, clockwise, drawn in
+% the current size so it shrinks in sub/superscripts. G \acts[\varphi] X puts
+% the action's name above it; \acts^\varphi puts it at the upper right.
+\RequirePackage{tikz}
+\usetikzlibrary{arrows.meta,bending}
+\newcommand\ntexActsLoop{\text{$\vcenter{\hbox{\tikz[baseline]{%
+  \path[use as bounding box] (-0.66em,-0.36em) rectangle (0,0.36em);
+  \draw[line width=0.042em,
+        -{Stealth[length=0.24em, width=0.28em, inset=0.08em, bend]}]
+    (0,-0.15em) .. controls (-0.85em,-0.9em) and (-0.85em,0.9em) .. (0,0.15em);}}}$}}
+\newcommand\acts[1][]{%
+  \if\relax\detokenize{#1}\relax\mathrel{\ntexActsLoop}\mkern-2mu%
+  \else\mathrel{\overset{#1}{\ntexActsLoop}}\mkern-2mu\fi}
+% ── end group action arrow ──
+
 \endinput

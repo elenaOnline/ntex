@@ -7,4 +7,6 @@ local h = require("snips.helpers")
 local math, math_tab, text, suffix, post, pat, vis = h.math, h.math_tab, h.text, h.suffix, h.post, h.pat, h.vis
 
 return h.group("Inbox", {
+  -- studio: id=alpha-0000 made=2026-10-21T00:00
+  math("alpha", [[\alpha]], "yours"),
 })

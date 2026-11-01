@@ -1,0 +1,21 @@
+\documentclass{article}
+\usepackage{ntex-notes}
+\begin{document}
+
+\section{Group actions}
+A group $G$ \emph{acts} on a set $X$ when each $g \in G$ moves $X$.
+
+\begin{definition}[Orbit]
+  The \textbf{orbit} of $x \in X$ is $G \cdot x = \{\, g x : g \in G \,\}$.
+\end{definition}
+
+\begin{theorem}[Orbit--stabilizer]
+  For finite $G$,
+  \[ \lvert G \cdot x \rvert \, \lvert G_x \rvert = \lvert G \rvert. \]
+\end{theorem}
+
+\begin{proof}
+  The map $g G_x \mapsto g x$ is a bijection. % check injectivity
+\end{proof}
+
+\end{document}

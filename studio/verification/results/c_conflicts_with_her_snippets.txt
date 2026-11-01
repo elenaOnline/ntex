@@ -1,0 +1,2 @@
+c_conflicts_with_her_snippets: 0 of 34 checks failed
+

@@ -29,6 +29,7 @@ require("config.options")
 require("config.lazy") -- plugins (lazy.nvim, pinned by lazy-lock.json)
 require("config.lsp") -- texlab via vim.lsp.config / vim.lsp.enable
 require("config.ide") -- errors inline, Harper, Copilot, file finder (lua/ide/)
+require("config.statusline").setup() -- winbar (where you are) + status bar (compile, diagnostics)
 require("config.keymaps")
 require("config.macos_keys").setup() -- Option-Left/Right/Backspace like macOS
 require("config.commands") -- :Scratch, new-file template
@@ -37,4 +38,5 @@ require("config.pdfview").setup() -- \\lv: PDF in a cmux pane (prefs.lua pdf_vie
 require("snips").setup() -- snippets (snippets/tex/*.lua), maths typing features, conceal
 require("config.reference").setup() -- :Reference / Space ?: the reference page (reference/)
 require("config.studio").setup() -- :SnippetStudio / Space n, Space N: Ntex Studio (studio/)
+require("config.look").setup() -- palette + structure marks (look.json; Ntex Studio's Look page, :NtexLook)
 require("config.figures").setup() -- :Figure / Space g: Ntex Figures (studio/figures/FIGURES.md)

@@ -11,11 +11,58 @@ already working.
 | Space n in ntex | a new snippet |
 | Space n on a selection (visual mode) | a new snippet whose output is the selection |
 | Space N in ntex | the inbox |
-| `:SnippetStudio [snippet\|block\|inbox\|library]` | that page |
+| `:SnippetStudio [snippet\|block\|inbox\|library\|look]` | that page |
 | ⌘4 or ⌘F in the studio | the library: every snippet you have, searchable |
+| ⌘5 in the studio | the editor look: palette, section rules, block colors, nesting lines |
+| ⌘6 in the studio | the notes look: typeface, boxes and colors of the PDF |
 | `ntex-studio` in a shell | the studio (`--page`, `--output-file`, `--context math\|text`) |
 
 It stays running after ⌘W / Esc, so the next Space n is instant. ⌘Q quits it.
+
+## The editor look (page 5, ⌘5)
+
+How ntex colors .tex files while you type. **Palette**: Slate (default),
+Code, Code Dark, Alabaster (the look before). **Standard**: twelve common editor
+themes to compare against (VS Code Light+/Dark+, GitHub Light, One Light,
+Solarized Light/Dark, Catppuccin Latte/Mocha, Tokyo Night, Gruvbox Dark,
+Newpaper Light/Dark), in
+their own colors with your structure settings on top. **Sections**: none, a rule
+above each heading, or a tinted band. **Blocks**: plain, names colored by
+kind, or names plus a bar in the gutter. **Begin/end**: color only the
+environment name, or the whole `\begin{…}[…]` line. **Guides**: nesting
+lines. **Black ink**: only for what prints, or for commands too.
+
+Each change is saved to `~/.config/texnvim/look.json` at once, and every open
+ntex repaints. Code Dark and the standard themes also switch the terminal's background and
+text color while ntex runs; one of your light palettes (or quitting ntex)
+gives the white back. In ntex,
+`:NtexLook` shows the settings and `:NtexLook palette code` changes one.
+
+**Colors**: every color of the palette in use (page, text, math, commands,
+braces, comments, the block colors …) as a chip. Pick one for H, S and V
+sliders and a hex field (Return applies). Edits belong to that palette and
+repaint ntex live; *Reset this color* and *Reset all of …* undo them.
+
+## Saved looks, structure, the notes look (pages 5 and 6)
+
+**Saved looks** (top of the Look page, and of the Notes page): every look is
+a button that puts it back. Slate (default), Alabaster (stock) and the notes
+Theme default are always there and protected. *Save current
+as* (a name), *Rename* and *Delete* work on your own looks. They live in
+`~/.config/texnvim/looks.json`.
+
+**Editor structure** (Look page): section rule glyph, subsection rule,
+section numbers, gutter bar glyph and side, nesting line glyph and which
+blocks get one, bold titles, and the shades of whole begin/end lines.
+
+**Notes** (page 6, ⌘6): how the PDF looks. Typeface (Charter, Palatino,
+Times, Utopia, Libertinus, STIX Two, Fourier) and line spacing, the
+theorem-like boxes (fill, outline, corners, head color, bar width) and every
+color of the notes palette (H, S, V, hex). Studio writes
+`templates/tex/ntex-notes-fonts.tex` and `ntex-notes-look.tex`, which
+ntex-base.sty reads; each exists only while it differs from the theme, so the
+defaults give exactly the theme's PDF. A note shows a change at its next
+compile.
 
 ## Make a snippet (page 1, ⌘1)
 
@@ -103,9 +150,14 @@ background (a few minutes for all of them), after that they're cached.
 ## Build, test
 
 ```sh
-~/.config/texnvim/studio/build.sh      # fonts from your tectonic bundle + release build
+~/.config/texnvim/studio/build.sh      # fonts from your tectonic bundle + release build + Ntex Studio.app
 cd ~/.config/texnvim/studio && cargo test --workspace   # headless: nothing opens on screen
 ```
+
+`build.sh` wraps the release binary in `target/release/Ntex Studio.app`
+(bundle id `io.github.ntex.studio`, icon from `macos/AppIcon.iconset`, whose 16 and 32 px sizes drop the handle; `macos/AppIcon.png` is the 1024 px master), so
+the Dock and ⌘-Tab show Studio's name and icon. `ntex-studio` and ntex run the
+binary inside it, and fall back to `target/release/ntex-studio` without it.
 
 The screens are tested by rendering them offscreen. `evidence/` holds the
 latest renders, and `verification/` holds the adversary's acceptance cases,

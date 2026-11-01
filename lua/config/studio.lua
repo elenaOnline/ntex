@@ -15,8 +15,14 @@
 local M = {}
 
 local studio_dir = vim.fs.joinpath(vim.fn.stdpath("config"), "studio")
-M.binary = vim.fs.joinpath(studio_dir, "target", "release", "ntex-studio")
-M.PAGES = { "snippet", "block", "inbox", "library" }
+-- the binary inside Ntex Studio.app (Dock name and icon), else the bare one
+M.app_binary = vim.fs.joinpath(studio_dir, "target", "release", "Ntex Studio.app", "Contents", "MacOS", "ntex-studio")
+M.bare_binary = vim.fs.joinpath(studio_dir, "target", "release", "ntex-studio")
+function M.resolve_binary()
+  return vim.fn.executable(M.app_binary) == 1 and M.app_binary or M.bare_binary
+end
+M.binary = M.resolve_binary()
+M.PAGES = { "snippet", "block", "inbox", "library", "look", "notes" }
 
 M.launched = {} -- argv of every launch (and would-be launch), newest last; tests read it
 
@@ -68,10 +74,11 @@ local function write_temp(text)
   return path
 end
 
---- The command line for a launch. opts: page = "snippet"|"block"|"inbox"|"library",
+--- The command line for a launch. opts: page = "snippet"|"block"|"inbox"|"library"|"look"|"notes",
 --- output_file = path, context = "math"|"text", ft = "tex"|"markdown".
 function M.command(opts)
   opts = opts or {}
+  M.binary = M.resolve_binary()
   local argv = { M.binary }
   if opts.page then
     vim.list_extend(argv, { "--page", opts.page })
@@ -137,7 +144,7 @@ function M.setup()
   vim.api.nvim_create_user_command("SnippetStudio", function(o)
     local page = o.args ~= "" and o.args or "snippet"
     if not vim.tbl_contains(M.PAGES, page) then
-      vim.notify("SnippetStudio: the pages are snippet, block, inbox and library", vim.log.levels.ERROR)
+      vim.notify("SnippetStudio: the pages are snippet, block, inbox, library, look and notes", vim.log.levels.ERROR)
       return
     end
     M.open(page)

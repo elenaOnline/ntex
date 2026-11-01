@@ -31,7 +31,8 @@
 local M = {}
 
 local studio_dir = vim.fs.joinpath(vim.fn.stdpath("config"), "studio")
-M.studio_binary = vim.fs.joinpath(studio_dir, "target", "release", "ntex-studio")
+-- Ntex Studio's binary: inside Ntex Studio.app if built, else the bare one (config.studio)
+M.studio_binary = require("config.studio").resolve_binary()
 M.fig_release = vim.fs.joinpath(studio_dir, "target", "release", "ntex-fig")
 M.ns = vim.api.nvim_create_namespace("ntexfig")
 M.DEBOUNCE_MS = 250
@@ -471,6 +472,7 @@ end
 -- the window (Ntex Studio --figure)
 
 function M.command(fig)
+  M.studio_binary = require("config.studio").resolve_binary()
   return { M.studio_binary, "--figure", fig }
 end
 

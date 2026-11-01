@@ -551,7 +551,7 @@ impl Default for StudioPrefs {
 /// running one to do (single instance, over `Paths::socket`).
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Default)]
 pub struct OpenRequest {
-    /// "snippet" | "block" | "inbox"; None = keep the current page
+    /// "snippet" | "block" | "inbox" | "library"; None = keep the current page
     #[serde(default)]
     pub page: Option<String>,
     /// Prefill the output with this text (a selection from ntex).

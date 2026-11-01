@@ -1,10 +1,16 @@
-% ntex-base.sty — the one source of truth for the author's fonts and palette.
+% ntex-base.sty — the one source of truth for the notes' fonts and palette.
 % Loaded by ntex-notes.sty (her notes) and ntex-figure.sty (Ntex Figures), so a
 % change to Charter or to a colour here follows everywhere. Split out of
 % ntex-notes.sty v8 on 2026-10-12 (the lines are unchanged).
 % To share a .tex: put a copy of this file next to it with ntex-notes.sty.
+% v2 (2026-10-15): Commutator's palette (the group theory game's colors).
+% v3 (2026-10-15): back to the v1 palette, except the lighter proof block from Commutator.
+% v4 (2026-10-19): Ntex Studio's Notes page can swap the typeface and recolor or
+%   restyle the blocks through two generated files (below); without them, v3.
+%   Commutator stays available: \def\ntexCommutatorPalette{} before
+%   \usepackage{ntex-notes} turns it on for one document.
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{ntex-base}[2026/10/12 v1 ntex fonts and palette]
+\ProvidesPackage{ntex-base}[2026/10/19 v4 ntex fonts and palette]
 
 % amsmath before newtxmath, and xcolor for \definecolor (both no-ops when
 % ntex-notes has already loaded them).
@@ -14,6 +20,10 @@
 % ---------------------------------------------------------------- fonts
 % Charter (Carter, made to stay legible at small sizes and on screens) for
 % text, with newtxmath's Charter-matched maths; vvarbb = the classic ℤ ℝ ℚ.
+% Ntex Studio's Notes page (⌘6) may pick another typeface: it writes
+% ntex-notes-fonts.tex next to this file, used instead of the lines below.
+% No such file (the default, or a .tex shared without it): Charter.
+\IfFileExists{ntex-notes-fonts.tex}{\input{ntex-notes-fonts.tex}}{%
 \RequirePackage{XCharter}
 \RequirePackage[charter,vvarbb]{newtxmath}
 % Operator names (gcd, sin, lim, mod) in Charter too: under XeTeX (tectonic)
@@ -21,9 +31,11 @@
 % otherwise falls back to Computer Modern.
 \DeclareSymbolFont{operators}{OT1}{XCharter-TLF}{m}{n}
 \SetSymbolFont{operators}{bold}{OT1}{XCharter-TLF}{b}{n}
-\linespread{1.04}
+\linespread{1.04}%
+}
 
 % ---------------------------------------------------------------- palette
+% v1 palette (the default again since v3).
 % Each kind of block has one hue in three tones (v5: richer than v4's
 % white-mixed tints, which went grey):
 %   …Rule  vivid mid-tone  — the bar on the left
@@ -58,7 +70,43 @@
 % structure accents (section numbers, bullets, title rule) use the theorem blue
 \colorlet{ntexBlue}{ntexBlueRule}
 \definecolor{ntexSlate}{HTML}{5A6378}        % captions, author/date
-\definecolor{ntexProofRule}{gray}{0.55}      % proof block: neutral, no hue
-\definecolor{ntexProofBack}{gray}{0.955}
+% proof block: the lighter one from Commutator (v2), kept in v3 for every palette
+\definecolor{ntexProofRule}{HTML}{B8BCCB}
+\definecolor{ntexProofBack}{HTML}{FBFAF7}
+
+% Commutator palette (v2), opt-in: \def\ntexCommutatorPalette{} before
+% \usepackage{ntex-notes}. Overrides the v1 colors above.
+\ifdefined\ntexCommutatorPalette
+% Commutator roles → ntex block kinds:
+%   theorem      structure  (blue)      lemma/prop/cor  scope   (violet)
+%   definition   equation   (teal)      example         inverse (magenta)
+%   exercise     identity   (gold)      remark          navy    (no hue)
+\definecolor{ntexInk}{HTML}{1B2340}          % --navy
+\definecolor{ntexBlueRule}{HTML}{2F6BFF}     % --structure
+\definecolor{ntexBlueBack}{HTML}{E6EDFF}
+\definecolor{ntexBlueHead}{HTML}{1A3FA8}
+\definecolor{ntexVioletRule}{HTML}{5528C2}   % --scope
+\definecolor{ntexVioletBack}{HTML}{EEE8FB}
+\definecolor{ntexVioletHead}{HTML}{3F1D96}
+\definecolor{ntexTealRule}{HTML}{3CC7AE}     % --equation
+\definecolor{ntexTealBack}{HTML}{E3F7F3}
+\definecolor{ntexTealHead}{HTML}{0E6E5D}
+\definecolor{ntexMaroonRule}{HTML}{C9246E}   % --inverse
+\definecolor{ntexMaroonBack}{HTML}{FBE7F0}
+\definecolor{ntexMaroonHead}{HTML}{A61C5A}
+\definecolor{ntexGreenRule}{HTML}{8A90A3}    % remark: --navy-3, no hue
+\definecolor{ntexGreenBack}{HTML}{F1F2F6}
+\definecolor{ntexGreenHead}{HTML}{545B73}
+\definecolor{ntexOchreRule}{HTML}{FFB81C}    % --identity
+\definecolor{ntexOchreBack}{HTML}{FFF4D6}
+\definecolor{ntexOchreHead}{HTML}{8A5A00}
+\definecolor{ntexBlue}{HTML}{1F4FD1}         % --structure-text: numbers, bullets, title rule
+\definecolor{ntexSlate}{HTML}{545B73}        % --navy-2
+\fi
+
+% Ntex Studio's Notes page: block colors and box styling picked there, in
+% ntex-notes-look.tex (written by the studio; no file = the look above).
+% Read at \begin{document}, after ntex-notes.sty has set up its boxes.
+\AtBeginDocument{\InputIfFileExists{ntex-notes-look.tex}{}{}}
 
 \endinput

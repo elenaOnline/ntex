@@ -754,3 +754,139 @@ impl RenderOnce for Disclosure {
 pub fn bold_caps(text: impl Into<SharedString>) -> gpui::Div {
     pmb(text)
 }
+
+// ---------------------------------------------------------------------------
+// channel slider (H, S or V of a color)
+
+/// A slider for one channel of a color: `label`, a track painted by `paint`
+/// (the color at each position, 0–1), the knob at `value` of `max`, the value
+/// with `unit`. Drag or click the track; ←/→ step `step` (⇧ ×5) when focused.
+#[derive(IntoElement)]
+pub struct ChannelSlider {
+    pub id: ElementId,
+    pub label: SharedString,
+    pub value: f32,
+    pub max: f32,
+    pub step: f32,
+    pub unit: &'static str,
+    pub paint: Rc<dyn Fn(f32) -> Hsla>,
+    pub on_change: Option<Rc<dyn Fn(f32, &mut Window, &mut App)>>,
+    /// How the value reads (default: rounded, then `unit`).
+    pub format: Option<Rc<dyn Fn(f32) -> String>>,
+}
+
+impl ChannelSlider {
+    pub fn new(id: impl Into<ElementId>, label: impl Into<SharedString>, value: f32, max: f32, paint: impl Fn(f32) -> Hsla + 'static) -> ChannelSlider {
+        ChannelSlider { id: id.into(), label: label.into(), value, max, step: 1.0, unit: "", paint: Rc::new(paint), on_change: None, format: None }
+    }
+    pub fn unit(mut self, unit: &'static str) -> ChannelSlider {
+        self.unit = unit;
+        self
+    }
+    pub fn format(mut self, f: impl Fn(f32) -> String + 'static) -> ChannelSlider {
+        self.format = Some(Rc::new(f));
+        self
+    }
+    pub fn step(mut self, step: f32) -> ChannelSlider {
+        self.step = step;
+        self
+    }
+    pub fn on_change(mut self, f: impl Fn(f32, &mut Window, &mut App) + 'static) -> ChannelSlider {
+        self.on_change = Some(Rc::new(f));
+        self
+    }
+    /// Track x → value.
+    pub fn value_at(bounds: Bounds<Pixels>, x: Pixels, max: f32) -> f32 {
+        let w = f32::from(bounds.size.width).max(1.0);
+        ((f32::from(x - bounds.origin.x) / w).clamp(0.0, 1.0) * max).round()
+    }
+}
+
+impl RenderOnce for ChannelSlider {
+    fn render(self, window: &mut Window, cx: &mut App) -> impl IntoElement {
+        let t = cx.theme().clone();
+        let focus = control_focus(&self.id, window, cx);
+        let ring = ring_visible(&focus, window);
+        let state_id = ElementId::NamedChild(std::sync::Arc::new(self.id.clone()), "state".into());
+        let state = window.use_keyed_state(state_id, cx, |_, _| Rc::new(SliderState::default())).read(cx).clone();
+        let max = self.max.max(1.0);
+        let value = self.value.clamp(0.0, max);
+        const TRACK_W: f32 = 260.;
+        let segments = 40;
+        let mut track = div().relative().flex().flex_row().w(px(TRACK_W)).h(px(10.)).border_1().border_color(t.rule);
+        for i in 0..segments {
+            track = track.child(div().flex_1().h_full().bg((self.paint)((i as f32 + 0.5) / segments as f32)));
+        }
+        let st = state.clone();
+        track = track.child(canvas(move |b, _, _| st.bounds.set(Some(b)), |_, _, _, _| {}).absolute().top_0().left_0().size_full());
+        let knob = div()
+            .absolute()
+            .top(px(-3.))
+            .left(px(value / max * TRACK_W - 7.))
+            .size(px(14.))
+            .rounded_full()
+            .bg((self.paint)(value / max))
+            .border(px(1.5))
+            .border_color(t.ink);
+        let track_box = div().relative().py(px(7.)).child(track.child(knob));
+
+        let change = self.on_change.clone();
+        let (s1, s2) = (state.clone(), state.clone());
+        let (c1, c2, c3) = (change.clone(), change.clone(), change);
+        let step = self.step;
+        div()
+            .id(self.id)
+            .relative()
+            .flex()
+            .flex_row()
+            .items_center()
+            .gap(px(10.))
+            .min_h(px(24.))
+            .track_focus(&focus.tab_stop(true))
+            .cursor_pointer()
+            .on_mouse_down(MouseButton::Left, move |e: &MouseDownEvent, window, cx| {
+                if let Some(b) = s1.bounds.get() {
+                    s1.dragging.set(true);
+                    if let Some(f) = c1.as_ref() {
+                        f(ChannelSlider::value_at(b, e.position.x, max), window, cx);
+                    }
+                }
+            })
+            .on_mouse_move(move |e: &MouseMoveEvent, window, cx| {
+                if !s2.dragging.get() {
+                    return;
+                }
+                if e.pressed_button != Some(MouseButton::Left) {
+                    s2.dragging.set(false);
+                    return;
+                }
+                if let (Some(b), Some(f)) = (s2.bounds.get(), c2.as_ref()) {
+                    f(ChannelSlider::value_at(b, e.position.x, max), window, cx);
+                }
+            })
+            .on_mouse_up(MouseButton::Left, {
+                let s = state.clone();
+                move |_, _, _| s.dragging.set(false)
+            })
+            .on_mouse_up_out(MouseButton::Left, move |_, _, _| state.dragging.set(false))
+            .on_key_down(move |e: &KeyDownEvent, window, cx| {
+                let by = if e.keystroke.modifiers.shift { step * 5. } else { step };
+                let next = match e.keystroke.key.as_str() {
+                    "left" => value - by,
+                    "right" => value + by,
+                    _ => return,
+                };
+                if let Some(f) = c3.as_ref() {
+                    f(next.clamp(0.0, max), window, cx);
+                }
+                cx.stop_propagation();
+            })
+            .when(!self.label.is_empty(), |d| d.child(div().w(px(18.)).font(t.caps()).text_size(t.body_size).text_color(t.ink).child(self.label.clone())))
+            .child(track_box)
+            .child(div().w(px(48.)).font(t.serif()).text_size(t.body_size).text_color(t.ink).child(match &self.format {
+                Some(f) => f(value),
+                None => format!("{}{}", value.round() as i32, self.unit),
+            }))
+            .when(ring, |d| d.child(focus_ring(&t)))
+    }
+}

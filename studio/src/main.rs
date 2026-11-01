@@ -1,4 +1,4 @@
-//! `ntex-studio [--page snippet|block|inbox|library] [--output-file PATH] [--context math|text] [--ft tex|markdown] [--figure PATH] [--background]`
+//! `ntex-studio [--page snippet|block|inbox|library|look|notes|terminal] [--output-file PATH] [--context math|text] [--ft tex|markdown] [--figure PATH] [--background]`
 //!
 //! `--figure PATH` opens (or focuses) the figure window for that `.fig`
 //! (FIGURES.md "The figure window"); a missing file starts from the template.

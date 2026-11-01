@@ -25,6 +25,8 @@ local child_env = {
   -- same override the ntex launcher sets inside cmux) to check snacks.image
   TEXNVIM_IMAGES = SUITE == "system" and "1" or "0",
   SNACKS_GHOSTTY = SUITE == "system" and "true" or nil,
+  -- the editor look (lua/config/look.lua) from a temp look.json, never the real one
+  TEXNVIM_LOOK = (vim.env.TEXNVIM_TEST_DATA or vim.fn.tempname()) .. "/look-" .. SUITE .. ".json",
   HOME = vim.env.HOME,
   PATH = vim.env.PATH,
   TERM = "xterm-256color",

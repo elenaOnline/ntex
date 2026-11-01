@@ -10,7 +10,7 @@ local math = h.math
 
 return h.group("Set operations", {
   -- trigger       output                          origin
-  math("CC",       [[\mathcal{C}]],                "changed"), -- Latex Suite: \mathbb{C}
+  math("CC",       [[\mathbb{C}]],                 "changed"), -- Latex Suite: \mathbb{C}
   math("Nat",      [[\mathbb{N}]],                 "yours"),
   math("FF",       [[\mathbb{F}]],                 "yours"),
   math("disj",     [[\mathcal{D}]],                "yours"),
@@ -27,17 +27,17 @@ return h.group("Set operations", {
   math("nn",       [[\cap]],                       "yours", { priority = -1 }),
   math("iff",      [[\iff]],                       "yours"),
   math("ninn",     [[\notin]],                     "yours"),
-  math("st.",      [[\text{ s.t. }]],              "yours"),
+  math("st.",      [[\text{ such that }]],         "yours"),
   math("odp",      [[\langle <> , <> \rangle ]],   "yours"),
   math("sub",      [[\subseteq]],                  "yours"),
   math("neg",      [[\neg]],                       "yours"),
 
-  math("and",      [[\land{}]],                    "changed"), -- Latex Suite: \cap
-  math("orr",      [[\lor{}]],                     "changed"), -- Latex Suite: \cup
+  math("and",      [[\text{ and }]],               "changed"), -- Latex Suite: \cap
+  math("orr",      [[\text{ or }]],                "changed"), -- Latex Suite: \cup
   math("inn",      [[\in ]],                       "changed"),
   math([[\\\]],    [[\setminus{}]],                "changed"),
   math("sup=",     [[\supseteq{}]],                "changed"),
-  math("eset",     [[\varnothing{}]],              "changed"), -- Latex Suite: \emptyset
+  math("eset",     [[\varnothing]],                "changed"), -- Latex Suite: \emptyset
   math("set",      [[\{ <> \}]],                   "changed"),
   math("cset",     [[\{ <> : <>\}]],               "yours"),
 })

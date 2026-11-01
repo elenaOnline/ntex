@@ -1,0 +1,2 @@
+x_plan_cannot_escape_the_snippets_folder: 0 of 6 checks failed
+

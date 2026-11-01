@@ -278,7 +278,7 @@ fn env_names() {
 #[test]
 fn the_specimen() {
     let s = blocks::specimen(&fun());
-    assert!(s.contains("\\documentclass[11pt]{article}\n\\usepackage{ntex-notes}\n"));
+    assert!(s.contains("\\documentclass[12pt]{article}\n\\usepackage{ntex-notes}\n"));
     assert!(s.contains("\\begin{remark}\n"));
     assert!(s.contains("\\newtheorem*{ntexspecimen}{Fun fact}"));
     assert!(s.contains("\\begin{ntexspecimen}[Specimen]\n"));
