@@ -272,6 +272,19 @@ fn env_names() {
     assert_eq!(blocks::env_from_title("Fun fact"), "funfact");
     assert_eq!(blocks::env_from_title("Côté"), "cote");
     assert_eq!(blocks::env_from_title("Naïve Bayes’ rule (2)"), "naivebayesrule");
+}
+
+#[test]
+fn trigger_follows_env_and_steps_past_taken_ones() {
+    let none: Vec<String> = Vec::new();
+    assert_eq!(blocks::trigger_from_env("funfact", &none), "fun");
+    assert_eq!(blocks::trigger_from_env("ex", &none), "ex");
+    assert_eq!(blocks::trigger_from_env("", &none), "");
+    let taken = vec!["fun".to_string(), "funf".to_string()];
+    assert_eq!(blocks::trigger_from_env("funfact", &taken), "funfa");
+    let all = vec!["ab".to_string()];
+    assert_eq!(blocks::trigger_from_env("ab", &all), "");
+    assert_eq!(blocks::trigger_from_env("SideNote", &none), "sid");
     assert_eq!(blocks::env_from_title("Γ-thing"), "thing");
 }
 

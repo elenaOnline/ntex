@@ -756,6 +756,26 @@ pub fn env_from_title(title: &str) -> String {
     out
 }
 
+/// Trigger from an env: its first three letters ("funfact" → "fun"), one letter longer at a time while a snippet or
+/// another block already uses it, and empty when every prefix is taken. `taken` holds the triggers in use.
+pub fn trigger_from_env(env: &str, taken: &[String]) -> String {
+    let letters: Vec<char> = env.to_lowercase().chars().filter(|c| c.is_alphabetic()).collect();
+    if letters.is_empty() {
+        return String::new();
+    }
+    let mut n = letters.len().min(3);
+    loop {
+        let guess: String = letters[..n].iter().collect();
+        if !taken.iter().any(|t| *t == guess) {
+            return guess;
+        }
+        if n == letters.len() {
+            return String::new();
+        }
+        n += 1;
+    }
+}
+
 /// Latin letters with accents → ASCII.
 fn fold(c: char) -> Option<&'static str> {
     Some(match c {
