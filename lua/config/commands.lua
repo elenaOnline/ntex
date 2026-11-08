@@ -5,6 +5,7 @@ local api = vim.api
 vim.g.scratch_dir = vim.g.scratch_dir or vim.fs.joinpath(vim.env.HOME, "scratch")
 
 local template_path = vim.fs.joinpath(vim.fn.stdpath("config"), "templates", "article.tex")
+local template_title = require("config.template_title")
 
 --- Fill an empty .tex buffer from templates/article.tex
 local function apply_template(buf)
@@ -23,7 +24,9 @@ local function apply_template(buf)
   local name = vim.fn.fnamemodify(api.nvim_buf_get_name(buf), ":t:r")
   local cursor = nil
   for i, l in ipairs(tpl) do
-    l = l:gsub("{{TITLE}}", (name:gsub("[_-]", " ")))
+    l = l:gsub("{{TITLE}}", function()
+      return template_title(name)
+    end)
     l = l:gsub("{{DATE}}", os.date("%Y-%m-%d"))
     if l:find("{{CURSOR}}", 1, true) then
       cursor = i
