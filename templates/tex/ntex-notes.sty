@@ -3,6 +3,8 @@
 % via tectonic -Z search-path=~/.config/texnvim/templates/tex.
 % To share a .tex with someone / Overleaf: put a copy of this file next to it
 % (and of ntex-blocks.sty: your own blocks, made in Ntex Studio, live there).
+% v10 (2026-11-10): each kind has its own style (ntex theorem, ntex proof, …)
+% and body-font hook, so the Notes look can restyle one kind (same look).
 % v9 (2026-10-12): fonts and palette moved to ntex-base.sty (same look).
 % v8 (2026-10-11): exercise + solution, a homework look.
 % v7 (2026-10-10): Charter for text and maths (was Palatino; v6 is saved as
@@ -13,7 +15,7 @@
 % Earlier versions: ntex-notes.v1.sty (left rule, Modus colours), ntex-notes.v3.sty (title bars).
 % Everything tunable is near the top: palette, fonts, box shape.
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{ntex-notes}[2026/10/12 v9 ntex notes theme]
+\ProvidesPackage{ntex-notes}[2026/11/10 v10 ntex notes theme]
 
 % ---------------------------------------------------------------- packages
 \RequirePackage[margin=1in]{geometry}
@@ -43,8 +45,11 @@
 % ---------------------------------------------------------------- theorems
 % amsthm does the numbering (so \label / \cref work); tcolorbox draws the box.
 \colorlet{ntexHead}{ntexInk}
-\newtheoremstyle{ntexplain}{0pt}{0pt}{\itshape}{}{\bfseries\color{ntexHead}}{.}{.6em}{}
-\newtheoremstyle{ntexupright}{0pt}{0pt}{}{}{\bfseries\color{ntexHead}}{.}{.6em}{}
+% \ntexbody{\itshape}: the style's body font, unless the look set one for this
+% kind (\ntexbody@definition, written into ntex-notes-look.tex by Studio).
+\newcommand\ntexbody[1]{\ifcsname ntexbody@\@currenvir\endcsname\csname ntexbody@\@currenvir\endcsname\else#1\fi}
+\newtheoremstyle{ntexplain}{0pt}{0pt}{\ntexbody{\itshape}}{}{\bfseries\color{ntexHead}}{.}{.6em}{}
+\newtheoremstyle{ntexupright}{0pt}{0pt}{\ntexbody{}}{}{\bfseries\color{ntexHead}}{.}{.6em}{}
 
 \theoremstyle{ntexplain}
 \newtheorem{theorem}{Theorem}[section]
@@ -58,6 +63,8 @@
 
 % one box shape for all kinds: tinted fill, coloured rule on the left.
 % ntexbox=Blue uses ntexBlueRule / ntexBlueBack / ntexBlueHead.
+% Each kind draws through its own style (ntex theorem, ntex proof, …), which is
+% the shared shape unless the look gives that kind its own (ntex-notes-look.tex).
 \tcbset{
   ntexbox/.style={
     enhanced, breakable,
@@ -68,24 +75,40 @@
     before skip=12pt, after skip=12pt,
     before upper={\colorlet{ntexHead}{ntex#1Head}},
   },
+  ntex theorem/.style={ntexbox=Blue},
+  ntex lemma/.style={ntexbox=Violet},
+  ntex proposition/.style={ntexbox=Violet},
+  ntex corollary/.style={ntexbox=Violet},
+  ntex definition/.style={ntexbox=Teal},
+  ntex example/.style={ntexbox=Maroon},
+  ntex remark/.style={ntexbox=Green},
+  % proof: a quiet neutral block — faint grey fill, thin grey rule, no hue
+  ntex proof/.style={
+    enhanced, breakable, frame hidden, sharp corners,
+    colback=ntexProofBack, coltext=ntexInk,
+    borderline west={1pt}{0pt}{ntexProofRule},
+    left=10pt, right=10pt, top=6pt, bottom=6pt,
+    before skip=8pt, after skip=12pt,
+  },
+  % exercise: Ochre, and a question stays whole (it doesn't break across pages)
+  ntex exercise/.style={
+    enhanced, frame hidden, sharp corners,
+    colback=ntexOchreBack, coltext=ntexInk, borderline west={3pt}{0pt}{ntexOchreRule},
+    left=11pt, right=10pt, top=7pt, bottom=7pt,
+    before skip=18pt, after skip=8pt,
+    before upper={\colorlet{ntexHead}{ntexOchreHead}},
+  },
 }
-\tcolorboxenvironment{theorem}{ntexbox=Blue}
-\tcolorboxenvironment{lemma}{ntexbox=Violet}
-\tcolorboxenvironment{proposition}{ntexbox=Violet}
-\tcolorboxenvironment{corollary}{ntexbox=Violet}
-\tcolorboxenvironment{definition}{ntexbox=Teal}
-\tcolorboxenvironment{example}{ntexbox=Maroon}
-\tcolorboxenvironment{remark}{ntexbox=Green}
+\tcolorboxenvironment{theorem}{ntex theorem}
+\tcolorboxenvironment{lemma}{ntex lemma}
+\tcolorboxenvironment{proposition}{ntex proposition}
+\tcolorboxenvironment{corollary}{ntex corollary}
+\tcolorboxenvironment{definition}{ntex definition}
+\tcolorboxenvironment{example}{ntex example}
+\tcolorboxenvironment{remark}{ntex remark}
 
-% proof: a quiet neutral block — faint grey fill, thin grey rule, no hue
 \renewcommand{\qedsymbol}{\textcolor{ntexProofRule!80!black}{$\square$}}
-\tcolorboxenvironment{proof}{
-  enhanced, breakable, frame hidden, sharp corners,
-  colback=ntexProofBack, coltext=ntexInk,
-  borderline west={1pt}{0pt}{ntexProofRule},
-  left=10pt, right=10pt, top=6pt, bottom=6pt,
-  before skip=8pt, after skip=12pt,
-}
+\tcolorboxenvironment{proof}{ntex proof}
 
 % ---------------------------------------------------------------- lists, captions
 \setlist{itemsep=2pt, topsep=4pt}
@@ -116,12 +139,9 @@
 \AtBeginDocument{%
   \@ifpackageloaded{course-hw}{}{%
     \NewDocumentEnvironment{exercise}{m o}{%
-      \begin{tcolorbox}[enhanced, frame hidden, sharp corners,
-          colback=ntexOchreBack, coltext=ntexInk, borderline west={3pt}{0pt}{ntexOchreRule},
-          left=11pt, right=10pt, top=7pt, bottom=7pt,
-          before skip=18pt, after skip=8pt]%
-      {\bfseries\color{ntexOchreHead}Exercise\if\relax\detokenize{#1}\relax\else\ #1\fi}%
-      \IfValueT{#2}{\hfill{\small\color{ntexOchreHead}\textsc{#2}}}%
+      \begin{tcolorbox}[ntex exercise]%
+      {\bfseries\color{ntexHead}Exercise\if\relax\detokenize{#1}\relax\else\ #1\fi}%
+      \IfValueT{#2}{\hfill{\small\color{ntexHead}\textsc{#2}}}%
       \par\smallskip
     }{%
       \end{tcolorbox}%

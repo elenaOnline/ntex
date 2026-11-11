@@ -64,6 +64,14 @@ ntex-base.sty reads; each exists only while it differs from the theme, so the
 defaults give exactly the theme's PDF. A note shows a change at its next
 compile.
 
+Each kind of box (theorem, lemma, proposition, corollary, definition,
+example, remark, proof, exercise) can also have its own bar, fill, outline,
+corners, head color and body font on top of the shared shape, and the proof
+its own end mark (□ ■ ∎ or none): `kinds` and `qed` in `notes-look.json`.
+Proof and exercise start with their own settings (the theme's look for them),
+so the shared shape doesn't reach them until they're cleared. Powerset's
+Styles page edits these; the Notes page edits the shared shape.
+
 ## Make a snippet (page 1, ⌘1)
 
 1. **Type the trigger** exactly as you will in ntex. Every key counts,
