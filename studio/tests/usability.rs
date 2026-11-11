@@ -2723,16 +2723,16 @@ fn main() {
         (s1 - s0).abs() >= 0.05 && steps == 1 && (s2 - 1.5).abs() < 1e-4
     });
 
-    run.task("QB4", "⌘1 shows it at its real size on this display; ⌘0 fits again", 2, QB_SRC, |w| {
+    run.task("QB4", "⌘0 shows it at its real size on this display; ⌘9 fits again", 2, QB_SRC, |w| {
         // a known display: 40 logical px to the cm
         set_dpi(w, 40.0);
         let fit = w.px_per_cm();
-        w.key("cmd-1", "actual size");
+        w.key("cmd-0", "actual size");
         let at = w.px_per_cm();
         let st = state_text(w);
-        note!(w, "fit {fit:.1} px/cm; ⌘1 {at:.2} px/cm; corner says {st:?}");
+        note!(w, "fit {fit:.1} px/cm; ⌘0 {at:.2} px/cm; corner says {st:?}");
         if (at - 40.0).abs() > 0.2 {
-            issue!(w, "⌘1 shows {at:.2} px per cm, not 40");
+            issue!(w, "⌘0 shows {at:.2} px per cm, not 40");
         }
         if !st.contains("actual size") {
             issue!(w, "the canvas state says {st:?}");
@@ -2745,23 +2745,23 @@ fn main() {
             issue!(w, "A to B is {:.1} px; at 40 px/cm it should be {:.1}", f32::from(b.x - a.x), 3.0 * cell * 40.0);
         }
         w.shot("actual-size");
-        // the panel folding away (⌘I) doesn't change the size it is shown at
-        w.key("cmd-i", "hide the panel");
+        // the panel folding away (⌥⌘I) doesn't change the size it is shown at
+        w.key("alt-cmd-i", "hide the panel");
         let still = w.px_per_cm();
         if (still - 40.0).abs() > 0.3 {
             issue!(w, "hiding the panel changed the size to {still:.2} px/cm");
         }
-        w.key("cmd-i", "show the panel");
+        w.key("alt-cmd-i", "show the panel");
         // the figure scale changes what is on screen but not the cm: a wider page, still 40 px per cm
-        w.key("cmd-0", "fit");
+        w.key("cmd-9", "fit");
         let back = w.px_per_cm();
         let st2 = state_text(w);
-        note!(w, "⌘0: {back:.1} px/cm, {st2:?}");
+        note!(w, "⌘9: {back:.1} px/cm, {st2:?}");
         if (back - 40.0).abs() < 1.0 && (fit - 40.0).abs() > 1.0 || st2.contains("actual size") {
-            w.issue("⌘0 doesn't fit again");
+            w.issue("⌘9 doesn't fit again");
         }
         // 2×: her trackpad zoom steps off actual size; the readout stops saying so
-        w.key("cmd-1", "actual size");
+        w.key("cmd-0", "actual size");
         w.key("cmd-=", "zoom in");
         let st3 = state_text(w);
         if st3.contains("actual size") {
@@ -3569,11 +3569,11 @@ fn main() {
         inside && s1 > 1.0 && c1.x <= bnds.right() && c1.y <= bnds.bottom() && live.contains("scale")
     });
 
-    // U15a: ⌘0 keeps the selection's handles on the canvas
-    run.task("QF6", "⌘0 with a tall blob selected: its rotate knob is on the canvas", 2, "blob G size=2,16 at (0,0)\n", |w| {
+    // U15a: ⌘9 keeps the selection's handles on the canvas
+    run.task("QF6", "⌘9 with a tall blob selected: its rotate knob is on the canvas", 2, "blob G size=2,16 at (0,0)\n", |w| {
         let c = w.centre(&ObjRef::Blob("G".into())).unwrap();
         w.click(c, "the blob");
-        w.key("cmd-0", "fit");
+        w.key("cmd-9", "fit");
         w.shot("fitted");
         let bounds = w.read(|v| v.canvas_bounds.get().unwrap());
         let Some(k) = w.handle(|k| k == HKind::Rotate) else { return false };

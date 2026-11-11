@@ -63,7 +63,7 @@ actions!(
         ZoomIn,
         ZoomOut,
         ZoomFit,
-        /// ⌘1: actual size (1 cm on screen is 1 cm on paper)
+        /// ⌘0: actual size (1 cm on screen is 1 cm on paper)
         ZoomActual,
         /// Esc on the canvas
         CanvasEscape,
@@ -77,9 +77,9 @@ actions!(
         PasteSel,
         /// ⌘R: reverse the selected arrows (a rotation arrow: its direction)
         Reverse,
-        /// ⌘I: the properties panel
+        /// ⌥⌘I: the properties panel
         TogglePanel,
-        /// ⌘/: the shorthand's reference
+        /// The shorthand's reference (its button in the tool strip)
         ToggleReference,
         /// Tab in a label field: the next vertex's / element's label
         NextLabel,
@@ -126,8 +126,7 @@ pub fn bind_keys(cx: &mut App) {
         KeyBinding::new("cmd-x", CutSel, c),
         KeyBinding::new("cmd-v", PasteSel, c),
         KeyBinding::new("cmd-r", Reverse, c),
-        KeyBinding::new("cmd-i", TogglePanel, f),
-        KeyBinding::new("cmd-/", ToggleReference, f),
+        KeyBinding::new("alt-cmd-i", TogglePanel, f),
         KeyBinding::new("tab", NextLabel, Some(LABEL_CONTEXT)),
         KeyBinding::new("shift-tab", PrevLabel, Some(LABEL_CONTEXT)),
         KeyBinding::new("cmd-t", Tidy, f),
@@ -139,8 +138,8 @@ pub fn bind_keys(cx: &mut App) {
         KeyBinding::new("cmd-+", ZoomIn, f),
         KeyBinding::new("cmd-shift-=", ZoomIn, f),
         KeyBinding::new("cmd--", ZoomOut, f),
-        KeyBinding::new("cmd-0", ZoomFit, f),
-        KeyBinding::new("cmd-1", ZoomActual, f),
+        KeyBinding::new("cmd-9", ZoomFit, f),
+        KeyBinding::new("cmd-0", ZoomActual, f),
     ]);
 }
 
@@ -280,9 +279,9 @@ pub struct FigureView {
     /// The run of changes the last undo step covers (typing in one panel
     /// field, a slider drag, held arrow keys): the same group again adds no step.
     pub undo_group: Option<String>,
-    /// ⌘I: Some(shown) once she has toggled it; None = by the window's width.
+    /// ⌥⌘I: Some(shown) once she has toggled it; None = by the window's width.
     pub panel_open: Option<bool>,
-    /// ⌘/: the Reference panel.
+    /// The Reference panel (the reference button).
     pub reference_open: bool,
     pub menu: Option<super::menu::Menu>,
     /// The panel's text fields, by what they edit.
@@ -1114,7 +1113,7 @@ impl FigureView {
         cx.notify();
     }
 
-    /// ⌘0, and the fit on open/reload: the whole figure, centred, at most 200 %.
+    /// ⌘9, and the fit on open/reload: the whole figure, centred, at most 200 %.
     pub fn zoom_fit(&mut self, cx: &mut Context<Self>) {
         let scene = self.doc.scene.clone();
         match self.canvas_bounds.get() {
@@ -1137,7 +1136,7 @@ impl FigureView {
         self.px_per_cm_override.unwrap_or_else(|| super::display::px_per_cm(window, cx))
     }
 
-    /// (figure-qol B) ⌘1: 1 cm on screen is 1 cm on paper, the figure centred.
+    /// (figure-qol B) ⌘0: 1 cm on screen is 1 cm on paper, the figure centred.
     pub fn zoom_actual(&mut self, window: &Window, cx: &mut Context<Self>) {
         let per_cm = self.display_px_per_cm(window, cx);
         let scene = self.doc.scene.clone();
@@ -1295,7 +1294,7 @@ impl FigureView {
 
     /// Footnotes for whatever has the keyboard.
     pub fn hints(&self, window: &Window, cx: &App) -> Vec<SharedString> {
-        let keys: SharedString = "⌘S saves and builds the PDF · ⌘Z / ⌘⇧Z undo, redo · ⌘= ⌘- zoom, ⌘0 fits, ⌘1 actual size · hold ⌘ for the page frame · ⌘T tidies · ⌘W saves and closes".into();
+        let keys: SharedString = "⌘S saves and builds the PDF · ⌘Z / ⌘⇧Z undo, redo · ⌘= ⌘- zoom, ⌘0 actual size, ⌘9 fits · hold ⌘ for the page frame · ⌘T tidies · ⌘W saves and closes".into();
         if self.label_field.read(cx).focus.is_focused(window) {
             return vec![self.label_field.read(cx).hint().into()];
         }
@@ -1319,7 +1318,7 @@ impl FigureView {
             return vec!["Every key applies at once; the field is one ⌘Z · ↵ or esc goes back to the canvas".into(), keys];
         }
         if self.tool == Tool::Select && !self.selection.is_empty() {
-            return vec![self.selection_hint().into(), "⌥-drag copies · ⌘D duplicates · ⌘C ⌘X ⌘V · L labels · ⌘I the panel · ⌘/ the reference · right-click for more".into()];
+            return vec![self.selection_hint().into(), "⌥-drag copies · ⌘D duplicates · ⌘C ⌘X ⌘V · L labels · ⌥⌘I the panel · right-click for more".into()];
         }
         vec![self.tool.hint().into(), keys]
     }
@@ -1504,6 +1503,15 @@ impl FigureView {
             row = row.child(b);
         }
         row = row.child(div().w(px(8.))).child(Button::new("tidy", "tidy").keys("⌘T").on_click(cx.listener(|v, _, _, cx| v.tidy(cx))));
+        // the reference has no chord (⌘/ is Toggle Comment wherever there's text): it stands here
+        let mut reference = Button::new("reference", "reference").on_click(cx.listener(|v, _, _, cx| {
+            v.reference_open = !v.reference_open;
+            cx.notify();
+        }));
+        if self.reference_open {
+            reference = reference.visual(Visual::Hover);
+        }
+        row = row.child(div().relative().child(reference).child(super::menu::record_bounds(self.ui_bounds.clone(), "tool.reference".to_string())));
         let _ = t;
         row
     }
@@ -1802,10 +1810,10 @@ impl FigureView {
                     .when(more > 0, |d| d.child(div().font(t.serif_italic()).text_color(t.slate).child(format!("… and {more} more")))),
             );
         }
-        // ⌘/: the reference, over the shorthand box (growing up over the
+        // the reference, over the shorthand box (growing up over the
         // canvas, so nothing else moves)
         let reference = self.reference_open.then(|| {
-            let close = Button::new("reference.close", "Close").small().keys("⌘/").on_click(cx.listener(|v, _, window, cx| {
+            let close = Button::new("reference.close", "Close").small().on_click(cx.listener(|v, _, window, cx| {
                 v.reference_open = false;
                 v.shorthand.read(cx).focus.clone().focus(window, cx);
                 cx.notify();

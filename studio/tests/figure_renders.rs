@@ -1229,13 +1229,18 @@ fn interaction(figs: &Path, failures: &mut Vec<String>, blocked: &mut Vec<String
     let l = w.line("ngon R ");
     check(failures, picked && l.contains("color=maroon"), "Colour ▸ maroon colours it", || format!("{picked}: {l}"));
 
-    // 10. ⌘/ the reference
+    // 10. the reference: its button in the tool strip (no chord: ⌘/ is Toggle Comment wherever there's text)
     w.focus_canvas();
     w.key("cmd-/");
     let on = w.read(|v| v.reference_open);
-    check(failures, on, "⌘/ opens the reference", || "closed".into());
+    check(failures, !on, "⌘/ no longer opens the reference", || "open".into());
+    let clicked = w.click_ui("tool.reference");
+    let on = w.read(|v| v.reference_open);
+    check(failures, clicked && on, "the reference button opens the reference", || format!("clicked {clicked}, open {on}"));
     w.shot("interact-13-reference");
-    w.key("cmd-/");
+    w.click_ui("tool.reference");
+    let on = w.read(|v| v.reference_open);
+    check(failures, !on, "the reference button closes it again", || "open".into());
 
     // 11. the marquee, ⇧-click, ⌘A, esc
     let b = w.read(|v| v.canvas_bounds.get().unwrap());
@@ -1439,7 +1444,7 @@ fn interaction(figs: &Path, failures: &mut Vec<String>, blocked: &mut Vec<String
     w.key("escape");
     drop(w);
 
-    // -- a narrow window: the panel folds away; ⌘I brings it back without a jump --------
+    // -- a narrow window: the panel folds away; ⌥⌘I brings it back without a jump --------
     eprintln!("direct manipulation: narrow window");
     let mut w = Win::open_sized(&sqf, false, 900.0, 900.0);
     w.focus_canvas();
@@ -1447,11 +1452,11 @@ fn interaction(figs: &Path, failures: &mut Vec<String>, blocked: &mut Vec<String
     check(failures, !shown, "below 1000 px the panel folds away", || "shown".into());
     let pc0 = centre_px(&mut w, &p);
     w.shot("interact-60-narrow");
-    w.key("cmd-i");
+    w.key("alt-cmd-i");
     let shown = w.with(|v, win, _| v.panel_shown(win));
     let pc1 = centre_px(&mut w, &p);
     let jump = f32::from(pc1.x - pc0.x).hypot(f32::from(pc1.y - pc0.y));
-    check(failures, shown && jump < 1.0, "⌘I opens it and the figure doesn't move", || format!("shown {shown}, moved {jump:.1} px"));
+    check(failures, shown && jump < 1.0, "⌥⌘I opens it and the figure doesn't move", || format!("shown {shown}, moved {jump:.1} px"));
     w.click(pc1);
     w.shot("interact-61-narrow-panel");
     let pc2 = centre_px(&mut w, &p);

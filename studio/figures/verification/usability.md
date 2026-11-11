@@ -23,7 +23,7 @@ She has a **trackpad**, which shapes every cost:
 whole string) each count as 1. Moving the pointer and hovering are free.
 
 **Discoverable** means she would find it in the first minute of looking,
-without the reference (⌘/) or this file, by one of:
+without the reference (its button) or this file, by one of:
 
 - **H** a visible handle on the selected object (and its live readout);
 - **P** a labelled field or button in the properties panel;

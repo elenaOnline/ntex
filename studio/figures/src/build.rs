@@ -75,12 +75,12 @@ pub fn is_empty(fig: &Figure) -> bool {
 }
 
 /// The starting file for a new figure (figures/template.fig): two comment
-/// lines, what the file is and where the reference is (⌘/ in the window,
+/// lines, what the file is and where the reference is (the window's reference button,
 /// `reference.md`). `NAME` stands for the figure's name; `template_for`
 /// fills it in. Used by `ntex-fig new`, Space g (FIG-NVIM) and the window.
 pub const TEMPLATE: &str = include_str!("../template.fig");
 
-/// The shorthand reference the window shows on ⌘/ (the old cheat sheet).
+/// The shorthand reference the window's reference button shows (the old cheat sheet).
 pub const REFERENCE: &str = include_str!("../reference.md");
 
 /// TEMPLATE for the figure `name` (`fig-1`, or `sub/deep` for
