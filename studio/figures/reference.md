@@ -143,7 +143,7 @@ Anything above can be done with the mouse. Each gesture is one undo step.
   - [ and ] rotate by 15°; − and = shrink or grow; 3–9 set an n-gon's sides.
   - L shows or hides labels.
   - ⌘Z / ⌘⇧Z undo and redo; ⌘T tidies; ⌘S saves and builds the PDF.
-  - ⌘= ⌘- zoom, ⌘0 fits, ⌘1 shows actual size (1 cm is 1 cm).
-  - ⌘I toggles the properties panel; ⌘/ toggles this reference.
+  - ⌘= ⌘- zoom, ⌘0 shows actual size (1 cm is 1 cm), ⌘9 fits.
+  - ⌥⌘I toggles the properties panel; the reference button toggles this reference.
 - Right-click: Edit label, Duplicate, Copy, Cut, Paste, Reverse, Rotate 90°,
   Distribute, Hide labels, Colour, Auto-place, Add loop arrow, order, Delete.

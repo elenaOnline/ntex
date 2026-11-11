@@ -15,7 +15,7 @@
 //! - direct manipulation (FIGURES.md "Direct manipulation"): `handles`
 //!   (where handles sit, what dragging one does), `interact` (picking and
 //!   every object command), `inspector` (the properties panel), `menu` (the
-//!   right-click menu), `reference` (⌘/)
+//!   right-click menu), `reference` (its button in the tool strip)
 pub mod ask;
 pub mod canvas;
 pub mod display;

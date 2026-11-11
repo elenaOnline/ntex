@@ -277,7 +277,7 @@ and styles so you can paste it into a `.tex` for someone without the theme.
 `ntex-fig fmt x.fig` writes the canonical form. `ntex-fig new x.fig` writes
 the starting file (`figures/template.fig`: two comment lines naming the
 figure and the reference, `build::template_for`) if there is no file yet. The
-cheat sheet is `figures/reference.md` (`build::REFERENCE`, ⌘/ in the window).
+cheat sheet is `figures/reference.md` (`build::REFERENCE`, the window's reference button).
 
 Everything is placed in absolute coordinates computed by `layout` (the
 **Scene**), so the canvas and the PDF agree by construction:
@@ -321,7 +321,7 @@ Ask  ________________________________________  [Sonnet ▾] ☐ fast  ⌘↵
   pinch, and pan by two-finger scroll.
   - On opening (and on a reload from disk) the figure is fitted to the
     canvas, at most 200 %, so a small figure isn't lost in the middle. An
-    empty figure is fitted when its first statement arrives. ⌘0 fits again, ⌘1 shows actual size.
+    empty figure is fitted when its first statement arrives. ⌘9 fits again, ⌘0 shows actual size.
   - When idle it shows the exact render (tectonic PNG via the studio's
     Renderer, at 2×).
   - While you drag or type, it switches to a native draft: Scene paths drawn
@@ -502,7 +502,7 @@ undo step.
 ### The properties panel (inspector)
 
 It sits in a margin column on the canvas's right, about 260 px wide; it
-collapses below 1000 px window width and ⌘I toggles it. It's set as a
+collapses below 1000 px window width and ⌥⌘I toggles it. It's set as a
 `Definition (Properties).` box in the studio's look, and only shows fields
 that apply to the selection. **Every change applies live, as one undo step.**
 
@@ -541,14 +541,15 @@ that apply to the selection. **Every change applies live, as one undo step.**
     selected rotation arrow it runs it the other way.
   - **⌘D:** duplicate. **⌘C ⌘X ⌘V:** copy, cut, paste as shorthand. **[ / ]:** rotate by 15°. **− / =:** shrink or grow
     by 10 %.
-  - **L:** labels on or off. **⌘I:** panel. **⌘/:** reference.
+  - **L:** labels on or off. **⌥⌘I:** panel. The **reference** button: reference.
 
 ### Help instead of a cheat sheet in the file
 
 - **The template:** new files start with just two comment lines (what the
-  file is, and "⌘/ in the window shows the reference"), not 50 lines of
+  file is, and "the window's reference button shows the reference"), not 50 lines of
   comments.
-- **⌘/ reference:** toggles a Reference panel with the cheat sheet, shown as
+- **The reference button** (tool strip, no chord: ⌘/ is Toggle Comment
+  wherever there's text): toggles a Reference panel with the cheat sheet, shown as
   a Remark box over the shorthand box.
 - **Opening a file:** the shorthand box scrolls to the first line that isn't
   a comment.
@@ -577,11 +578,10 @@ that apply to the selection. **Every change applies live, as one undo step.**
   labels don't scale; a width the labels alone exceed changes nothing),
   **Scale** (field and slider), **Spacing**, **Labels** (size). A run of
   typing or a slider drag is one undo step.
-- **⌘1** actual size: 1 cm on screen is 1 cm on paper, from the display's
+- **⌘0** actual size: 1 cm on screen is 1 cm on paper, from the display's
   real size (CoreGraphics `CGDisplayScreenSize`; implausible values fall
-  back to 96 dpi). The canvas corner says `actual size`. **⌘0** still fits.
-  The figure window's ⌘1 is scoped to the figure window (the studio's ⌘1 is
-  its page switch).
+  back to 96 dpi). The canvas corner says `actual size`. **⌘9** fits (Preview's pair:
+  ⌘0 actual size, ⌘9 zoom to fit, as in Powerset).
 - Hold **⌘** with nothing being dragged: a faint page frame with grips at
   its corners. **⌘-drag a corner** scales the whole figure about the
   opposite corner (which stays put on screen), with a live

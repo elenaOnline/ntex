@@ -1,4 +1,4 @@
-//! ⌘/ — the Reference panel (FIGURES.md "Help instead of a cheat sheet in
+//! The Reference panel, from the tool strip's reference button (FIGURES.md "Help instead of a cheat sheet in
 //! the file"): the shorthand's cheat sheet as a Remark box over the
 //! shorthand box, instead of 50 lines of comments in every new file.
 //!

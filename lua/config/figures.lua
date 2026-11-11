@@ -60,12 +60,12 @@ end
 -- ---------------------------------------------------------------------------
 -- what a new .fig starts with when ntex-fig isn't installed (otherwise
 -- `ntex-fig new` writes the same, studio/figures/template.fig). NAME is the
--- figure's name; the cheat sheet is studio/figures/reference.md (⌘/ in the
--- window).
+-- figure's name; the cheat sheet is studio/figures/reference.md (the
+-- window's reference button).
 
 M.TEMPLATE = [[
 % Ntex Figures — this file draws figures/NAME.pdf. Save to rebuild; Space g opens the window.
-% ⌘/ in the window shows the reference (or ~/.config/texnvim/studio/figures/FIGURES.md).
+% The window's reference button shows the reference (or ~/.config/texnvim/studio/figures/FIGURES.md).
 ]]
 
 --- M.TEMPLATE for the figure at `fig`: NAME is the part of the path after
